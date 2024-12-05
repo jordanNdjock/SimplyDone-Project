@@ -1,23 +1,26 @@
 import Image from "next/image";
-import { ToggleTheme } from '../components/ToggleTheme';
-import { ArrowDownRight, CheckCheck, LogIn, UserRound } from 'lucide-react';
+import { ToggleTheme } from '@/src/components/toggleTheme';
+import { ArrowDownRight, CheckCheck, LogIn } from 'lucide-react';
 
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
-import { Separator } from "@/src/components/ui/separator";
-import Footer from "@/src/components/Footer";
+import Footer from "@/src/components/footer";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="animate-pulse-slow flex h-20 shrink-0 items-center justify-end sm:justify-end md:justify-between lg:justify-between rounded-lg bg-gradient-to-l from-primary via-accent dark:from-primary dark:via-accent p-4 md:h-32">
-           <Image
+           <div className=" !animate-none">
+              <Image
                   src="/assets/img/Logo.png"
                   width={100}
                   height={90} 
                   alt="Logo SimplyDone App"
-                  className="hidden sm:hidden lg:block  md:block !animate-none"
+                  className="hidden sm:hidden lg:block  md:block"
               />
+           </div>
+
         <ToggleTheme />
       </div>
 
@@ -38,15 +41,16 @@ export default function Home() {
                 </span>
               </h1>
 
-              <p className="mb-8 max-w-xl text-muted-foreground text-sm sm:text-base lg:text-lg">
-                SimplyDone est une application open-source de gestion de tâches avancée qui intègre la matrice d'Eisenhower et la méthode Pomodoro. Organisez vos priorités et optimisez votre productivité en fonction de vos objectifs.
+              <p className="mb-8 max-w-xl text-muted-foreground text-sm sm:text-base lg:text-lg text-justify">
+                SimplyDone est une application open-source de gestion de tâches avancée qui intègre la matrice d&apos;Eisenhower et la méthode Pomodoro. Organisez vos priorités et optimisez votre productivité en fonction de vos objectifs.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-               
+              <Link href="/auth/login">
                 <Button size="lg" variant="default" className="w-full sm:w-auto bg-accent hover:bg-purple-700 dark:bg-primary dark:hover:bg-blue-700 ">
-                  Se connecter <LogIn className="ml-2" size={18} />
+                    Se connecter <LogIn className="ml-1" size={18} />
                 </Button>
+                </Link>
               </div>
             </div>
 

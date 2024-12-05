@@ -1,38 +1,38 @@
-import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
-import { Separator } from '@/src/components/ui/separator';
+// import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
+// import { Separator } from '@/src/components/ui/separator';
 import Link from 'next/link';
 
-const sections = [
-  {
-    title: 'Product',
-    links: [
-      { name: 'Overview', href: '#' },
-      { name: 'Pricing', href: '#' },
-      { name: 'Marketplace', href: '#' },
-      { name: 'Features', href: '#' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { name: 'About', href: '#' },
-      { name: 'Team', href: '#' },
-      { name: 'Blog', href: '#' },
-      { name: 'Careers', href: '#' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { name: 'Help', href: '#' },
-      { name: 'Sales', href: '#' },
-      { name: 'Advertise', href: '#' },
-      { name: 'Privacy', href: '#' },
-    ],
-  },
-];
+// const sections = [
+//   {
+//     title: 'Product',
+//     links: [
+//       { name: 'Overview', href: '#' },
+//       { name: 'Pricing', href: '#' },
+//       { name: 'Marketplace', href: '#' },
+//       { name: 'Features', href: '#' },
+//     ],
+//   },
+//   {
+//     title: 'Company',
+//     links: [
+//       { name: 'About', href: '#' },
+//       { name: 'Team', href: '#' },
+//       { name: 'Blog', href: '#' },
+//       { name: 'Careers', href: '#' },
+//     ],
+//   },
+//   {
+//     title: 'Resources',
+//     links: [
+//       { name: 'Help', href: '#' },
+//       { name: 'Sales', href: '#' },
+//       { name: 'Advertise', href: '#' },
+//       { name: 'Privacy', href: '#' },
+//     ],
+//   },
+// ];
 
-const Footer = () => {
+export default function Footer() {
   const currentYear = new Date().getFullYear();
   return (
     <section className="py-2 px-10">
@@ -99,10 +99,10 @@ const Footer = () => {
             <p >© {currentYear} SimplyDone. Tous droits reservés.</p>
             <ul className="flex justify-center gap-4 lg:justify-start">
               <li className="hover:text-accent dark:hover:text-primary">
-                <Link href="#"> Conditions Générales</Link>
+                <Link href="/conditions"> Conditions Générales</Link>
               </li>
               <li className="hover:text-accent dark:hover:text-primary">
-                <Link href="#"> Politique de Confidentialité</Link>
+                <Link href="/privacy"> Politique de Confidentialité</Link>
               </li>
               <li className="hover:text-accent dark:hover:text-primary">
                   <Link href="https://github.com/jordanNdjock/">Crédits</Link>
@@ -114,5 +114,3 @@ const Footer = () => {
     </section>
   );
 };
-
-export default Footer;
