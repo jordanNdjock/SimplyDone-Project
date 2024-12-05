@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { ToggleTheme } from '@/src/components/toggleTheme';
+import { ToggleTheme } from '@/src/components/ToggleTheme';
 import { ArrowDownRight, CheckCheck, LogIn } from 'lucide-react';
 
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
-import Footer from "@/src/components/footer";
+import Footer from "@/src/components/Footer";
 import Link from "next/link";
 
 export default function Home() {

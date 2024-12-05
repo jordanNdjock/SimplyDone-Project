@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Footer from '../../components/footer';
+import Footer from '../../components/Footer';
 import { Button } from '@/src/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
@@ -31,7 +31,7 @@ export default function PrivacyPolicy() {
 
           <h2 id="data-collection" className="text-lg font-semibold mt-4 mb-2 text-accent dark:text-primary">1. Données que nous collectons</h2>
           <p className="text-gray-700 mb-4">
-            Nous collectons vos informations personnelles (nom, e-mail, numéro de téléphone), vos données d'utilisation (pages visitées,
+            Nous collectons vos informations personnelles (nom, e-mail, numéro de téléphone), vos données d&apos;utilisation (pages visitées,
             actions effectuées) et vos données techniques (adresse IP, appareil utilisé).
           </p>
 
@@ -54,7 +54,7 @@ export default function PrivacyPolicy() {
 
           <h2 id="your-rights" className="text-lg font-semibold mt-4 mb-2 text-accent dark:text-primary">5. Vos droits</h2>
           <p className="text-gray-700 mb-4">
-            Vous avez le droit d'accéder, de corriger ou de supprimer vos données personnelles. Pour exercer ces droits, contactez le développeur
+            Vous avez le droit d&apos;accéder, de corriger ou de supprimer vos données personnelles. Pour exercer ces droits, contactez le développeur
             sur <a href="mailto:support@simplydone.com" className="text-accent dark:text-primary hover:underline">clothairegastalia@gmail.com</a>.
           </p>
 
