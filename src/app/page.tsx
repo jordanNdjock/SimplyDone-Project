@@ -58,7 +58,7 @@ export default function Home() {
               <Image
                 width={500}
                 height={400}
-                src="/assets/img/hero.png"
+                src="/assets/img/Hero.png"
                 alt="Illustration Hero"
                 className="w-full max-w-sm md:max-w-md lg:max-w-4xl rounded-lg object-cover shadow-lg"
                 loading="lazy"
