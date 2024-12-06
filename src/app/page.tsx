@@ -61,6 +61,7 @@ export default function Home() {
                 src="/assets/img/hero.png"
                 alt="Illustration Hero"
                 className="w-full max-w-sm md:max-w-md lg:max-w-4xl rounded-lg object-cover shadow-lg"
+                loading="lazy"
               />
             </div>
           </div>

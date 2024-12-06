@@ -31,8 +31,8 @@ export default function PrivacyPolicy() {
 
           <h2 id="data-collection" className="text-lg font-semibold mt-4 mb-2 text-accent dark:text-primary">1. Données que nous collectons</h2>
           <p className="text-gray-700 mb-4">
-            Nous collectons vos informations personnelles (nom, e-mail, numéro de téléphone), vos données d&apos;utilisation (pages visitées,
-            actions effectuées) et vos données techniques (adresse IP, appareil utilisé).
+            Nous collectons vos informations personnelles (nom, e-mail, mot de passe), vos données d&apos;utilisation (pages visitées,
+            actions effectuées) et vos données techniques (adresse IP, appareil utilisé, navigateur utilisé).
           </p>
 
           <h2 id="data-usage" className="text-lg font-semibold mt-4 mb-2 text-accent dark:text-primary">2. Utilisation des données</h2>
@@ -64,7 +64,7 @@ export default function PrivacyPolicy() {
             la date de dernière mise à jour.
           </p>
 
-          <p className="text-center text-gray-500 mt-8">Dernière mise à jour : 05/12/2024</p>
+          <p className="text-center text-gray-500 mt-8">Dernière mise à jour : 06/12/2024</p>
         </div>
 
         <Footer />

@@ -1,5 +1,6 @@
 "use client"
 
+import { useTransition } from "react";
 import { toast } from "@/src/hooks/use-toast";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -8,7 +9,7 @@ import { Input } from './ui/input';
 import { Button } from "./ui/button";
 import { Separator } from '@/src/components/ui/separator';
 import { FcGoogle } from 'react-icons/fc';
-import { Github } from 'lucide-react';
+import { Github, LoaderCircle } from 'lucide-react';
 import {
     Form, 
     FormControl, 
@@ -17,6 +18,7 @@ import {
     FormLabel, 
     FormMessage
 } from '@/src/components/ui/form';
+import clsx from "clsx";
 
 const FormSchema = z.object({
     email: z.string().email({message: "Veuillez entrer une adresse email valide"}),
@@ -24,6 +26,8 @@ const FormSchema = z.object({
 });
 
 export default function LoginForm() {
+    const [isLoading, startTransition] = useTransition();
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -33,15 +37,17 @@ export default function LoginForm() {
     });
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-          title: "You submitted the following values:",
-          description: (
-            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-              <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-            </pre>
-          ),
-        })
-      }
+        startTransition(() => {
+            toast({
+              title: "You submitted the following values:",
+              description: (
+                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                  <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+                </pre>
+              ),
+            })
+        });
+    }
 
     return (
       <Form {...form}>
@@ -72,8 +78,22 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-         <Button type="submit" className="mt-2 w-full bg-accent hover:bg-purple-700 dark:bg-primary dark:hover:bg-blue-700">
-            Se connecter
+         <Button 
+                type="submit" 
+                className={clsx (
+                    "mt-2 w-full bg-accent hover:bg-purple-700 dark:bg-primary dark:hover:bg-blue-700",
+                    isLoading ?
+                    "bg-gray-400 cursor-not-allowed"
+                    : "bg-accent hover:bg-purple-700 dark:bg-primary dark:hover:bg-blue-700"
+                    )}>
+                     {isLoading ? (
+                        <>
+                        <LoaderCircle className="animate-spin h-5 w-5 text-white" />
+                        <span>Chargement...</span>
+                        </>
+                    ) : (
+                        "Se connecter"
+                    )}
          </Button>
          <div className="flex items-center justify-center space-x-1">
             <Separator style={{ width: '9rem' }} className="bg-accent dark:bg-primary" />	
