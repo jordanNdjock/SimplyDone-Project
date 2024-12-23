@@ -1,6 +1,6 @@
 "use client"
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "@/src/hooks/use-toast";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -9,7 +9,7 @@ import { Input } from './ui/input';
 import { Button } from "./ui/button";
 import { Separator } from '@/src/components/ui/separator';
 import { FcGoogle } from 'react-icons/fc';
-import { Github, LoaderCircle } from 'lucide-react';
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
 import {
     Form, 
     FormControl, 
@@ -19,6 +19,10 @@ import {
     FormMessage
 } from '@/src/components/ui/form';
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "../store/authSlice";
+import { account } from "../lib/appwrite";
+import { OAuthProvider } from "appwrite";
 
 const FormSchema = z.object({
     email: z.string().email({message: "Veuillez entrer une adresse email valide"}),
@@ -26,7 +30,10 @@ const FormSchema = z.object({
 });
 
 export default function LoginForm() {
+    const [showPassword, setShowPassword] = useState(false);
+    const { login } = useAuthStore();
     const [isLoading, startTransition] = useTransition();
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -37,16 +44,38 @@ export default function LoginForm() {
     });
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
-        startTransition(() => {
+        startTransition(async () => {
+          try {
+              await login( data.email,data.password);
+              router.push("/dashboard");
+              toast({
+                title: "Connexion réussie",
+                variant: "success",
+              })
+          } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
             toast({
-              title: "You submitted the following values:",
-              description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                  <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-              ),
+              title: message,
+              variant: "error",
             })
-        });
+          }
+      });
+    }
+
+    // async function handleGithubConnexion() {
+    //     await account.createOAuth2Session(
+    //         OAuthProvider.Github,
+    //         'https://localhost:3000/dashboard',
+    //         'https://localhost:3000/api/auth/callback',
+    //     );
+    // }
+
+    async function handleGoogleConnexion() {
+        await account.createOAuth2Session(
+            OAuthProvider.Google,
+            'https://simplydone.vercel.app/dashboard',
+            'http://simplydone.vercel.app/auth/callback',
+        );
     }
 
     return (
@@ -72,7 +101,20 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Mot de passe</FormLabel>
               <FormControl>
-                <Input placeholder="Entrer votre mot de passe" {...field} />
+                <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Entrer votre mot de passe"
+                      {...field}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -100,14 +142,14 @@ export default function LoginForm() {
             <span className="text-muted-foreground font-bold text-sm ">OU</span>
             <Separator style={{ width: '9rem' }} className="bg-accent dark:bg-primary" />	
         </div>
-        <Button variant="outline" className="w-full hover:bg-accent dark:hover:bg-primary">
+        <Button type="button" variant="outline" className="w-full hover:bg-accent dark:hover:bg-primary" onClick={handleGoogleConnexion}>
             <FcGoogle className="mr-2 size-5" />
-                Se connecter avec Google
+                Continuer avec Google
         </Button>
-        <Button variant="outline" className="w-full  hover:bg-accent dark:hover:bg-primary">
+        {/* <Button type="button" variant="outline" className="w-full  hover:bg-accent dark:hover:bg-primary" onClick={handleGithubConnexion}>
             <Github className="mr-2 size-5" />
                 Se connecter avec Github
-        </Button>
+        </Button> */}
         </form>
       </Form>
     )

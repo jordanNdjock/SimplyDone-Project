@@ -13,6 +13,7 @@ export default function Home() {
       <div className="animate-pulse-slow flex h-20 shrink-0 items-center justify-end sm:justify-end md:justify-between lg:justify-between rounded-lg bg-gradient-to-l from-primary via-accent dark:from-primary dark:via-accent p-4 md:h-32">
            <div className=" !animate-none">
               <Image
+                  loading="lazy"
                   src="/assets/img/Logo.png"
                   width={100}
                   height={90} 
@@ -46,7 +47,7 @@ export default function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <Link href="/auth/login">
+              <Link href="/dashboard">
                 <Button size="lg" variant="default" className="w-full sm:w-auto bg-accent hover:bg-purple-700 dark:bg-primary dark:hover:bg-blue-700 ">
                     Se connecter <LogIn className="ml-1" size={18} />
                 </Button>
