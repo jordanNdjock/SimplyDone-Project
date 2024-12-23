@@ -20,6 +20,7 @@ const SignUp: React.FC = () => {
         <div className="flex flex-col gap-4">
           <div className="relative flex flex-col items-center overflow-hidden pb-2 pt-8">
             <Image
+              priority
               width={500}
               height={400}
               src="/assets/img/Logo.png"
