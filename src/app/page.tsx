@@ -1,14 +1,19 @@
+'use client'
 import Image from "next/image";
 import { ToggleTheme } from '@/src/components/ToggleTheme';
 import { ArrowDownRight, CheckCheck, LogIn } from 'lucide-react';
-
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
 import Footer from "@/src/components/Footer";
 import Link from "next/link";
+import InstallBanner from '../components/InstallBanner';
+
 
 export default function Home() {
+
   return (
+  <>
+    <InstallBanner />
     <main className="flex min-h-screen flex-col p-6">
       <div className="animate-pulse-slow flex h-20 shrink-0 items-center justify-end sm:justify-end md:justify-between lg:justify-between rounded-lg bg-gradient-to-l from-primary via-accent dark:from-primary dark:via-accent p-4 md:h-32">
            <div className=" !animate-none">
@@ -71,5 +76,6 @@ export default function Home() {
 
       <Footer />
     </main>
+</>  
   );
 }

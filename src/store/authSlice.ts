@@ -37,7 +37,7 @@ export const useAuthStore = create(
             throw new Error("Erreur lors de l'inscription'");
           }
         } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
+          const message = error instanceof Error ? error.message === "There was an error processing your request. Please check the inputs and try again." ? "Ooups ! Un autre compte est déjà crée avec cette adresse email" : error.message : "Une erreur inconnue est survenue";
           set({ user: null });
           throw new Error(message);
         }
@@ -55,7 +55,7 @@ export const useAuthStore = create(
           }
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message === "Invalid credentials. Please check the email and password." ? 
-          "Mot de passe ou email incorrect. Veuillez vérifier vos informations !" : "Une erreur inconnue est survenue" : 
+          "Mot de passe ou email incorrect. Veuillez vérifier vos informations !" : error.message : 
           "Une erreur inconnue est survenue";
           set({ user: null });
           throw new Error(message);

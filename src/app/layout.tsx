@@ -6,7 +6,7 @@ import { Toaster } from '@/src/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | SimplyDone App",
+    template: "%s",
     default: "SimplyDone App"
   },
   description: "A simple advanced to-do list app built with Next.js, Appwrite, and Tailwind CSS.",
@@ -20,6 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+       <head>
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="icon" href="/icons/icon-192x192.png" />
+          <meta name="theme-color" content="#000000" />
+          <meta name="description" content="SimplyDone App est une todo avancée" />
+          <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        </head>
+        
       <body
         className={`${inter.className} antialiased`}
       >

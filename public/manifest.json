@@ -1,0 +1,45 @@
+{
+  "name": "SimplyDone App",
+  "short_name": "SD",
+  "start_url": "/",
+  "description": "SimplyDone App est une application de todo avancée utile pour planifier vos tâches en fonction des priorités",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot-1898x874.png",
+      "sizes": "1898x874",
+      "type": "image/png",
+      "purpose": "any",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/screenshot-405x756.png",
+      "sizes": "405x756",
+      "type": "image/png",
+      "purpose": "any",
+      "form_factor": "narrow"
+    }
+  ],
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "display": "standalone"
+}
