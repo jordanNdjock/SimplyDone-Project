@@ -5,7 +5,6 @@ import { Download } from "lucide-react";
 const InstallBanner: React.FC = () => {
     const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
     const [showToast, setShowToast] = useState(false);
-    const [toastVisible, setToastVisible] = useState(false);
   
     
     useEffect(() => {
@@ -27,10 +26,7 @@ const InstallBanner: React.FC = () => {
       const handleBeforeInstallPrompt = (e:any) => {
         e.preventDefault();
         setInstallPrompt(e);
-        setTimeout(() => {
           setShowToast(true);
-          setTimeout(() => setToastVisible(true), 300);
-        }, 3000);
       };
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   
@@ -59,24 +55,21 @@ const InstallBanner: React.FC = () => {
     };
   
     const handleCloseToast = () => {
-      setToastVisible(false);
-      setTimeout(() => setShowToast(false), 300);
+      setShowToast(false)
     };
 
   if (!showToast) return null;
 
   return (
-    <div  className={`fixed flex-col bottom-[-110px] opacity-95 right-4 z-50 p-4 rounded-lg bg-gray-800 text-white shadow-lg flex items-center justify-between gap-4 w-[calc(100%-2rem)] max-w-sm transition-all duration-300 ${
-        toastVisible ? "bottom-[20px]" : ""
-      }`}>
+    <div className="fixed right-8 flex-col bottom-20 opacity-95 sm:right-4 sm:bottom-4 md:right-4 lg:right-4 z-50 p-4 md:bottom-4  lg:bottom-4 rounded-lg bg-gray-800 text-white shadow-lg flex items-center justify-between gap-4 w-[calc(100%-4rem)] max-w-sm">
         <div className="flex items-center">
           <span>Voulez-vous installer SimplyDone ?</span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <Button variant="default" onClick={handleInstallClick}>
             Installer  <Download className="mr-2 animate-bounce" size={24} />
           </Button>
-          <Button variant="outline" onClick={handleCloseToast}>
+          <Button variant="destructive" onClick={handleCloseToast}>
             Fermer
           </Button>
         </div>

@@ -72,11 +72,13 @@ export default function LoginForm() {
 
     
     async function handleGoogleConnexion() {
-        await account.createOAuth2Session(
-            OAuthProvider.Google,
-            'https://simplydone.vercel.app/dashboard',
-            'https://simplydone.vercel.app/api/auth/callback',
-        );
+        const baseUrl = "https://simplydone.vercel.app";
+      
+      await account.createOAuth2Session(
+        OAuthProvider.Google,
+        `${baseUrl}/dashboard`,
+        `${baseUrl}/api/auth/callback`
+      );
     }
 
     return (
