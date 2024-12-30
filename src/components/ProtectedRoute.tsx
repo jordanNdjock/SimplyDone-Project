@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useAuthStore, selectAuthenticated } from "@/src/store/authSlice";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
@@ -33,8 +33,7 @@ export default function ProtectedRoute({
     return (
       <div className="flex justify-center items-center min-h-screen">
         <p className="text-md lg:text-3xl md:text-3xl text-accent dark:text-primary flex">
-          <LoaderCircle className="animate-spin mr-2" size={30} />
-          Vérification de l&apos;authentification...
+          <LoaderCircle className="animate-spin" size={80} />
         </p>
       </div>
     );
@@ -44,5 +43,5 @@ export default function ProtectedRoute({
     return null;
   }
 
-  return <>{children}</>;
+  return <Suspense>{children}</Suspense>;
 }
