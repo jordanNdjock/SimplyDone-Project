@@ -71,7 +71,6 @@ export default function LoginForm() {
     // }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
-    console.log(baseUrl);
     async function handleGoogleConnexion() {
         await account.createOAuth2Session(
             OAuthProvider.Google,
