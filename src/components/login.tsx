@@ -70,11 +70,12 @@ export default function LoginForm() {
     //     );
     // }
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
     async function handleGoogleConnexion() {
         await account.createOAuth2Session(
             OAuthProvider.Google,
-            'http://localhost:3000/dashboard',
-            'http://localhost:3000/api/auth/callback',
+            `${baseUrl}/dashboard`,
+            `${baseUrl}/api/auth/callback`
         );
     }
 
