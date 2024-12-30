@@ -70,12 +70,12 @@ export default function LoginForm() {
     //     );
     // }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+    
     async function handleGoogleConnexion() {
         await account.createOAuth2Session(
             OAuthProvider.Google,
-            `${baseUrl}/dashboard`,
-            `${baseUrl}/api/auth/callback`
+            'https://simplydone.vercel.app/dashboard',
+            'https://simplydone.vercel.app/api/auth/callback',
         );
     }
 
