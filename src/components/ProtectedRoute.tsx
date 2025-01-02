@@ -21,7 +21,7 @@ export default function ProtectedRoute({
         await fetchUser();
         setLoading(false);
       } catch (error) {
-        console.error("Erreur lors de la vérification de l'authentification:", error);
+        console.error(error);
         router.replace("/auth/login");
       }
     };

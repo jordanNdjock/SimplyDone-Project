@@ -72,7 +72,7 @@ export default function LoginForm() {
 
     
     async function handleGoogleConnexion() {
-        const baseUrl = "https://simplydone.vercel.app";
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://simplydone.vercel.app";
       
       await account.createOAuth2Session(
         OAuthProvider.Google,
