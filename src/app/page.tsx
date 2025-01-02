@@ -8,19 +8,30 @@ import { Button } from '@/src/components/ui/button';
 import Footer from "@/src/components/Footer";
 import Link from "next/link";
 import InstallBanner from '../components/InstallBanner';
+import { selectAuthenticated, useAuthStore } from "../store/authSlice";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 
 export default function Home() {
+  const selectuser = useAuthStore(selectAuthenticated);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (selectuser) {
+      router.push("/dashboard");
+    }
+  }, [selectuser, router]);
 
   return (
   <>
     <InstallBanner />
     <main className="flex min-h-screen flex-col p-6">
       <div className="animate-pulse-slow flex h-20 shrink-0 items-center justify-end sm:justify-end md:justify-between lg:justify-between rounded-lg bg-gradient-to-l from-primary via-accent dark:from-primary dark:via-accent p-4 md:h-32">
-           <div className=" !animate-none">
+           <div className="!animate-none">
               <Image
                   loading="lazy"
-                  src="/assets/img/Logo.png"
+                  src="/assets/img/Logo.png" 
                   width={100}
                   height={90} 
                   alt="Logo SimplyDone App"
