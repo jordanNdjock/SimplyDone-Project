@@ -11,11 +11,24 @@ import InstallBanner from '../components/InstallBanner';
 import { selectAuthenticated, useAuthStore } from "../store/authSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useTheme } from "next-themes";
 
 
 export default function Home() {
   const selectuser = useAuthStore(selectAuthenticated);
   const router = useRouter();
+  const { theme, fetchUser } = useAuthStore();
+  const { setTheme } = useTheme();
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  useEffect(() => {
+    if (theme) {
+      setTheme(theme);
+    }
+  }, [theme, setTheme]);
 
   useEffect(() => {
     if (selectuser) {

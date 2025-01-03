@@ -11,9 +11,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu"
+import { useAuthStore } from "../store/authSlice"
 
 export function ToggleTheme() {
-  const { setTheme } = useTheme()
+  const { theme, setTheme } = useAuthStore();
+  const { setTheme: setNextTheme } = useTheme();
+
+  React.useEffect(() => {
+    setNextTheme(theme);
+  }, [theme, setNextTheme]);
+
+  const handleThemeChange = (newTheme: string) => {
+    setTheme(newTheme);
+    setNextTheme(newTheme);
+  };
 
   return (
     <DropdownMenu>
@@ -25,13 +36,13 @@ export function ToggleTheme() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => handleThemeChange("light")} className="cursor-pointer">
           Clair
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => handleThemeChange("dark")} className="cursor-pointer">
           Sombre
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => handleThemeChange("system")} className="cursor-pointer">
           Thème du système
         </DropdownMenuItem>
       </DropdownMenuContent>
