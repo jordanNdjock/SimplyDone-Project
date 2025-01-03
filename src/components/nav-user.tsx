@@ -31,6 +31,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "@/src/hooks/use-toast";
 import { useAuthStore } from "../store/authSlice"
 import Link from "next/link"
+import { LuSettings2 } from "react-icons/lu";
+import { getInitials } from "../utils/utils"
 
 export function NavUser({
   user,
@@ -41,18 +43,7 @@ export function NavUser({
   const router = useRouter();
   const { logout } = useAuthStore();
 
-  const getInitials = (name?: string): string | null => {
-    if (!name || name.trim().length === 0) {
-      return null;
-    }
-  
-    const names = name.trim().split(" ");
-    if (names.length >= 2) {
-      return `${names[0][0].toUpperCase()}${names[1][0].toUpperCase()}`;
-    }
-  
-    return names[0][0].toUpperCase();
-  };
+
   
   const handleLogout = async () => {
     try {
@@ -82,7 +73,7 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user?.name} alt={user?.name} />
+                <AvatarImage src={user?.avatarUrl ?? user?.name} alt={user?.name} />
                 <AvatarFallback className="rounded-lg">{getInitials(user?.name)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -101,7 +92,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user?.name} alt={user?.name} />
+                  <AvatarImage src={user?.avatarUrl ?? user?.name} alt={user?.name} />
                   <AvatarFallback className="rounded-lg">{getInitials(user?.name)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -116,6 +107,12 @@ export function NavUser({
               <DropdownMenuItem className="cursor-pointer">
                     <UserRound />
                     Mon compte
+              </DropdownMenuItem>
+            </Link>
+            <Link href={"/dashboard/parametres"}>
+              <DropdownMenuItem className="cursor-pointer">
+                    <LuSettings2 />
+                    Paramètres
               </DropdownMenuItem>
             </Link>
             </DropdownMenuGroup>

@@ -13,7 +13,7 @@ export interface AuthState {
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
-    updateProfile: (name: string, password: string, email?: string) => Promise<void>;
+    updateProfile: (name: string, avatarUrl: string) => Promise<void>;
     signup: (name: string, email: string, password: string) => Promise<void>;
   }
   
