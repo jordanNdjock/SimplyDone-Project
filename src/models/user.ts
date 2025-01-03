@@ -8,6 +8,8 @@ export interface User {
   
 export interface AuthState {
     user: User | null;
+    theme: string;
+    setTheme: (theme: string) => void;
     authenticated: boolean;
     fetchUser: () => Promise<void>;
     login: (email: string, password: string) => Promise<void>;

@@ -9,13 +9,15 @@ export const useAuthStore = create(
     (set) => ({
       user: null,
       authenticated: false,
+      theme: "system",
 
       fetchUser: async () => {
         try {
           const result = await account.get();
           const user = mapUserInformation(result);
+          const storedTheme = result.prefs.theme || "system";
           if(user != null){
-            set({ user, authenticated: true });
+            set({ user, authenticated: true, theme: storedTheme });
           }else{
             throw new Error("Erreur lors de la récupération de l'utilisateur");
           }
@@ -86,14 +88,35 @@ export const useAuthStore = create(
           // if (email) {
           //   await account.updateEmail(email, password);
           // }
+          const currentUser = await account.get();
+          const currentPrefs = currentUser.prefs || {};
+
+          await account.updatePrefs({
+            ...currentPrefs,
+            avatar: avatarUrl,
+          });
           await account.updateName(name);
-          await account.updatePrefs({ avatar: avatarUrl });
           const updatedUser = await account.get();
           const user = mapUserInformation(updatedUser);
           set({ user });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
            throw new Error(message);
+        }
+      },
+      setTheme: async (theme) => {
+        set({ theme });
+
+        try {
+          const user = await account.get();
+          const currentPrefs = user.prefs || {};
+
+          await account.updatePrefs({
+            ...currentPrefs,
+            theme,
+          });
+        } catch (error) {
+          console.error("Erreur lors de la mise à jour du thème :", error);
         }
       },
 
