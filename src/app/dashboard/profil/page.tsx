@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, Suspense } from "react";
+import React, { useState, useRef } from "react";
 import { useAuthStore, selectUser } from "@/src/store/authSlice";
 import { Bucket_Id, ID, storage } from "@/src/lib/appwrite";
 import {
@@ -11,10 +11,9 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
-import { Camera, Trash2, Edit, CircleCheck, LoaderCircle, ArrowLeft } from "lucide-react";
+import { Camera, Trash2, Edit, LoaderCircle, ArrowLeft } from "lucide-react";
 import { getInitials } from "@/src/utils/utils";
 import { toast } from "@/src/hooks/use-toast";
-import SkeletonProfile from "@/src/components/loaderSkeleton/SkeletonProfile";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/src/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 
@@ -117,7 +116,7 @@ const Profil: React.FC = () => {
 
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Modifier le nom d'utilisateur</CardTitle>
+          <CardTitle>Modifier le nom d&apos;utilisateur</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center space-x-3">
           <Input
