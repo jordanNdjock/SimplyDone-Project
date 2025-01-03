@@ -25,7 +25,7 @@ const DynamicBreadcrumb = () => {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem>
+        <BreadcrumbItem className="hidden lg:block sm:block md:block">
           <Link href="/dashboard">Accueil</Link>
         </BreadcrumbItem>
         {paths.map((segment, index) => (

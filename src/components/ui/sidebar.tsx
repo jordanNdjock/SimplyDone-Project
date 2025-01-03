@@ -280,7 +280,7 @@ const BottomBar = React.forwardRef<
     { icon: <FaSquareCheck />, label: "Tâches", route: "/dashboard" },
     { icon: <FaCalendarDays />, label: "Calendrier", route: "/dashboard/calendrier" },
     { icon: <BsGridFill />, label: "Matrice", route: "/dashboard/matrice" },
-    { icon: <FaCircleDot />, label: "Pomo", route: "/dashboard/sessions-de-travail" },
+    { icon: <FaCircleDot />, label: "Pomo", route: "/dashboard/sessions" },
     { icon: <LuSettings2 />, label: "Paramètres", route: "/dashboard/parametres" },
   ];
 

@@ -10,6 +10,7 @@ import {
 import { Separator } from "@/src/components/ui/separator";
 import DynamicBreadcrumb from "@/src/components/DynamicBreadcrumbs";
 import { ToggleTheme } from "@/src/components/ToggleTheme";
+import DynamicDropdownMenu from '../../components/DynamicDropdownMenu';
 
 export default function DashboardLayout({
   children,
@@ -21,13 +22,16 @@ export default function DashboardLayout({
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 bg-gray-200 dark:bg-black items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"> 
+          <header className="flex h-16 shrink-0 bg-gray-200 dark:bg-black items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"> 
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4 bg-gray-600 dark:bg-gray-400" />
               <DynamicBreadcrumb />
             </div>
-            <div className="mr-2"><ToggleTheme /></div>
+            <div className="ml-auto mr-2"><ToggleTheme /></div>
+            <div className="mr-4">
+              <DynamicDropdownMenu />
+            </div>
           </header>
           <div className="flex-1 p-4 pb-20">{children}</div>
         </SidebarInset>

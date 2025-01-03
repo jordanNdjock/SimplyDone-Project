@@ -1,4 +1,4 @@
-import { Client, Account } from 'appwrite';
+import { Client, Account, Storage } from 'appwrite';
 
 export const client = new Client();
 
@@ -9,4 +9,6 @@ client
     
 
 export const account = new Account(client);
+export const storage = new Storage(client);
+export const Bucket_Id = "6749c72e000f88566561";
 export { ID } from 'appwrite';

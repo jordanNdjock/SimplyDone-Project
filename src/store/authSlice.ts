@@ -81,13 +81,15 @@ export const useAuthStore = create(
         }
       },
 
-      updateProfile: async (name: string, password: string,email?: string) => {
+      updateProfile: async (name: string, avatarUrl: string) => {
         try {
-          if (email) {
-            await account.updateEmail(email, password);
-          }
+          // if (email) {
+          //   await account.updateEmail(email, password);
+          // }
           await account.updateName(name);
-          const user = await account.get();
+          await account.updatePrefs({ avatar: avatarUrl });
+          const updatedUser = await account.get();
+          const user = mapUserInformation(updatedUser);
           set({ user });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
