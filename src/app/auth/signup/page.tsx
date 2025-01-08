@@ -2,7 +2,7 @@ import { ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from "next";
-import SignupForm from '@/src/components/signup';
+import SignupForm from '@/src/components/auth/signup';
 
 export const metadata: Metadata = {
     title: "S'inscrire",

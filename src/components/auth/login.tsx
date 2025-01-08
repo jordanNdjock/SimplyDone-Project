@@ -1,16 +1,15 @@
 "use client"
 
+import { useState, useTransition } from "react";
 import { toast } from "@/src/hooks/use-toast";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form';
-import { Input } from './ui/input';
-import { Button } from "./ui/button";
-// import { Separator } from '@/src/components/ui/separator';
-// import { FcGoogle } from 'react-icons/fc';
+import { Input } from '../ui/input';
+import { Button } from "../ui/button";
+import { Separator } from '@/src/components/ui/separator';
+import { FcGoogle } from 'react-icons/fc';
 import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
-import { useAuthStore } from '@/src/store/authSlice';
-
 import {
     Form, 
     FormControl, 
@@ -19,25 +18,26 @@ import {
     FormLabel, 
     FormMessage
 } from '@/src/components/ui/form';
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "../../store/authSlice";
+import { account } from "../../lib/appwrite";
+import { OAuthProvider } from "appwrite";
 
 const FormSchema = z.object({
     email: z.string().email({message: "Veuillez entrer une adresse email valide"}),
     password: z.string().min(8, { message: "Le mot de passe doit contenir au moins 8 caractères" }),
-    name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
 });
 
-export default function SignupForm() {
-    const { signup } = useAuthStore();
+export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
+    const { login } = useAuthStore();
     const [isLoading, startTransition] = useTransition();
     const router = useRouter();
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            name: "",
             email: "",
             password: "",
         },
@@ -46,10 +46,10 @@ export default function SignupForm() {
     function onSubmit(data: z.infer<typeof FormSchema>) {
         startTransition(async () => {
           try {
-              await signup(data.name, data.email,data.password);
+              await login( data.email,data.password);
               router.push("/dashboard");
               toast({
-                title: "Inscription réussie",
+                title: "Connexion réussie",
                 variant: "success",
               })
           } catch (error: unknown) {
@@ -62,22 +62,28 @@ export default function SignupForm() {
       });
     }
 
+    // async function handleGithubConnexion() {
+    //     await account.createOAuth2Session(
+    //         OAuthProvider.Github,
+    //         'https://localhost:3000/dashboard',
+    //         'https://localhost:3000/api/auth/callback',
+    //     );
+    // }
+
+    
+    async function handleGoogleConnexion() {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://simplydone.vercel.app";
+      
+      await account.createOAuth2Session(
+        OAuthProvider.Google,
+        `${baseUrl}/dashboard`,
+        `${baseUrl}/api/auth/callback`
+      );
+    }
+
     return (
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="z-10 mx-auto w-full max-w-sm rounded-md px-6 py-8 shadow grid gap-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nom</FormLabel>
-              <FormControl>
-                <Input placeholder="Entrer votre nom" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="email"
@@ -95,7 +101,6 @@ export default function SignupForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-
             <FormItem>
               <FormLabel>Mot de passe</FormLabel>
               <FormControl>
@@ -118,7 +123,6 @@ export default function SignupForm() {
             </FormItem>
           )}
         />
-        
          <Button 
                 type="submit" 
                 className={clsx (
@@ -133,21 +137,21 @@ export default function SignupForm() {
                         <span>Chargement...</span>
                         </>
                     ) : (
-                        "Créer un compte"
+                        "Se connecter"
                     )}
          </Button>
-         {/* <div className="flex items-center justify-center space-x-1">
+         <div className="flex items-center justify-center space-x-1">
             <Separator style={{ width: '9rem' }} className="bg-accent dark:bg-primary" />	
             <span className="text-muted-foreground font-bold text-sm ">OU</span>
             <Separator style={{ width: '9rem' }} className="bg-accent dark:bg-primary" />	
         </div>
-        <Button type="button" variant="outline" className="w-full hover:bg-accent dark:hover:bg-primary">
+        <Button type="button" variant="outline" className="w-full hover:bg-accent dark:hover:bg-primary" onClick={handleGoogleConnexion}>
             <FcGoogle className="mr-2 size-5" />
-                Créer un compte avec Google
+                Continuer avec Google
         </Button>
-        <Button type="button" variant="outline" className="w-full  hover:bg-accent dark:hover:bg-primary">
+        {/* <Button type="button" variant="outline" className="w-full  hover:bg-accent dark:hover:bg-primary" onClick={handleGithubConnexion}>
             <Github className="mr-2 size-5" />
-                Créer un compte avec Github
+                Se connecter avec Github
         </Button> */}
         </form>
       </Form>

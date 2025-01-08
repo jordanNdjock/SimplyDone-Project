@@ -1,11 +1,11 @@
 'use client'
 import Image from "next/image";
-import { ToggleTheme } from '@/src/components/ToggleTheme';
+import { ToggleTheme } from '@/src/components/theme/ToggleTheme';
 import { ArrowDownRight, CheckCheck, LogIn } from 'lucide-react';
 
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
-import Footer from "@/src/components/Footer";
+import Footer from "@/src/components/layout/Footer";
 import Link from "next/link";
 import InstallBanner from '../components/InstallBanner';
 import { selectAuthenticated, useAuthStore } from "../store/authSlice";

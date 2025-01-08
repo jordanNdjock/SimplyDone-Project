@@ -26,23 +26,22 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/src/components/ui/sidebar"
-import { User } from "../models/user"
+import { User } from "../../models/user"
 import { useRouter } from "next/navigation";
 import { toast } from "@/src/hooks/use-toast";
-import { useAuthStore } from "../store/authSlice"
+import { useAuthStore } from "../../store/authSlice"
 import Link from "next/link"
 import { LuSettings2 } from "react-icons/lu";
-import { getInitials } from "../utils/utils"
+import { getInitials } from "../../utils/utils"
 
 export function NavUser({
   user,
 }: {
   user: User | null
 }) {
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const router = useRouter();
   const { logout } = useAuthStore();
-
 
   
   const handleLogout = async () => {
@@ -61,6 +60,7 @@ export function NavUser({
         variant: "error",
       });
     }
+      if (isMobile) setOpenMobile(false);
   }
 
   return (
@@ -104,13 +104,13 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
             <Link href={"/dashboard/profil"}>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer" onSelect={() => {if(isMobile) setOpenMobile(false)}}>
                     <UserRound />
                     Mon compte
               </DropdownMenuItem>
             </Link>
             <Link href={"/dashboard/parametres"}>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer" onSelect={() => {if(isMobile) setOpenMobile(false)}}>
                     <LuSettings2 />
                     Paramètres
               </DropdownMenuItem>

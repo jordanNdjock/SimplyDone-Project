@@ -11,7 +11,7 @@ import * as React from "react"
 //   SquareTerminal,
 // } from "lucide-react"
 
-import { NavUser } from "@/src/components/nav-user"
+import { NavUser } from "./nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -22,7 +22,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/src/components/ui/sidebar"
-import { selectUser, useAuthStore } from "../store/authSlice"
+import { selectUser, useAuthStore } from "../../store/authSlice"
 import Image from 'next/image';
 
 // This is sample data.

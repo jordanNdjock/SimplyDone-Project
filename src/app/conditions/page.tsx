@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Footer from '../../components/Footer';
+import Footer from '../../components/layout/Footer';
 import { Button } from '@/src/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 

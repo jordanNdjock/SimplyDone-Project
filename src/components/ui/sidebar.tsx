@@ -302,7 +302,7 @@ const BottomBar = React.forwardRef<
           className={cn(
             "flex flex-col items-center text-sm transition-colors duration-300",
             selectedIndex === index
-              ? "text-blue-500"
+              ? "text-accent dark:text-primary"
               : " text-gray-400 dark:text-white hover:text-gray-500"
           )}
           onClick={() => {
