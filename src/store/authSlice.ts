@@ -125,8 +125,7 @@ export const useAuthStore = create(
             const userResponse = await account.get();
             const newTheme = userResponse.prefs.theme || "system";
             const user = mapUserInformation(userResponse);
-            set({ user: user });
-            set({ theme: newTheme });
+            set({ user: user, theme: newTheme });
           }
         });
     

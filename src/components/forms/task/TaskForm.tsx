@@ -36,13 +36,19 @@ const taskSchema = z.object({
 }).refine(
   (data) => {
     if (!data.start_date || !data.end_date) return true;
-    return new Date(data.end_date) >= new Date(data.start_date);
+
+    const startDate = new Date(data.start_date).setHours(0, 0, 0, 0);
+    const endDate = new Date(data.end_date).setHours(0, 0, 0, 0);
+
+    return endDate >= startDate;
   },
   {
     message: "La date de fin doit être supérieure ou égale à la date de début.",
     path: ["end_date"],
   }
 );
+
+
 
 interface TaskFormProps {
   onClose: () => void;
@@ -176,7 +182,7 @@ export function TaskForm({ onClose }: TaskFormProps) {
                       >
                         <CalendarIcon size={16} className="mr-2 h-4 w-4" />
                         {field.value ? (
-                          format(new Date(field.value), "dd MMMM yyyy", { locale: fr })
+                          format(new Date(field.value), "PPP", {locale: fr})
                         ) : (
                           <span>Choisir une date</span>
                         )}
@@ -185,11 +191,15 @@ export function TaskForm({ onClose }: TaskFormProps) {
                     <PopoverContent className="w-auto p-0">
                       <Calendar
                         mode="single"
-                        selected={field.value ? new Date(field.value) : new Date()}
+                        selected={field.value ? new Date(field.value) : undefined}
                         onSelect={(date) => {
-                          field.onChange(date ? date.toISOString().split("T")[0] : "");
+                           if (date) {
+                              const formattedDate = date .toLocaleDateString("fr-CA").split("T")[0];
+                              field.onChange(formattedDate);
+                            } else {
+                              field.onChange("")
+                            }
                         }}
-                        locale={fr}
                         initialFocus
                       />
                     </PopoverContent>
@@ -232,7 +242,12 @@ export function TaskForm({ onClose }: TaskFormProps) {
                         selected={field.value ? new Date(field.value) : undefined}
                         onSelect={(date) => {
                           if (date) {
-                            field.onChange(date.toISOString().split("T")[0]);
+                            if (date) {
+                              const formattedDate = date .toLocaleDateString("fr-CA").split("T")[0];
+                              field.onChange(formattedDate);
+                            } else {
+                              field.onChange("")
+                            }
                           }
                         }}
                         locale={fr}

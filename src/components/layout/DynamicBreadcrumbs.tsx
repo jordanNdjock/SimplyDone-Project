@@ -24,7 +24,7 @@ const DynamicBreadcrumb = () => {
     if(isMobile) {
       return hour >= 6 && hour < 13  ? `Bonjour ☀️ ${getInitials(user?.name)}` : hour >= 13 && hour < 19 ? `Bonsoir 🌇 ${getInitials(user?.name)}` : `B'Nuit 🌙 ${getInitials(user?.name)}`;
     } 
-      return hour >= 6 && hour < 13  ? `Bonjour ☀️ ${getInitials(user?.name)}` : hour >= 13 && hour < 19 ? `Bonsoir 🌇 ${getInitials(user?.name)}` : `Bonne Nuit 🌙 ${getInitials(user?.name)}`;
+      return hour >= 6 && hour < 13  ? `Bonjour ☀️ ${user?.name}` : hour >= 13 && hour < 19 ? `Bonsoir 🌇 ${user?.name}` : `Bonne Nuit 🌙 ${user?.name}`;
   }
 
   if(pathname === "/dashboard") {

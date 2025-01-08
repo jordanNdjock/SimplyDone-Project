@@ -35,7 +35,7 @@ const Profil: React.FC = () => {
       await updateProfile(username, avatar);
       console.log("Nom mis à jour !");
       toast({
-        title: "Nom mis à jour avec succès!",
+        title: "Nom d'utilisateur mis à jour avec succès !",
         variant: "success",
       });
     } catch (error) {

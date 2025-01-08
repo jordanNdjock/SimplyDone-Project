@@ -17,6 +17,7 @@ export const useTaskStore = create(
           set({ tasks });
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
+          console.log(message);
           // throw new Error(message);
         }
       },
@@ -33,6 +34,7 @@ export const useTaskStore = create(
           set((state) => ({ tasks: [...state.tasks, taskWithId] }));
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
+          console.log(message);
           // throw new Error(message);
         }
       },
