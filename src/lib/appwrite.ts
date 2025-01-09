@@ -1,4 +1,4 @@
-import { Client, Account, Storage } from 'appwrite';
+import { Client, Account, Storage, Databases } from 'appwrite';
 
 export const client = new Client();
 
@@ -10,5 +10,9 @@ client
 
 export const account = new Account(client);
 export const storage = new Storage(client);
-export const Bucket_Id = "6749c72e000f88566561";
-export { ID } from 'appwrite';
+export const db = new Databases(client);
+export const databaseId = "6749ac2b00277519a67a";
+export const TaskCollectionId = "6749b55b0002e1dabe00";
+export const AvatarsBucketId = "6749c72e000f88566561";
+export const TasksImgBucketId = "677bb291002c221e65fe";
+export { ID, Query, Permission, Role } from 'appwrite';

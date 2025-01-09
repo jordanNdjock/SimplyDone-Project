@@ -2,7 +2,7 @@ import { ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from "next";
-import LoginForm from '@/src/components/login';
+import LoginForm from '@/src/components/auth/login';
 
 export const metadata: Metadata = {
     title: "Se connecter",

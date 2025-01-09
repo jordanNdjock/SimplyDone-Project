@@ -11,11 +11,12 @@ export default function ProtectedRoute({
   children: React.ReactNode;
 }) {
   const userAuthenticated = useAuthStore(selectAuthenticated);
-  const fetchUser = useAuthStore((state) => state.fetchUser);
+  const { fetchUser, listenToAppwrite } = useAuthStore();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    listenToAppwrite();
     const checkAuthentication = async () => {
       try {
         await fetchUser();
@@ -27,7 +28,7 @@ export default function ProtectedRoute({
     };
 
     checkAuthentication();
-  }, [fetchUser, router]);
+  }, [fetchUser, router, listenToAppwrite]);
 
   if (loading) {
     return (

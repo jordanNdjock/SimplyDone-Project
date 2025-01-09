@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { useAuthStore, selectUser } from "@/src/store/authSlice";
-import { Bucket_Id, ID, storage } from "@/src/lib/appwrite";
+import { AvatarsBucketId, ID, storage } from "@/src/lib/appwrite";
 import {
   Avatar,
   AvatarImage,
@@ -35,7 +35,7 @@ const Profil: React.FC = () => {
       await updateProfile(username, avatar);
       console.log("Nom mis à jour !");
       toast({
-        title: "Nom mis à jour avec succès!",
+        title: "Nom d'utilisateur mis à jour avec succès !",
         variant: "success",
       });
     } catch (error) {
@@ -53,8 +53,8 @@ const Profil: React.FC = () => {
       setLoading(true);
       try {
         const file = event.target.files[0];
-        const response = await storage.createFile(Bucket_Id, ID.unique(), file);
-        const fileUrl = storage.getFilePreview(Bucket_Id, response.$id);
+        const response = await storage.createFile(AvatarsBucketId, ID.unique(), file);
+        const fileUrl = storage.getFilePreview(AvatarsBucketId, response.$id);
         setAvatar(fileUrl);
         await updateProfile(username, fileUrl);
         toast({
@@ -125,7 +125,7 @@ const Profil: React.FC = () => {
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Nouveau nom"
           />
-          <Button onClick={handleUsernameChange} disabled={loading} variant="default">
+          <Button onClick={handleUsernameChange} disabled={loading} variant="default" className="bg-accent hover:bg-purple-700 dark:bg-primary dark:hover:bg-blue-700 ">
             {loading ?  
                 <LoaderCircle className="animate-spin" size={20} />
              : <Edit className="w-5 h-5" />

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { account, ID } from "@/src/lib/appwrite";
+import { account, client, ID } from "@/src/lib/appwrite";
 import { AuthState } from "@/src/models/user";
 import { mapUserInformation } from "../utils/mappingUserInformations";
 
@@ -119,14 +119,28 @@ export const useAuthStore = create(
           console.error("Erreur lors de la mise à jour du thème :", error);
         }
       },
+      listenToAppwrite: () => {
 
+        if (typeof window === "undefined") return;
+
+        const unsubscribe = client.subscribe("account", async (response) => {
+          if (response.events.includes("users.*.update.prefs")) {
+            const userResponse = await account.get();
+            const newTheme = userResponse.prefs.theme || "system";
+            const user = mapUserInformation(userResponse);
+            set({ user: user, theme: newTheme });
+          }
+        });
+    
+        return unsubscribe;
+      },
     }),
+   
     {
       name: "auth-storage",
     }
   )
 );
-
 export const selectUser = (state: AuthState) => state.user;
 export const selectAuthenticated = (state: AuthState) => state.authenticated;
 

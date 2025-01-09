@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu"
-import { useAuthStore } from "../store/authSlice"
+import { useAuthStore } from "@/src/store/authSlice";
 
 export function ToggleTheme() {
   const { theme, setTheme } = useAuthStore();
@@ -27,23 +27,24 @@ export function ToggleTheme() {
   };
 
   return (
+    
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="lg" className="dark:hover:bg-black hover:bg-white rounded-full">
-          <Sun className="text-black h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
+            <Sun className="text-yellow-500 h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-transform duration-300 ease-in-out dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute text-blue-500 h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-transform duration-300 ease-in-out dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Changer le thème</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => handleThemeChange("light")} className="cursor-pointer">
-          Clair
+        <Sun className="text-yellow-500 h-[1.2rem] w-[1.2rem]" /> Clair
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleThemeChange("dark")} className="cursor-pointer">
-          Sombre
+        <Moon className="text-blue-500 h-[1.2rem] w-[1.2rem]" /> Sombre
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleThemeChange("system")} className="cursor-pointer">
-          Thème du système
+        🖥️ Thème du système
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

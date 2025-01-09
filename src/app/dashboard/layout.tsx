@@ -1,6 +1,6 @@
 import "./globals.css";
 import ProtectedLayout from "@/src/components/ProtectedRoute";
-import { AppSidebar } from "@/src/components/app-sidebar";
+import { AppSidebar } from "@/src/components/sidebar/app-sidebar";
 import {
   SidebarProvider,
   SidebarInset,
@@ -8,9 +8,9 @@ import {
   BottomBar,
 } from "@/src/components/ui/sidebar";
 import { Separator } from "@/src/components/ui/separator";
-import DynamicBreadcrumb from "@/src/components/DynamicBreadcrumbs";
-import { ToggleTheme } from "@/src/components/ToggleTheme";
-import DynamicDropdownMenu from '../../components/DynamicDropdownMenu';
+import DynamicBreadcrumb from "@/src/components/layout/DynamicBreadcrumbs";
+import { ToggleTheme } from "@/src/components/theme/ToggleTheme";
+import DynamicDropdownMenu from '../../components/layout/DynamicDropdownMenu';
 
 export default function DashboardLayout({
   children,
