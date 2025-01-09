@@ -17,12 +17,13 @@ import { useTheme } from "next-themes";
 export default function Home() {
   const selectuser = useAuthStore(selectAuthenticated);
   const router = useRouter();
-  const { theme, fetchUser } = useAuthStore();
+  const { theme, fetchUser, listenToAppwrite } = useAuthStore();
   const { setTheme } = useTheme();
 
   useEffect(() => {
+    listenToAppwrite();
     fetchUser();
-  }, [fetchUser]);
+  }, [fetchUser, listenToAppwrite]);
 
   useEffect(() => {
     if (theme) {

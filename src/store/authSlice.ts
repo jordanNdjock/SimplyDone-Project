@@ -120,6 +120,9 @@ export const useAuthStore = create(
         }
       },
       listenToAppwrite: () => {
+
+        if (typeof window === "undefined") return;
+
         const unsubscribe = client.subscribe("account", async (response) => {
           if (response.events.includes("users.*.update.prefs")) {
             const userResponse = await account.get();
@@ -138,7 +141,6 @@ export const useAuthStore = create(
     }
   )
 );
-useAuthStore.getState().listenToAppwrite();
 export const selectUser = (state: AuthState) => state.user;
 export const selectAuthenticated = (state: AuthState) => state.authenticated;
 
