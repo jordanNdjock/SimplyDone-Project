@@ -120,7 +120,7 @@ export function TaskForm({ onClose }: TaskFormProps) {
         <Button
           type="button"
           variant="ghost"
-          className=" flex items-center justify-center gap-2 hover:bg-transparent"
+          className=" flex items-center justify-center gap-2 focus-visible:outline-none focus:outline-none hover:bg-transparent text-dark dark:text-white"
           onClick={() => setShowMoreOptions(!showMoreOptions)}
         >
           {showMoreOptions ? (

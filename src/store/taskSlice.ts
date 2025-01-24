@@ -11,8 +11,8 @@ export const useTaskStore = create(
       tasks: [],
       fetchTasks: async (userId: string) => {
         try {
-         
           const result = await db.listDocuments(databaseId, TaskCollectionId, [Query.equal("user_id", userId)]);
+          console.log(result);
           const tasks = result.documents.map((task) => mapTaskInformation(task));
           set({ tasks });
         } catch (error: unknown) {
@@ -29,7 +29,7 @@ export const useTaskStore = create(
             user_id: userId,
             completed: false,
           };
-          await db.createDocument(databaseId, TaskCollectionId,documentId, newTask, [Permission.write(Role.any())]);
+          await db.createDocument(databaseId, TaskCollectionId,documentId, newTask);
           const taskWithId = {...newTask, id:documentId};
           set((state) => ({ tasks: [...state.tasks, taskWithId] }));
         } catch (error) {

@@ -121,7 +121,7 @@ export function TaskList() {
         ))}
       </AnimatePresence>
       ) : (
-        <p className="text-gray-500 text-center mt-32">Aucune tâche trouvée.</p>
+        <p className="text-gray-500 text-center mt-32">Aucune tâche pour le moment.</p>
       )}
     </div>
   );
