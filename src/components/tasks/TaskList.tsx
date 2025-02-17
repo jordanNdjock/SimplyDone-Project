@@ -37,7 +37,6 @@ export function TaskList() {
       })
     }
   }, [fetchTasks, user]);
-
   const handleLongPress = (taskId: string) => {
     setLongPressId(taskId);
     setTimeout(() => {
@@ -48,7 +47,7 @@ export function TaskList() {
   if(isPending) return <div className="mt-8"><SkeletonTask/></div>;
 
   return (
-    <div className="grid gap-4 mt-2">
+    <div className="grid gap-4 mt-8">
       {Array.isArray(tasks) && tasks.length > 0 ? (
       <AnimatePresence>
         {tasks.map((task: Task) => (
@@ -58,30 +57,36 @@ export function TaskList() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="relative flex items-center gap-4 p-4 bg-gray-200 dark:bg-gray-700 rounded-lg shadow-lg"
+            className="relative flex items-center gap-4 p-4 rounded-lg shadow-lg"
             onTouchStart={() => handleLongPress(task.id??"")}
             style={{ backgroundColor: task.color || "#f3f4f6" }}
           >
             <button
               onClick={() => startTransition(() => toggleTask(task.id??""))}
-              className="text-blue-500"
+              
             >
               {task.completed ? (
-                <CheckCircle size={24} className="text-green-500" />
+                <CheckCircle size={24} className="text-green-400" />
               ) : (
-                <Circle size={24} />
+                <Circle size={24} className="text-white" />
               )}
             </button>
 
             <div className="flex-1">
-              <h3 className={`font-semibold ${task.completed ? "line-through text-gray-400" : ""}`}>
+              <h3 className={`font-semibold text-white ${task.completed ? "line-through " : ""}`}>
                 {task.title}
               </h3>
-              {task.description && <p className="text-sm text-gray-600">{task.description}</p>}
+              {task.description && <p className="text-sm text-gray-400">{task.description}</p>}
             </div>
 
             {task.image_url && (
-              <Image src={task.image_url} alt="Task" className="w-12 h-12 rounded-md object-cover" />
+              <Image 
+                  src={task.image_url} 
+                  alt="Task" 
+                  className="w-12 h-12 rounded-md object-cover"
+                  width={100}
+                  height={100}
+                />
             )}
 
             {longPressId === task.id && (

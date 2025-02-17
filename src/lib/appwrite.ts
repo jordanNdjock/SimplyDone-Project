@@ -3,16 +3,16 @@ import { Client, Account, Storage, Databases } from 'appwrite';
 export const client = new Client();
 
 client
-    .setEndpoint('https://cloud.appwrite.io/v1')
-    .setProject('67486d9e00049ba7349b')
-    .setEndpointRealtime('wss://cloud.appwrite.io/v1/realtime');
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_CLOUD_URL || '')
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || '')
+    .setEndpointRealtime(process.env.NEXT_PUBLIC_APPWRITE_REALTIME_URL || '');
     
-
 export const account = new Account(client);
 export const storage = new Storage(client);
 export const db = new Databases(client);
-export const databaseId = "6749ac2b00277519a67a";
-export const TaskCollectionId = "6749b55b0002e1dabe00";
-export const AvatarsBucketId = "6749c72e000f88566561";
-export const TasksImgBucketId = "677bb291002c221e65fe";
+
+export const databaseId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || '';
+export const TaskCollectionId = process.env.NEXT_PUBLIC_APPWRITE_TASK_COLLECTION_ID || '';
+export const AvatarsBucketId = process.env.NEXT_PUBLIC_APPWRITE_AVATARS_BUCKET_ID || '';
+export const TasksImgBucketId = process.env.NEXT_PUBLIC_APPWRITE_TASKS_IMG_BUCKET_ID || '';
 export { ID, Query, Permission, Role } from 'appwrite';

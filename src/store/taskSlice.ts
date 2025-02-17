@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import { persist } from "zustand/middleware";
-import { ID, db, TaskCollectionId, databaseId, Query, Permission, Role } from "@/src/lib/appwrite";
+import { ID, db, TaskCollectionId, databaseId, Query} from "@/src/lib/appwrite";
 import { TaskState, Task } from "@/src/models/task";
 import { mapTaskInformation } from "../utils/mappingTaskInformations";
 
@@ -12,13 +12,11 @@ export const useTaskStore = create(
       fetchTasks: async (userId: string) => {
         try {
           const result = await db.listDocuments(databaseId, TaskCollectionId, [Query.equal("user_id", userId)]);
-          console.log(result);
           const tasks = result.documents.map((task) => mapTaskInformation(task));
           set({ tasks });
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          console.log(message);
-          // throw new Error(message);
+          throw new Error(message);
         }
       },
       addTask: async (task, userId) => {
@@ -34,8 +32,7 @@ export const useTaskStore = create(
           set((state) => ({ tasks: [...state.tasks, taskWithId] }));
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          console.log(message);
-          // throw new Error(message);
+          throw new Error(message);
         }
       },
       toggleTask: async (taskId) => {
@@ -57,7 +54,8 @@ export const useTaskStore = create(
           }
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          throw new Error(message);
+          console.log(message)
+          // throw new Error(message);
         }
       },
     

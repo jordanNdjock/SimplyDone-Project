@@ -1,9 +1,11 @@
+import { selectTasks, useTaskStore } from "@/src/store/taskSlice";
 import { motion } from "framer-motion";
 
 export function SkeletonTask() {
+  const tasks = useTaskStore(selectTasks);
   return (
     <div className="grid gap-4">
-      {Array.from({ length: 5 }).map((_, index) => (
+      {tasks && tasks.map((_, index) => (
         <motion.div
           key={index}
           initial={{ opacity: 0, y: 10 }}

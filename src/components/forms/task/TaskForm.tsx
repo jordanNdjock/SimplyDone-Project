@@ -10,7 +10,7 @@ import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
 import { Label } from "@/src/components/ui/label";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/src/components/ui/form";
-import { ImagePlus, Calendar as CalendarIcon, Palette, Repeat, Eye, ChevronDown, ChevronUp, LoaderCircle } from 'lucide-react';
+import { ImagePlus, Calendar as CalendarIcon, Repeat, Eye, ChevronDown, ChevronUp, LoaderCircle } from 'lucide-react';
 import { selectUser, useAuthStore } from "@/src/store/authSlice";
 import { UrgencyImportancePicker } from "@/src/utils/urgencyImportancePicker";
 import { cn } from "@/src/lib/utils";
@@ -22,6 +22,7 @@ import { toast } from "@/src/hooks/use-toast";
 import Image from "next/image";
 import { fr } from "date-fns/locale";
 import { taskSchema } from "@/src/utils/schemas";
+// import { ColorSelect } from '../../tasks/ColorSelect';
 
 
 
@@ -34,6 +35,7 @@ export function TaskForm({ onClose }: TaskFormProps) {
   const { addTask } = useTaskStore();
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [loading, startTransition] = useTransition();
+  const [file, setFile] = useState<File>();
 
   const form = useForm<z.infer<typeof taskSchema>>({
     resolver: zodResolver(taskSchema),
@@ -43,7 +45,7 @@ export function TaskForm({ onClose }: TaskFormProps) {
       start_date: "",
       image_url: "",
       end_date: "",
-      color: "#4A90E2",
+      color: "#475569",
       urgency: 1,
       importance: 1,
       is_followed: false,
@@ -54,10 +56,16 @@ export function TaskForm({ onClose }: TaskFormProps) {
   const handleSubmit = async (data: z.infer<typeof taskSchema>) => {
     try {
       startTransition(async () => {
+      let image_url = ""             
+      if (file) {
+        const response = await storage.createFile(TasksImgBucketId, ID.unique(), file);
+        image_url = storage.getFilePreview(TasksImgBucketId, response.$id);
+      }
+
       await addTask({
         title: data.title,
         description: data.description || "",
-        image_url: data.image_url || "",
+        image_url: image_url || "",
         start_date: data.start_date,
         end_date: data.end_date,
         color: data.color,
@@ -120,7 +128,7 @@ export function TaskForm({ onClose }: TaskFormProps) {
         <Button
           type="button"
           variant="ghost"
-          className=" flex items-center justify-center gap-2 focus-visible:outline-none focus:outline-none hover:bg-transparent text-dark dark:text-white"
+          className=" flex items-center justify-center gap-2 focus-visible:outline-none focus:outline-none outline-none dark:hover:bg-transparent text-dark dark:text-white"
           onClick={() => setShowMoreOptions(!showMoreOptions)}
         >
           {showMoreOptions ? (
@@ -169,7 +177,7 @@ export function TaskForm({ onClose }: TaskFormProps) {
                         selected={field.value ? new Date(field.value) : undefined}
                         onSelect={(date) => {
                            if (date) {
-                              const formattedDate = date .toLocaleDateString("fr-CA").split("T")[0];
+                              const formattedDate = date.toLocaleDateString("fr-CA").split("T")[0];
                               field.onChange(formattedDate);
                             } else {
                               field.onChange("")
@@ -237,18 +245,8 @@ export function TaskForm({ onClose }: TaskFormProps) {
           />
           </div>
 
-          <FormField
-              control={form.control}
-              name="color"
-              render={({ field }) => (
-                <FormItem>
-                  <Label><Palette size={16} className="inline-block mr-1" /> Couleur</Label>
-                  <FormControl>
-                    <Input type="color" {...field} className="cursor-pointer" />
-                  </FormControl>
-                </FormItem>
-            )}
-          />
+          {/* <ColorSelect form={form} /> */}
+
           <UrgencyImportancePicker
             label="Urgence"
             value={form.watch("urgency")}
@@ -282,13 +280,11 @@ export function TaskForm({ onClose }: TaskFormProps) {
                   fileInput.onchange = async (event: Event) => {
                     const target = event.target as HTMLInputElement;
                     const file = target.files?.[0];
+                    setFile(file);
                     if (file) {
                       try {
-                        const response = await storage.createFile(TasksImgBucketId, ID.unique(), file);
-
-                        const imageUrl = storage.getFilePreview(TasksImgBucketId, response.$id);
-                        form.setValue("image_url", imageUrl);
-                        console.log(imageUrl);
+                          const imageUrl = URL.createObjectURL(file);
+                          form.setValue("image_url", imageUrl);
                       } catch (error) {
                         console.error("Error uploading image:", error);
                       }
@@ -305,6 +301,8 @@ export function TaskForm({ onClose }: TaskFormProps) {
                 <div className="mt-4 w-full">
                   <Image
                     src={form.watch("image_url") || ""}
+                    width={300}
+                    height={300}
                     alt="Task Image"
                     className="w-full h-32 object-cover rounded-lg"
                   />

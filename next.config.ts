@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
 };
 module.exports = withPWA({
   images: {
+    remotePatterns: [
+      {
+      protocol: "https",
+      hostname: "cloud.appwrite.io",
+      port: '',
+      pathname: "/v1/storage/buckets/**",
+      }
+    ],
     localPatterns: [
       {
         pathname: '/assets/img/**',
