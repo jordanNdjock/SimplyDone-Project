@@ -15,6 +15,7 @@ import { SkeletonTask } from "../loaderSkeletons/SkeletonTask";
 import { Task } from "@/src/models/task";
 import { toast } from "@/src/hooks/use-toast";
 import Image from "next/image";
+import { DeleteTaskDialog } from '../dialogs/task/DeleteTaskDialog';
 
 export function TaskList() {
   const { fetchTasks, toggleTask, deleteTask } = useTaskStore();
@@ -23,6 +24,7 @@ export function TaskList() {
 
   const [isPending, startTransition] = useTransition();
   const [longPressId, setLongPressId] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
   useEffect(() => {
     try {
@@ -43,6 +45,10 @@ export function TaskList() {
       setLongPressId(null);
     }, 2000);
   };
+
+  const handleDeleteTask = (taskId: string) => {
+    deleteTask(taskId);
+  } 
   
   if(isPending) return <div className="mt-8"><SkeletonTask/></div>;
 
@@ -96,29 +102,26 @@ export function TaskList() {
                 exit={{ scale: 0 }}
                 transition={{ duration: 0.2 }}
                 className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
-                onClick={() => startTransition(() => deleteTask(task.id??""))}
+                onClick={() => handleDeleteTask(task.id?? "")}
               >
                 <Trash size={16} />
               </motion.button>
             )}
 
             <div className="hidden md:block">
-              <DropdownMenu>
+              <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
-                  <button className="p-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600">
+                  <button className="p-2 rounded-full hover:bg-gray-300 text-white outline-none">
                     <MoreVertical size={20} />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => console.log("Modifier", task.id)}>
+                  <DropdownMenuItem className="text-blue-500 text-sm" onClick={() => console.log("Modifier", task.id)}>
                     <Edit size={16} className="mr-2" /> Modifier
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => startTransition(() => deleteTask(task.id??""))}
-                    className="text-red-500"
-                  >
-                    <Trash size={16} className="mr-2" /> Supprimer
-                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <DeleteTaskDialog taskID={task.id?? ""} handleDeleteTask={handleDeleteTask} />
+                 </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

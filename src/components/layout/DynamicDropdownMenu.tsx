@@ -22,9 +22,9 @@ const DynamicDropdownMenu: React.FC = () => {
 
   const menuItems: Record<string, MenuItem[]> = {
     "/dashboard": [
-      { label: "Profile", href: "/dashboard/profile" },
-      { label: "Billing", href: "/dashboard/billing" },
-      { label: "Settings", href: "/dashboard/settings" },
+      { label: "Trier", href: "/dashboard/profile" },
+      { label: "Afficher details", href: "/dashboard/billing" },
+      { label: "Liste", href: "/dashboard/settings" },
     ],
     "/dashboard/profil": [
       { label: "Edit Profile", href: "/dashboard/profile/edit" },

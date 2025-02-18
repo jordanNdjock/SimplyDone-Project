@@ -54,8 +54,7 @@ export const useTaskStore = create(
           }
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          console.log(message)
-          // throw new Error(message);
+          throw new Error(message);
         }
       },
     

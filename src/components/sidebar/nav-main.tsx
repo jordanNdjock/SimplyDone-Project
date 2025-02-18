@@ -17,6 +17,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/src/components/ui/sidebar"
+import { IconType } from "react-icons/lib"
+import Link from "next/link"
 
 export function NavMain({
   items,
@@ -24,7 +26,7 @@ export function NavMain({
   items: {
     title: string
     url: string
-    icon?: LucideIcon
+    icon?: LucideIcon | IconType
     isActive?: boolean
     items?: {
       title: string
@@ -34,7 +36,7 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>Menu</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
@@ -56,9 +58,9 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
+                        <Link href={subItem.url}>
                           <span>{subItem.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}

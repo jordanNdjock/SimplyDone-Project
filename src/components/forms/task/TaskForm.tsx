@@ -104,7 +104,7 @@ export function TaskForm({ onClose }: TaskFormProps) {
             <FormItem>
               <Label>Titre de la tâche</Label>
               <FormControl>
-                <Input {...field} placeholder="Ex: Réviser le cours de React" />
+                <Input {...field} placeholder="Que voulez-vous faire aujourd'hui?" />
               </FormControl>
               <FormMessage />
             </FormItem>
