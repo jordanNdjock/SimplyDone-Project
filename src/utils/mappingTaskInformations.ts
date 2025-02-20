@@ -14,8 +14,8 @@ export const mapTaskInformation = (task: any): Task => {
       start_date: task.start_date ?? null,
       end_date: task.end_date ?? null,
       category: task.category ?? null,
-      urgence: task.urgence ?? null,
-      importance: task.importance ?? null
+      priority: task.priority ?? null,
+      image_id: task.image_id ?? null,
     };
   };
   /* eslint-enable @typescript-eslint/no-explicit-any */

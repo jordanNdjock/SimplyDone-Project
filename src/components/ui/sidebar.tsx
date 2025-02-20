@@ -22,7 +22,7 @@ import { FaSquareCheck } from "react-icons/fa6";
 import { FaCalendarDays } from "react-icons/fa6";
 import { BsGridFill } from "react-icons/bs";
 import { FaCircleDot } from "react-icons/fa6";
-import { LuSettings2 } from "react-icons/lu";
+import { FaSearch } from "react-icons/fa";
 import Link from "next/link"
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
@@ -281,7 +281,7 @@ const BottomBar = React.forwardRef<
     { icon: <FaCalendarDays />, label: "Calendrier", route: "/dashboard/calendrier" },
     { icon: <BsGridFill />, label: "Matrice", route: "/dashboard/matrice" },
     { icon: <FaCircleDot />, label: "Pomo", route: "/dashboard/sessions" },
-    { icon: <LuSettings2 />, label: "Paramètres", route: "/dashboard/parametres" },
+    { icon: <FaSearch />, label: "Rechercher", route: "/dashboard/rechercher" },
   ];
 
   return (

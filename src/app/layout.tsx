@@ -3,6 +3,7 @@ import "./config/globals.css";
 import { inter } from "./config/font";
 import { ThemeProvider } from "@/src/components/theme/theme-provider";
 import { Toaster } from '@/src/components/ui/toaster';
+import { Analytics } from "@vercel/analytics/react"
 
 export const metadata: Metadata = {
   title: {
@@ -39,8 +40,8 @@ export default function RootLayout({
           >
             {children}
             <Toaster />
+            <Analytics />
           </ThemeProvider>
-
       </body>
     </html>
   );
