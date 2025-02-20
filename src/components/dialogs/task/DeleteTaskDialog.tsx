@@ -4,10 +4,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 interface DeleteTaskDialogProps {
   taskID: string;
-  handleDeleteTask: (taskID: string) => void;
+  imageID: string;
+  handleDeleteTask: (taskID: string, imageID: string) => void;
 }
 
-export function DeleteTaskDialog({ taskID, handleDeleteTask }: DeleteTaskDialogProps) {
+export function DeleteTaskDialog({ taskID, imageID, handleDeleteTask }: DeleteTaskDialogProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const closeDialog = () => setIsOpen(false);
@@ -15,7 +16,7 @@ export function DeleteTaskDialog({ taskID, handleDeleteTask }: DeleteTaskDialogP
 
   const handleConfirmDelete = () => {
     setIsOpen(false);
-    handleDeleteTask(taskID);
+    handleDeleteTask(taskID, imageID);
   };
 
   return (
@@ -23,7 +24,7 @@ export function DeleteTaskDialog({ taskID, handleDeleteTask }: DeleteTaskDialogP
 
         <AlertDialogTrigger className="w-full flex items-center text-sm text-red-500 hover:bg-accent p-2 rounded-md hover:text-white">
             <Trash size={16} onClick={openDialog} className="mr-2" />
-            Supprimer
+            <span className="hidden md:block">Supprimer</span>
         </AlertDialogTrigger>
 
         <AlertDialogContent>

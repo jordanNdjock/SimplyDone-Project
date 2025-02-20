@@ -11,7 +11,7 @@ interface TaskDrawerProps {
 export function TaskDrawer({ open, onClose }: TaskDrawerProps) {
   return (
     <Drawer open={open} onOpenChange={onClose}>
-      <DrawerContent aria-describedby="ajouter une tâche" aria-description="ajouter une tâche">
+      <DrawerContent aria-describedby="ajouter une tâche" aria-description="ajouter une tâche" className="overflow-auto">
         <DrawerHeader className="text-left">
           <DrawerTitle>Ajouter une tâche</DrawerTitle>
         </DrawerHeader>

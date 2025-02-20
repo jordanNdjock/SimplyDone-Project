@@ -1,14 +1,13 @@
 import z from "zod";
 
 export const taskSchema = z.object({
-  title: z.string().min(3, "Le titre de la tâche doit contenir au moins 3 caractères."),
+  title: z.string().min(1, "Le titre de la tâche ne peut être vide"),
   description: z.string().optional(),
   image_url: z.string().optional(),
   start_date: z.string().optional(),
   end_date: z.string().optional(),
   color: z.string().default("#4A90E2"),
-  urgency: z.number().default(1),
-  importance: z.number().default(1),
+  priority: z.enum(["none", "low", "medium", "high"]).default("none"),
   is_followed: z.boolean().default(false),
   is_repeat: z.boolean().default(false),
 }).refine(

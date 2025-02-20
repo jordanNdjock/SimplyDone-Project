@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import { persist } from "zustand/middleware";
-import { ID, db, TaskCollectionId, databaseId, Query} from "@/src/lib/appwrite";
+import { ID, db, TaskCollectionId, databaseId, Query, storage, TasksImgBucketId} from "@/src/lib/appwrite";
 import { TaskState, Task } from "@/src/models/task";
 import { mapTaskInformation } from "../utils/mappingTaskInformations";
 
@@ -77,8 +77,11 @@ export const useTaskStore = create(
         }
       },
     
-      deleteTask: async (taskId) => {
+      deleteTask: async (taskId, imageID) => {
         try {
+          if(imageID) {
+            await storage.deleteFile(TasksImgBucketId, imageID);
+          }
           await db.deleteDocument(databaseId, TaskCollectionId, taskId);
           set((state) => ({
             tasks: state.tasks.filter((task) => task.id !== taskId),
