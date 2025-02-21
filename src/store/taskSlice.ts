@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 import { ID, db, TaskCollectionId, databaseId, Query, storage, TasksImgBucketId} from "@/src/lib/appwrite";
 import { TaskState, Task } from "@/src/models/task";
 import { mapTaskInformation } from "../utils/mappingTaskInformations";
+import { toast } from "../hooks/use-toast";
 
 export const useTaskStore = create(
   persist<TaskState>(
@@ -16,7 +17,10 @@ export const useTaskStore = create(
           set({ tasks });
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          throw new Error(message);
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
       addTask: async (task, userId) => {
@@ -32,7 +36,10 @@ export const useTaskStore = create(
           set((state) => ({ tasks: [...state.tasks, taskWithId] }));
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          throw new Error(message);
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
       toggleTask: async (taskId) => {
@@ -54,7 +61,10 @@ export const useTaskStore = create(
           }
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          throw new Error(message);
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
     
@@ -75,7 +85,10 @@ export const useTaskStore = create(
 
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          throw new Error(message);
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
     
@@ -90,7 +103,10 @@ export const useTaskStore = create(
           }));
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          throw new Error(message);
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
     }),

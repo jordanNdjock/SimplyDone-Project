@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { account, client, ID } from "@/src/lib/appwrite";
 import { AuthState } from "@/src/models/user";
 import { mapUserInformation } from "../utils/mappingUserInformations";
+import { toast } from "../hooks/use-toast";
 
 export const useAuthStore = create(
   persist<AuthState>(
@@ -24,7 +25,10 @@ export const useAuthStore = create(
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
           set({ user: null });
-          throw new Error(message);
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
 
@@ -36,12 +40,18 @@ export const useAuthStore = create(
           if(user != null){
             set({ user, authenticated: true });
           }else{
-            throw new Error("Erreur lors de l'inscription'");
+            toast({
+              title: "Erreur lors de l'inscription'",
+              variant: "error",
+            });
           }
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message === "There was an error processing your request. Please check the inputs and try again." ? "Ooups ! Un autre compte est déjà crée avec cette adresse email" : error.message : "Une erreur inconnue est survenue";
           set({ user: null });
-          throw new Error(message);
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
 
@@ -60,7 +70,10 @@ export const useAuthStore = create(
           "Mot de passe ou email incorrect. Veuillez vérifier vos informations !" : error.message : 
           "Une erreur inconnue est survenue";
           set({ user: null });
-          throw new Error(message);
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
 
@@ -70,7 +83,10 @@ export const useAuthStore = create(
           set({ user: null, authenticated: false });
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          throw new Error(message);
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
 
@@ -79,7 +95,10 @@ export const useAuthStore = create(
           await account.updatePassword(newPassword, oldPassword);
         } catch (error: unknown) {
            const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-           throw new Error(message);
+           toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
 
@@ -101,7 +120,10 @@ export const useAuthStore = create(
           set({ user });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-           throw new Error(message);
+            toast({
+              title: message,
+              variant: "error",
+            });
         }
       },
       setTheme: async (theme) => {
@@ -116,7 +138,11 @@ export const useAuthStore = create(
             theme,
           });
         } catch (error) {
-          console.error("Erreur lors de la mise à jour du thème :", error);
+          const message = error instanceof Error ? error.message : "Erreur lors de la mise à jour du thème";
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
       listenToAppwrite: () => {
