@@ -22,18 +22,18 @@ export default function DashboardLayout({
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 bg-gray-200 dark:bg-black items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"> 
+          <header className="fixed z-50 w-full md:w-4/5 md:justify-between flex h-16 shrink-0 bg-gray-200 dark:bg-black items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"> 
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4 bg-gray-600 dark:bg-gray-400" />
               <DynamicBreadcrumb />
             </div>
-            <div className="ml-auto mr-2"><ToggleTheme /></div>
-            <div className="mr-4">
+            <div className="flex-items lg:-mr-6 space-x-2 md:space-x-4">
+              <ToggleTheme />
               <DynamicDropdownMenu />
             </div>
           </header>
-          <div className="flex-1 p-4 pb-20">{children}</div>
+          <div className="flex-1 p-4 pb-20 mt-10">{children}</div>
         </SidebarInset>
         <BottomBar />
       </SidebarProvider>

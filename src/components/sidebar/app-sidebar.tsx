@@ -33,15 +33,9 @@ const data = {
   navMain: [
     {
       title: "Mes tâches",
-      url: "#",
-      isActive: true,
+      url: "/dashboard",
       icon: FaSquareCheck,
-      items: [
-        {
-          title: "Accueil",
-          url: "/dashboard"
-        }
-      ],
+      items: [],
     },
     {
       title: "Calendrier",
@@ -55,7 +49,7 @@ const data = {
       ],
     },
     {
-      title: "Pomodoro",
+      title: "Sessions de travail",
       url: "#",
       icon: FaCircleDot,
       items: [
@@ -67,25 +61,15 @@ const data = {
     },
     {
       title: "Matrice de Eisenhower",
-      url: "#",
+      url: "/dashboard/matrice",
       icon: BsGridFill,
-      items: [
-        {
-          title: "Accueil",
-          url: "/dashboard/matrice",
-        },
-      ],
+      items: [],
     },
     {
       title: "Rechercher",
       url: "/dashboard/rechercher",
       icon: FaSearch,
-      items: [
-        {
-          title: "Accueil",
-          url: "/dashboard/rechercher",
-        },
-      ],
+      items: [],
     }
   ],
   projects: [

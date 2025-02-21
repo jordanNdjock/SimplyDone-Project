@@ -60,17 +60,19 @@ export const useTaskStore = create(
     
       updateTask: async (task, updates) => {
         try {
+          set((state) => ({
+            tasks: state.tasks.map((t) =>
+              t.id === task.id ? { ...t, ...updates } : t
+            ),
+          }));
+          
           await db.updateDocument(
             databaseId,
             TaskCollectionId,
             task.id??"",
             updates
           );
-          set((state) => ({
-            tasks: state.tasks.map((t) =>
-              t.id === task.id ? { ...t, ...updates } : t
-            ),
-          }));
+
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
           throw new Error(message);
