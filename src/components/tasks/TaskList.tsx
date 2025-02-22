@@ -52,7 +52,7 @@ export function TaskList() {
       
       {completedTasks.length > 0 && (
         <div className="mt-12 opacity-60 space-y-4">
-          <h2 className="text-2xl font-bold text-gray-500 mb-4">Terminées</h2>
+          <h2 className="text-lg md:text-2xl font-bold text-gray-500 mb-4">Terminées</h2>
           <TaskListItems tasks={completedTasks} />
         </div>
       )}

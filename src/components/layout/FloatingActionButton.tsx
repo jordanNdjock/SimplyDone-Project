@@ -5,10 +5,9 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { TaskDialog } from "@/src/components/dialogs/task/TaskDialog";
-import { TaskDrawer } from "@/src/components/drawers/task/TaskDrawer";
+// import { TaskDrawer } from "@/src/components/drawers/task/TaskDrawer";
 import clsx from "clsx";
 import { useSidebar } from "../ui/sidebar";
-import { TaskFormProvider } from "@/src/context/taskFormContext";
 
 export default function FloatingActionButton() {
   const [open, setOpen] = useState(false);
@@ -16,7 +15,6 @@ export default function FloatingActionButton() {
 
   return (
     <>
-     <TaskFormProvider>
         <motion.button
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -30,12 +28,11 @@ export default function FloatingActionButton() {
           <Plus size={24} />
         </motion.button>
 
-        {!isMobile ? (
+        {/* {!isMobile ? ( */}
           <TaskDialog open={open} onClose={() => setOpen(false)} />
-        ) : (
-          <TaskDrawer open={open} onClose={() => setOpen(false)} />
-        )}
-    </TaskFormProvider>
+         {/* ) : ( */}
+        {/* <TaskDrawer open={open} onClose={() => setOpen(false)} /> */}
+        {/* )} */}
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import {  useState, useTransition } from "react";
+import {  useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +10,7 @@ import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
 import { Label } from "@/src/components/ui/label";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/src/components/ui/form";
-import { ImagePlus, Calendar as CalendarIcon, ChevronDown, ChevronUp, LoaderCircle, ImageMinus } from 'lucide-react';
+import { ImagePlus, Calendar as CalendarIcon, ChevronDown, ChevronUp, LoaderCircle, ImageMinus, Trash } from 'lucide-react';
 import { selectUser, useAuthStore } from "@/src/store/authSlice";
 import { PrioritySelect } from "@/src/components/tasks/PrioritySelect";
 import { cn } from "@/src/lib/utils";
@@ -22,61 +22,82 @@ import { toast } from "@/src/hooks/use-toast";
 import Image from "next/image";
 import { fr } from "date-fns/locale";
 import { taskSchema } from "@/src/utils/schemas";
+import { Task } from "@/src/models/task";
 // import { ColorSelect } from '../../tasks/ColorSelect';
 
 
 
 interface TaskFormProps {
   onClose: () => void;
+  task?: Task & { id?: string };
 }
 
-export function TaskForm({ onClose }: TaskFormProps) {
+export function TaskForm({ onClose, task }: TaskFormProps) {
   const user = useAuthStore(selectUser);
-  const { addTask } = useTaskStore();
+  const { addTask, updateTask } = useTaskStore();
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [loading, startTransition] = useTransition();
   const [file, setFile] = useState<File>();
+  const [existingImageId, setExistingImageId] = useState(task?.image_id || "");
 
   const form = useForm<z.infer<typeof taskSchema>>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      start_date: "",
-      image_url: "",
-      end_date: "",
-      color: "#475569",
-      is_followed: false,
-      priority: "none",
-      is_repeat: false,
+      title: task?.title || "",
+      description: task?.description || "",
+      start_date: task?.start_date || "",
+      end_date: task?.end_date || "",
+      image_url: task?.image_url || "",
+      color: task?.color || "#475569",
+      priority: task?.priority || "none",
+      is_followed: task?.is_followed || false,
+      is_repeat: task?.is_repeat || false,
     },
   });
+
+  useEffect(() => {
+    if (!task?.start_date) {
+      const today = new Date();
+      const formattedDate = today.toLocaleDateString("fr-CA").split("T")[0];
+      form.setValue("start_date", formattedDate);
+    }
+  }, [form, task?.start_date])
+
+  const handleRemoveImage = () => {
+    setFile(undefined);
+    form.setValue("image_url", "");
+    setExistingImageId("");
+  };
 
   const handleSubmit = async (data: z.infer<typeof taskSchema>) => {
     try {
       startTransition(async () => {
-      let image_url = "";
-      let image_id = ""             
+        let image_url = task?.image_url || "";
+      let image_id = existingImageId;             
       if (file) {
+        if (existingImageId) {
+          await storage.deleteFile(TasksImgBucketId, existingImageId);
+        }
         const response = await storage.createFile(TasksImgBucketId, ID.unique(), file);
         image_url = storage.getFilePreview(TasksImgBucketId, response.$id);
         image_id = response.$id;
       }
 
-      await addTask({
-        title: data.title,
-        description: data.description || "",
-        image_url: image_url || "",
-        start_date: data.start_date,
-        end_date: data.end_date,
-        color: data.color,
-        is_followed: data.is_followed,
-        is_repeat: data.is_repeat,
-        completed: false,
+      const taskData = {
+        ...data,
+        start_date: data.end_date && data.end_date.length > 0 ? data.start_date : "",
+        image_url,
+        image_id,
         user_id: user?.$id || "",
-        priority: data.priority,
-        image_id: image_id
-      }, user?.$id || "");
+        completed: task?.completed || false,
+      };
+
+      if (task?.id) {
+        await updateTask(task, taskData);
+      } else {
+        await addTask(taskData, user?.$id || "");
+      }
+
       form.reset();
       onClose();
       });
@@ -302,6 +323,7 @@ export function TaskForm({ onClose }: TaskFormProps) {
               
               <div className="col-span-2 flex flex-col items-center">
                   {form.watch("image_url") && (
+                  <>
                     <div className="mt-4 w-full">
                       <Image
                         src={form.watch("image_url") || ""}
@@ -311,12 +333,23 @@ export function TaskForm({ onClose }: TaskFormProps) {
                         className="w-full h-32 object-cover rounded-lg"
                       />
                     </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={handleRemoveImage}
+                      >
+                        <Trash size={16} />
+                      </Button>
+                    </>
                   )}
               </div>
           </div>
         </div>
 
-        <Button type="submit" className="bg-accent dark:bg-primary text-white flex-1" disabled={loading}>Ajouter {loading && <LoaderCircle className="animate-spin h-5 w-5 text-white" />}</Button>
+        <Button type="submit" className="bg-accent dark:bg-primary text-white flex-1" disabled={loading}>
+          {task?.id ? "Modifier" : "Ajouter"}  
+          {loading && <LoaderCircle className="animate-spin h-5 w-5 text-white" />}
+        </Button>
       </form>
     </Form>
   );

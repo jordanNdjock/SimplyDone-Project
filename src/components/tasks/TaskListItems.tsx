@@ -14,6 +14,8 @@ import { DeleteTaskDialog } from "../dialogs/task/DeleteTaskDialog";
 import { PriorityCircle } from "./PriorityCircle";
 import { Task } from "@/src/models/task";
 import { useTaskStore } from "@/src/store/taskSlice";
+import { formatTaskDates } from "@/src/utils/utils";
+import { TaskDialog } from "../dialogs/task/TaskDialog";
 
 interface TaskListItemsProps {
   tasks: Task[];
@@ -23,6 +25,8 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
   const [longPressId, setLongPressId] = useState<string | null>(null);
   const [,startTransition] = useTransition();
   const { toggleTask, deleteTask } = useTaskStore();
+  const [open, setOpen] = useState(false);
+
 
   const handleLongPress = (taskId: string) => {
     setLongPressId(taskId);
@@ -36,6 +40,7 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
   } 
 
   return (
+<>
     <AnimatePresence>
             {tasks.map((task: Task) => (
               <motion.div
@@ -70,10 +75,16 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
                   <Image 
                       src={task.image_url} 
                       alt="Task" 
-                      className="w-12 h-12 rounded-md object-cover"
+                      className="hidden md:block w-12 h-12 rounded-md object-cover"
                       width={100}
                       height={100}
                     />
+                )}
+
+                {task.start_date && task.end_date && (
+                <div className="flex items-center gap-2 text-xs text-gray-400 font-bold">
+                    {formatTaskDates(task.start_date, task.end_date)}
+                </div>
                 )}
     
                 {longPressId === task.id && (
@@ -108,5 +119,7 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
               </motion.div>
             ))}
           </AnimatePresence>
+          <TaskDialog open={open} onClose={() => setOpen(false)} />
+</>
   );
 }
