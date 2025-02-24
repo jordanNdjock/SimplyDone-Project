@@ -1,9 +1,9 @@
 "use client";
 
-import { useTransition, useState } from "react";
+import { useTransition, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { CheckCircle, MoreVertical, Edit } from "lucide-react";
+import { CheckCircle, MoreVertical, Edit, Image as ImageIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -26,18 +26,41 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
   const [,startTransition] = useTransition();
   const { toggleTask, deleteTask } = useTaskStore();
   const [open, setOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+  const pressTimer = useRef<NodeJS.Timeout | null>(null);
 
 
-  const handleLongPress = (taskId: string) => {
-    setLongPressId(taskId);
-    setTimeout(() => {
-      setLongPressId(null);
-    }, 6000);
+  const startPressTimer = (taskId: string) => {
+    pressTimer.current = setTimeout(() => {
+      setLongPressId(taskId);
+      navigator.vibrate(50);
+    }, 500);
+  };
+
+  const cancelPressTimer = () => {
+    if (pressTimer.current) {
+      clearTimeout(pressTimer.current);
+      pressTimer.current = null;
+    }
+  };
+
+  const handleTouchStart = (taskId: string) => {
+    startPressTimer(taskId);
+  };
+
+  const handleTouchEnd = () => {
+    cancelPressTimer();
   };
 
   const handleDeleteTask = (taskId: string, imageId: string) => {
-    deleteTask(taskId, imageId);
+    startTransition(() => deleteTask(taskId, imageId));
   } 
+
+  const handleEditTask = (task: Task) => {
+    setSelectedTask(task);
+    setOpen(true);
+  };
 
   return (
 <>
@@ -49,13 +72,14 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="relative flex items-center gap-4 p-4 rounded-lg shadow-lg"
-                onTouchStart={() => handleLongPress(task.id??"")}
+                className="relative flex-col items-center rounded-lg shadow-lg"
+                onTouchStart={() => handleTouchStart(task.id ?? "")}
+                onTouchEnd={handleTouchEnd}
                 style={{ backgroundColor: task.color }}
               >
+              <div className="flex gap-4 p-4 items-center">
                 <button
                   onClick={() => startTransition(() => toggleTask(task.id??""))}
-                  
                 >
                   {task.completed ? (
                     <CheckCircle size={24} className="text-green-400" />
@@ -72,21 +96,22 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
                 </div>
     
                 {task.image_url && (
-                  <Image 
-                      src={task.image_url} 
-                      alt="Task" 
-                      className="hidden md:block w-12 h-12 rounded-md object-cover"
-                      width={100}
-                      height={100}
+                    <Image 
+                        src={task.image_url} 
+                        alt="Task" 
+                        className="hidden md:block w-12 h-12 rounded-md object-cover"
+                        width={100}
+                        height={100}
                     />
                 )}
 
                 {task.start_date && task.end_date && (
-                <div className="flex items-center gap-2 text-xs text-gray-400 font-bold">
-                    {formatTaskDates(task.start_date, task.end_date)}
-                </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-400 font-bold">
+                        {formatTaskDates(task.start_date, task.end_date)}
+                    </div>
                 )}
-    
+
+                
                 {longPressId === task.id && (
                   <motion.button
                     initial={{ scale: 0 }}
@@ -107,7 +132,7 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="text-blue-500 text-sm" onClick={() => console.log("Modifier", task.id)}>
+                      <DropdownMenuItem className="text-blue-500 text-sm" onClick={() => handleEditTask(task?? "")}>
                         <Edit size={16} className="mr-2" /> Modifier
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
@@ -116,10 +141,22 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
+                </div>
+                <div className="flex items-center w-full mx-4 opacity-60 gap-2 md:hidden m-0">
+                    {task.image_url && <ImageIcon className="w-4 h-4 mb-1"/>}
+                    {task.is_repeat && <ImageIcon className="w-4 h-4 "/>}
+                </div>
               </motion.div>
             ))}
           </AnimatePresence>
-          <TaskDialog open={open} onClose={() => setOpen(false)} />
+          <TaskDialog 
+            open={open} 
+            onClose={() => {
+            setOpen(false);
+            setSelectedTask(null);
+            }} 
+            task={selectedTask}
+        />
 </>
   );
 }

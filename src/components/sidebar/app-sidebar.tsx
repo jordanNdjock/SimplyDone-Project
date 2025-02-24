@@ -39,14 +39,9 @@ const data = {
     },
     {
       title: "Calendrier",
-      url: "#",
+      url: "/dashboard/calendrier",
       icon: FaCalendarDays,
-      items: [
-        {
-          title: "Accueil",
-          url: "/dashboard/calendrier",
-        },
-      ],
+      items: [],
     },
     {
       title: "Sessions de travail",
@@ -54,7 +49,7 @@ const data = {
       icon: FaCircleDot,
       items: [
         {
-          title: "Accueil",
+          title: "Pomodoro",
           url: "/dashboard/sessions",
         },
       ],

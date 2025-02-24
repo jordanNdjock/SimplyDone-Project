@@ -20,7 +20,10 @@ export const useAuthStore = create(
           if(user != null){
             set({ user, authenticated: true, theme: storedTheme });
           }else{
-            throw new Error("Erreur lors de la récupération de l'utilisateur");
+            toast({
+              title: "Erreur lors de la récupération de l'utilisateur",
+              variant: "error",
+            });
           }
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
@@ -60,11 +63,13 @@ export const useAuthStore = create(
           await account.createEmailPasswordSession(email, password);
           const result = await account.get();
           const user = mapUserInformation(result);
-          if(user != null){
-            set({ user, authenticated: true });
-          }else{
-            throw new Error("Erreur lors de la connexion");
+          if(user == null){
+            toast({
+              title: "Erreur lors de la connexion",
+              variant: "error",
+            });
           }
+          set({ user, authenticated: true });
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message === "Invalid credentials. Please check the email and password." ? 
           "Mot de passe ou email incorrect. Veuillez vérifier vos informations !" : error.message : 

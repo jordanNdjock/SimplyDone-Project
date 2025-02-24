@@ -5,7 +5,7 @@ import { Task } from "@/src/models/task";
 interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
-  task?: Task & { id?: string };
+  task?: Task | null;
 }
 
 export function TaskDialog({ open, onClose, task }: TaskDialogProps) {
@@ -15,7 +15,7 @@ export function TaskDialog({ open, onClose, task }: TaskDialogProps) {
         <DialogHeader>
           <DialogTitle> {task ? "Modifier la tâche" : "Ajouter une tâche"}</DialogTitle>
         </DialogHeader>
-        <TaskForm onClose={onClose} />
+        <TaskForm onClose={onClose} task={task}/>
       </DialogContent>
     </Dialog>
   );

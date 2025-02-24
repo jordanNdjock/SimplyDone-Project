@@ -29,7 +29,7 @@ import { Task } from "@/src/models/task";
 
 interface TaskFormProps {
   onClose: () => void;
-  task?: Task & { id?: string };
+  task?: Task | null;
 }
 
 export function TaskForm({ onClose, task }: TaskFormProps) {
@@ -66,13 +66,12 @@ export function TaskForm({ onClose, task }: TaskFormProps) {
   const handleRemoveImage = () => {
     setFile(undefined);
     form.setValue("image_url", "");
-    setExistingImageId("");
   };
 
   const handleSubmit = async (data: z.infer<typeof taskSchema>) => {
     try {
       startTransition(async () => {
-        let image_url = task?.image_url || "";
+      let image_url = data.image_url || "";
       let image_id = existingImageId;             
       if (file) {
         if (existingImageId) {
@@ -82,7 +81,11 @@ export function TaskForm({ onClose, task }: TaskFormProps) {
         image_url = storage.getFilePreview(TasksImgBucketId, response.$id);
         image_id = response.$id;
       }
-
+      if(!data.image_url && existingImageId){
+        await storage.deleteFile(TasksImgBucketId, existingImageId);
+        setExistingImageId("");
+        image_id = "";
+      }
       const taskData = {
         ...data,
         start_date: data.end_date && data.end_date.length > 0 ? data.start_date : "",
