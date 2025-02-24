@@ -19,6 +19,7 @@ import {
 } from "@/src/components/ui/sidebar"
 import { IconType } from "react-icons/lib"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 export function NavMain({
   items,
@@ -34,6 +35,7 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const path = usePathname();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Menu</SidebarGroupLabel>
@@ -41,7 +43,7 @@ export function NavMain({
         {items.map((item) => (
         <>
           {item.items?.length === 0 && 
-          <Link href={item.url} className="" key={item.url}>
+          <Link href={item.url} className={`${path === item.url ? "dark:bg-slate-800 rounded-sm bg-slate-500 text-white" : ""}`} key={item.url}>
             <SidebarMenuButton tooltip={item.title}>
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
@@ -65,8 +67,8 @@ export function NavMain({
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <Link href={subItem.url}>
+                      <SidebarMenuSubButton asChild >
+                        <Link className={`${path === subItem.url ? "dark:bg-slate-800 rounded-sm bg-slate-500 text-white" : ""}`} href={subItem.url}>
                           <span>{subItem.title}</span>
                         </Link>
                       </SidebarMenuSubButton>
