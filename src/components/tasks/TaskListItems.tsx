@@ -16,6 +16,7 @@ import { Task } from "@/src/models/task";
 import { useTaskStore } from "@/src/store/taskSlice";
 import { formatTaskDates } from "@/src/utils/utils";
 import { TaskDialog } from "../dialogs/task/TaskDialog";
+import { useIsMobile } from "@/src/hooks/use-mobile";
 
 interface TaskListItemsProps {
   tasks: Task[];
@@ -27,6 +28,7 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
   const { toggleTask, deleteTask } = useTaskStore();
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const isMobile = useIsMobile();
 
   const pressTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -75,6 +77,14 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
                 className="relative flex-col items-center rounded-lg shadow-lg"
                 onTouchStart={() => handleTouchStart(task.id ?? "")}
                 onTouchEnd={handleTouchEnd}
+                onClick={() => {
+                    if (isMobile) {
+                      if(longPressId){
+                        setLongPressId(null);
+                      }
+                      handleEditTask(task);
+                    }
+                  }}
                 style={{ backgroundColor: task.color }}
               >
               <div className="flex gap-4 p-4 items-center">
