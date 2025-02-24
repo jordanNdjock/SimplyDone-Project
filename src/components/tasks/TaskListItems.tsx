@@ -155,9 +155,9 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
                   </DropdownMenu>
                 </div>
                 </div>
-                <div className="flex items-center w-full mx-4 opacity-60 gap-2 md:hidden m-0">
+                <div className="flex items-center w-full -mx-3 opacity-60 gap-2 md:hidden m-0 justify-end">
                     {task.image_url && <ImageIcon className="w-4 h-4 mb-1"/>}
-                    {task.is_repeat && <ImageIcon className="w-4 h-4 "/>}
+                    {task.is_repeat && <ImageIcon className="w-4 h-4 mb-1"/>}
                 </div>
               </motion.div>
             ))}
