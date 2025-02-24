@@ -89,7 +89,10 @@ export function TaskListItems({ tasks }: TaskListItemsProps) {
               >
               <div className="flex gap-4 p-4 items-center">
                 <button
-                  onClick={() => startTransition(() => toggleTask(task.id??""))}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startTransition(() => toggleTask(task.id??""))
+                }}
                 >
                   {task.completed ? (
                     <CheckCircle size={24} className="text-green-400" />

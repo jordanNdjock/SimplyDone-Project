@@ -11,19 +11,11 @@ interface DeleteTaskDialogProps {
 export function DeleteTaskDialog({ taskID, imageID, handleDeleteTask }: DeleteTaskDialogProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const closeDialog = () => setIsOpen(false);
-  const openDialog = () => setIsOpen(true);
-
-  const handleConfirmDelete = () => {
-    setIsOpen(false);
-    handleDeleteTask(taskID, imageID);
-  };
-
   return (
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
 
         <AlertDialogTrigger className="w-full flex items-center text-sm text-red-500 hover:bg-accent p-2 rounded-md hover:text-white outline-none">
-            <Trash size={16} onClick={openDialog} className="mr-2 bg-red-500 text-white rounded-full w-6 h-4" />
+            <Trash size={16} onClick={(e) => {e.stopPropagation(); setIsOpen(true)}} className="mr-2 bg-red-500 text-white rounded-full w-6 h-4" />
             <span className="hidden md:block">Supprimer</span>
         </AlertDialogTrigger>
 
@@ -35,9 +27,9 @@ export function DeleteTaskDialog({ taskID, imageID, handleDeleteTask }: DeleteTa
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={closeDialog}>Annuler</AlertDialogCancel>
+            <AlertDialogCancel onClick={(e) => {e.stopPropagation(); setIsOpen(false)}}>Annuler</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleConfirmDelete}
+              onClick={(e) => {e.stopPropagation(); setIsOpen(false); handleDeleteTask(taskID, imageID);}}
               className="bg-red-600 hover:bg-red-700"
             >
               Confirmer la suppression
