@@ -120,7 +120,7 @@ export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
                 )}
 
                 {task.start_date && task.end_date && (
-                    <div className={`flex items-center gap-2 ${isMatrix && "text-[8px]"} text-xs text-gray-400 font-bold`}>
+                    <div className={`flex items-center gap-2 ${isMatrix ? "text-[8px]" : "text-xs"} text-gray-400 font-bold`}>
                         {formatTaskDates(task.start_date, task.end_date)}
                     </div>
                 )}
