@@ -1,12 +1,10 @@
-export default function Matrix(){
-    return (
-        <>
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="aspect-video rounded-xl bg-muted/50" />
-          <div className="aspect-video rounded-xl bg-muted/50" />
-          <div className="aspect-video rounded-xl bg-muted/50" />
-        </div>
-        <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-      </>
-    );
+import MatrixLayout from '../../../components/matrix/Matrix';
+import FloatingActionButton from '../../../components/layout/FloatingActionButton';
+export default function Matrix() {
+  return (
+    <div className="h-full w-full p-1 my-3">
+      <MatrixLayout />
+      <FloatingActionButton/>
+    </div>
+  )
 }

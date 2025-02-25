@@ -3,9 +3,10 @@ import { Circle } from "lucide-react";
 
 interface PriorityCircleProps {
   priority?: "none" | "low" | "medium" | "high";
+  isMatrix?: boolean;
 }
 
-export function PriorityCircle({ priority = "none" }: PriorityCircleProps) {
+export function PriorityCircle({ priority = "none", isMatrix }: PriorityCircleProps) {
   let colorClass = "text-white";
 
   switch (priority) {
@@ -24,5 +25,5 @@ export function PriorityCircle({ priority = "none" }: PriorityCircleProps) {
       break;
   }
 
-  return <Circle size={24} className={`${colorClass}`} />;
+  return <Circle size={isMatrix ? 16 : 24} className={`${colorClass}`} />;
 }

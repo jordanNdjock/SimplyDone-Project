@@ -55,7 +55,7 @@ const data = {
       ],
     },
     {
-      title: "Matrice de Eisenhower",
+      title: "Matrice d'Eisenhower",
       url: "/dashboard/matrice",
       icon: BsGridFill,
       items: [],

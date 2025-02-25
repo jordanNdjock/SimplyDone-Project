@@ -204,6 +204,7 @@ export function TaskForm({ onClose, task }: TaskFormProps) {
                               field.onChange("")
                             }
                         }}
+                        locale={fr}
                         initialFocus
                       />
                     </PopoverContent>
