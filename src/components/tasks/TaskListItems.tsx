@@ -106,7 +106,7 @@ export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
                   <h3 className={`font-semibold text-white line-clamp-2 leading-tight ${isMatrix && "text-xs"}  ${task.completed ? "line-through " : ""}`}>
                     {task.title}
                   </h3>
-                  {task.description && <p className={`${isMatrix ? "text-[10px]": "text-sm"} truncate max-w-[95%] text-gray-400`}>{task.description}</p>}
+                  {task.description && <p className={`${isMatrix ? "text-[10px]": "text-sm"} line-clamp-1 text-gray-400`}>{task.description}</p>}
                 </div>
     
                 {task.image_url && (
