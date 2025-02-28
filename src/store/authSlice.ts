@@ -28,10 +28,7 @@ export const useAuthStore = create(
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
           set({ user: null });
-          toast({
-            title: message,
-            variant: "error",
-          });
+          throw new Error(message);
         }
       },
 

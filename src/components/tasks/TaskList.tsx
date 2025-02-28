@@ -56,7 +56,7 @@ export function TaskList() {
           <TaskListItems tasks={completedTasks} />
         </div>
       )}
-      </>
+    </>
       ) : (
         <p className="text-gray-500 text-center mt-32">Aucune tâche pour le moment.</p>
       )}
