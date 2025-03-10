@@ -45,14 +45,9 @@ const data = {
     },
     {
       title: "Sessions de travail",
-      url: "#",
+      url: "/dashboard/sessions",
       icon: FaCircleDot,
-      items: [
-        {
-          title: "Pomodoro",
-          url: "/dashboard/sessions",
-        },
-      ],
+      items: [],
     },
     {
       title: "Matrice d'Eisenhower",

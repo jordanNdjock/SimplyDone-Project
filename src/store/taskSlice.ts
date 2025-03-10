@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { ID, db, TaskCollectionId, databaseId, Query, storage, TasksImgBucketId} from "@/src/lib/appwrite";
 import { TaskState, Task } from "@/src/models/task";
-import { mapTaskInformation } from "../utils/mappingTaskInformations";
+import { mapTaskInformation } from "../utils/mapTaskInformations";
 import { toast } from "../hooks/use-toast";
 
 export const useTaskStore = create(

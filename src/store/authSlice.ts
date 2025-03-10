@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { account, client, ID } from "@/src/lib/appwrite";
 import { AuthState } from "@/src/models/user";
-import { mapUserInformation } from "../utils/mappingUserInformations";
+import { mapUserInformation } from "../utils/mapUserInformations";
 import { toast } from "../hooks/use-toast";
 
 export const useAuthStore = create(
