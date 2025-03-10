@@ -159,7 +159,9 @@ export const useTimerStore = create<TimerState>()(
         totalDuration: state.totalDuration,
         cyclesCompleted: state.cyclesCompleted,
         isLongBreak: state.isLongBreak,
-        lastUpdateTimestamp: state.lastUpdateTimestamp
+        lastUpdateTimestamp: state.lastUpdateTimestamp,
+        startTimestamp: state.startTimestamp,
+        elapsedBeforePause: state.elapsedBeforePause,
       })
     }
   )
