@@ -1,14 +1,16 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/src/components/ui/alert-dialog";
-import { Volume2, VolumeX } from "lucide-react";
+import { Info, Volume2, VolumeX } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/src/components/ui/popover";
 import { selectMethodById, useMethodStore } from "@/src/store/methodSlice";
 import { useAudioStore } from "@/src/store/sessionAudioSlice";
 import { useTimerStore } from "@/src/store/sessionTimerSlice";
+import CycleCompletionDialog from "../dialogs/session/CycleCompletionDialog";
+import ResetConfirmationDialog from "../dialogs/session/ResetConfirmationDialog";
 
 interface WorkSessionProps {
   methodId: string;
@@ -16,6 +18,7 @@ interface WorkSessionProps {
 
 const WorkSession = ({ methodId }: WorkSessionProps) => {
   const method = useMethodStore((state) => selectMethodById(state, methodId));
+  const [openResetModal, setOpenResetModal] = useState(false);
   
   // Audio Store
   const {
@@ -34,12 +37,14 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
     isRunning,
     cyclesCompleted,
     isLongBreak,
+    isWorkSession,
     showCompletionDialog,
     startTimer,
     pauseTimer,
     resetTimer,
     setDuration,
     completeCycle,
+    closeDialog,
     checkTimerState
   } = useTimerStore();
 
@@ -50,7 +55,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
   
   useEffect(() => {
     // Vérifier si le timer n'est pas déjà démarré ou déjà initialisé
-    if (method && !isRunning && timeLeft === totalDuration) {
+    if (method && !isRunning && timeLeft === totalDuration && !showCompletionDialog) {
       const duration = calculateDuration();
       setDuration(duration);
     }
@@ -58,7 +63,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
 
   // Gestion des cycles
   useEffect(() => {
-    if (method && timeLeft <= 0) {
+    if (method && timeLeft <= 0 && !showCompletionDialog) {
       const nextDuration = calculateDuration();
       setDuration(nextDuration);
       completeCycle();
@@ -72,16 +77,25 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
     }
   }, [isRunning]);
 
-  // Calcul de la durée en fonction du cycle
-  const calculateDuration = () => {
-    if (!method) return 1500;
-    
-    const isBreakTime = cyclesCompleted % method.cycles_before_long_break === 0 && cyclesCompleted > 0;
-    return isLongBreak 
-      ? method.long_break_duration * 60 
-      : isBreakTime 
-      ? method.break_duration * 60 
-      : method.work_duration * 60;
+  const handleConfirmCycle = () => {
+    const nextDuration = calculateDuration();
+    setDuration(nextDuration);
+    closeDialog();
+  };
+
+  const calculateDuration = (): number => {
+    if (!method) return 1500; // Valeur par défaut de 25 minutes
+
+    const { work_duration, break_duration, long_break_duration, cycles_before_long_break } = method;
+    if (isWorkSession) {
+      return work_duration * 60;
+    } else {
+      // Si le nombre de sessions de travail terminées est non nul et divisible par cycles_before_long_break, c'est une longue pause.
+      if (cyclesCompleted > 0 && cyclesCompleted % cycles_before_long_break === 0) {
+        return long_break_duration * 60;
+      }
+      return break_duration * 60;
+    }
   };
 
   // Formatage du temps
@@ -104,45 +118,65 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
   // Couleur du timer en fonction du type de session
   const getProgressColor = () => {
     if (!method) return "#ef4444";
-    return isLongBreak 
-      ? "#10b981" // Vert pour les longues pauses
-      : timeLeft <= method.work_duration * 60 
-      ? "#ef4444" // Rouge pour le travail
-      : "#3b82f6"; // Bleu pour les pauses
+    if (isLongBreak) return "#10b981"; // Vert pour les longues pauses
+    if (isWorkSession) return "#ef4444"; // Rouge pour les sessions de travail
+    return "#3b82f6"; // Bleu pour les pauses courtes
   };
+  
 
   // Messages du dialogue
   const getDialogContent = () => {
     if (timeLeft > 0) return null;
-    
-    return isLongBreak
-      ? {
-          title: "Pause longue terminée",
-          description: "Votre pause longue est terminée. Prêt à reprendre le travail ?"
-        }
-      : method && cyclesCompleted % method.cycles_before_long_break === 0
-      ? {
-          title: "Pause terminée",
-          description: "Votre pause est terminée. Prêt à reprendre le travail ?"
-        }
-      : {
-          title: "Session terminée",
-          description: "Votre session de travail est terminée. Prenez une pause bien méritée !"
-        };
+  
+    // Si isWorkSession est faux, cela signifie que nous venons de terminer une session de travail (sans pause)
+    if (!isWorkSession) {
+      return {
+        title: "🍅 Session terminée",
+        description: "Votre session de travail est terminée. Prenez une pause bien méritée !"
+      };
+    } else {
+      // Sinon, on est en mode pause : distinguer la pause longue de la pause courte
+      return method && cyclesCompleted % method.cycles_before_long_break === 0
+        ? {
+            title: "🏖️ Pause longue terminée",
+            description: "Votre pause longue est terminée. Prêt à reprendre le travail ?"
+          }
+        : {
+            title: "☕ Pause terminée",
+            description: "Votre pause est terminée. Prêt à reprendre le travail ?"
+          };
+    }
   };
+  
+  
 
   const dialogContent = getDialogContent();
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle className="text-center">
-          {isLongBreak 
-            ? "Pause longue" 
-            : method && timeLeft <= method.work_duration * 60 
-            ? "Travail" 
-            : "Pause"}
-        </CardTitle>
+      <div className="flex flex-col gap-3 items-center">
+          <CardTitle className="text-center">
+            {isLongBreak 
+              ? "Pause longue 🏖️" 
+              : isWorkSession 
+                ? "Travail 💼" 
+                : "Pause ☕"}
+          </CardTitle>
+          <div className="flex items-center space-x-2">
+            <span className="text-xs font-medium">Cycles: {cyclesCompleted}</span>
+            {method && (
+              <Popover>
+                <PopoverTrigger asChild>
+                    <Info className="w-4 h-4" />
+                </PopoverTrigger>
+                <PopoverContent className="">
+                  <p className="text-sm">{method.description}</p>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
+        </div>
       </CardHeader>
 
       <CardContent className="flex flex-col items-center">
@@ -153,7 +187,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
             text={formatTime(timeLeft)}
             styles={buildStyles({
               pathColor: getProgressColor(),
-              textColor: "#1f2937",
+              textColor: "#3a4e6b",
               trailColor: "#e5e7eb",
               textSize: '16px',
             })}
@@ -183,31 +217,31 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
           onClick={isRunning ? pauseTimer : startTimer} 
           variant={isRunning ? "destructive" : "default"}
         >
-          {isRunning ? "Pause" : "Démarrer"}
+          {isRunning ? "Pause ⏸" : "Démarrer ▶"}
         </Button>
-        <Button variant="outline" onClick={resetTimer}>
-          Réinitialiser
+        <Button variant="outline" onClick={() => setOpenResetModal(true)}>
+          Réinitialiser 🔄
         </Button>
       </CardFooter>
 
-      {/* Dialogue de notification */}
-      {dialogContent && (
-        <AlertDialog open={showCompletionDialog}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{dialogContent.title}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {dialogContent.description}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogAction onClick={resetTimer}>
-                {isLongBreak ? "Reprendre" : "OK"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+       {/* Dialogue de fin de cycle */}
+       {dialogContent && (
+        <CycleCompletionDialog
+          open={showCompletionDialog}
+          onConfirm={handleConfirmCycle}
+          dialogContent={dialogContent}
+        />
       )}
+
+      {/* Dialogue de confirmation pour la réinitialisation */}
+      <ResetConfirmationDialog
+        open={openResetModal}
+        onCancel={() => setOpenResetModal(false)}
+        onConfirm={() => {
+          resetTimer();
+          setOpenResetModal(false);
+        }}
+      />
     </Card>
   );
 };

@@ -13,7 +13,7 @@ export default function SessionLayout() {
 
   useEffect(() => {
     fetchMethods();
-  }, );
+  }, []);
 
   useEffect(() => {
     if (methods && methods.length > 0) {

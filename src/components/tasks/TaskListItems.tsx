@@ -17,6 +17,7 @@ import { useTaskStore } from "@/src/store/taskSlice";
 import { formatTaskDates } from "@/src/utils/utils";
 import { TaskDialog } from "../dialogs/task/TaskDialog";
 import { useIsMobile } from "@/src/hooks/use-mobile";
+import { hasDatePassed } from "@/src/utils/utils";
 
 interface TaskListItemsProps {
   tasks: Task[];
@@ -38,7 +39,7 @@ export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
     pressTimer.current = setTimeout(() => {
       setLongPressId(taskId);
       navigator.vibrate(50);
-    }, 500);
+    }, 1000);
   };
 
   const cancelPressTimer = () => {
@@ -120,7 +121,7 @@ export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
                 )}
 
                 {task.start_date && task.end_date && (
-                    <div className={`flex items-center gap-2 ${isMatrix ? "text-[8px]" : "text-xs"} text-gray-400 font-bold`}>
+                    <div className={`flex items-center gap-2 ${isMatrix ? "text-[8px]" : "text-xs"} ${hasDatePassed(task.end_date) ? "text-red-300" : "text-blue-300" } font-bold`}>
                         {formatTaskDates(task.start_date, task.end_date)}
                     </div>
                 )}

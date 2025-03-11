@@ -151,7 +151,13 @@ export const useAudioStore = create<AudioState>()(
           '/assets/sounds/relax-14.mp3',
           '/assets/sounds/relax-15.mp3',
           '/assets/sounds/relax-16.mp3',
-          '/assets/sounds/relax-17.mp3'
+          '/assets/sounds/relax-17.mp3',
+          '/assets/sounds/relax-18.mp3',
+          '/assets/sounds/relax-19.mp3',
+          '/assets/sounds/relax-20.mp3',
+          '/assets/sounds/relax-21.mp3',
+          '/assets/sounds/relax-22.mp3',
+          '/assets/sounds/relax-23.mp3',
         ];
         
         const shuffled = shuffleArray(ambientSounds);

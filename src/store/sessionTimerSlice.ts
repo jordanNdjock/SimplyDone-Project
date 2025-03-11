@@ -9,17 +9,19 @@ interface TimerState {
   isRunning: boolean;
   cyclesCompleted: number;
   isLongBreak: boolean;
+  isWorkSession: boolean;       // true : session de travail, false : pause
   showCompletionDialog: boolean;
-  lastUpdateTimestamp: number; // Nouveau: timestamp de la dernière mise à jour
-  startTimestamp?: number; // Nouvelle propriété pour le calcul du temps écoulé
+  lastUpdateTimestamp: number;  // Timestamp de la dernière mise à jour
+  startTimestamp?: number;      // Pour le calcul du temps écoulé
   elapsedBeforePause: number; 
+  closeDialog: () => void;
   // Actions
   startTimer: () => void;
   pauseTimer: () => void;
   resetTimer: () => void;
   setDuration: (duration: number) => void;
   completeCycle: () => void;
-  checkTimerState: () => void; // Nouveau: vérifie l'état au montage
+  checkTimerState: () => void;
 }
 
 export const useTimerStore = create<TimerState>()(
@@ -30,13 +32,13 @@ export const useTimerStore = create<TimerState>()(
       isRunning: false,
       cyclesCompleted: 0,
       isLongBreak: false,
+      isWorkSession: true, // On commence par une session de travail
       showCompletionDialog: false,
       lastUpdateTimestamp: Date.now(),
       elapsedBeforePause: 0,
 
       // Démarre ou reprend le timer
       startTimer: () => {
-        // Si déjà en cours, ne rien faire
         if (get().isRunning) return;
       
         const startTimestamp = Date.now();
@@ -53,7 +55,9 @@ export const useTimerStore = create<TimerState>()(
           }
           
           // Temps écoulé total = temps depuis le dernier démarrage + temps accumulé avant pause
-          const elapsed = startTimestamp ? Math.floor((Date.now() - startTimestamp) / 1000) + elapsedBeforePause : elapsedBeforePause;
+          const elapsed = startTimestamp
+            ? Math.floor((Date.now() - startTimestamp) / 1000) + elapsedBeforePause
+            : elapsedBeforePause;
           const newTime = totalDuration - elapsed;
       
           if (newTime <= 0) {
@@ -70,8 +74,6 @@ export const useTimerStore = create<TimerState>()(
         }, 1000);
       },
       
-      
-
       // Met en pause le timer
       pauseTimer: () => {
         const { isRunning, startTimestamp, elapsedBeforePause } = get();
@@ -84,14 +86,14 @@ export const useTimerStore = create<TimerState>()(
         });
       },
       
-
-      // Réinitialise le timer
+      // Réinitialise le timer et relance l'audio
       resetTimer: () => {
         set({
           timeLeft: get().totalDuration,
           isRunning: false,
           cyclesCompleted: 0,
           isLongBreak: false,
+          isWorkSession: true,
           showCompletionDialog: false,
           lastUpdateTimestamp: Date.now(),
           startTimestamp: 0,
@@ -101,40 +103,55 @@ export const useTimerStore = create<TimerState>()(
         audioStore.resetAudio();
         audioStore.shufflePlaylist();
       },
-
-      // Définit une nouvelle durée
+      
+      // Définit une nouvelle durée pour la session courante
       setDuration: (duration) => {
         set({
           totalDuration: duration,
           timeLeft: duration,
-          lastUpdateTimestamp: Date.now()
+          lastUpdateTimestamp: Date.now(),
+          startTimestamp: 0,
+          elapsedBeforePause: 0,
         });
       },
-
-      // Complète un cycle
+      
+      // Complète un cycle et bascule le type de session
       completeCycle: () => {
-        const { cyclesCompleted } = get();
-        const isLongBreak = (cyclesCompleted + 1) % 4 === 0;
-
+        const { isWorkSession, cyclesCompleted } = get();
         set({
-          cyclesCompleted: cyclesCompleted + 1,
-          isLongBreak,
           showCompletionDialog: true,
-          lastUpdateTimestamp: Date.now()
+          lastUpdateTimestamp: Date.now(),
+          startTimestamp: 0,
+          elapsedBeforePause: 0
         });
-
+        if (isWorkSession) {
+          // Fin d'une session de travail : passage en pause
+          set({ isWorkSession: false });
+        } else {
+          // Fin d'une pause : incrémenter le compteur et repasser en session de travail
+          set({
+            isWorkSession: true,
+            cyclesCompleted: cyclesCompleted + 1,
+          });
+        }
         // Jouer le son de complétion
         useAudioStore.getState().playCompletionSound();
+        const audioStore = useAudioStore.getState();
+        audioStore.resetAudio();
+        audioStore.shufflePlaylist();
       },
 
-      // Vérifie l'état au montage
+      closeDialog: () => {
+        set({ showCompletionDialog: false });
+      },
+      
+      // Vérifie l'état du timer au montage
       checkTimerState: () => {
         const { isRunning, lastUpdateTimestamp, timeLeft } = get();
-        
         if (isRunning) {
           const elapsed = Math.floor((Date.now() - lastUpdateTimestamp) / 1000);
           const newTime = timeLeft - elapsed;
-
+  
           if (newTime <= 0) {
             set({ 
               isRunning: false,
@@ -162,6 +179,7 @@ export const useTimerStore = create<TimerState>()(
         lastUpdateTimestamp: state.lastUpdateTimestamp,
         startTimestamp: state.startTimestamp,
         elapsedBeforePause: state.elapsedBeforePause,
+        isWorkSession: state.isWorkSession,
       })
     }
   )
