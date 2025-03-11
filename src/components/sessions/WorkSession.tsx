@@ -164,7 +164,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
                 : "Pause ☕"}
           </CardTitle>
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-medium">Cycles: {cyclesCompleted}</span>
+            <span className="text-xs font-medium">Cycle: {cyclesCompleted}/{method?.cycles_before_long_break}</span>
             {method && (
               <Popover>
                 <PopoverTrigger asChild>
