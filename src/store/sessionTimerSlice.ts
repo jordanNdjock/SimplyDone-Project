@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from 'zustand/middleware';
 import { useAudioStore } from "./sessionAudioSlice";
+import { useMethodStore } from "./methodSlice";
 
 interface TimerState {
   // État
@@ -17,10 +18,11 @@ interface TimerState {
   closeDialog: () => void;
   // Actions
   startTimer: () => void;
+  resetCurrentCycle: () => void;
   pauseTimer: () => void;
   resetTimer: () => void;
   setDuration: (duration: number) => void;
-  completeCycle: () => void;
+  completeCycle: (cycles_before_long_break?: number) => void;
   checkTimerState: () => void;
 }
 
@@ -42,9 +44,12 @@ export const useTimerStore = create<TimerState>()(
         if (get().isRunning) return;
       
         const startTimestamp = Date.now();
+        const currentElapsed = get().totalDuration - get().timeLeft;
         set({ 
           isRunning: true, 
-          startTimestamp 
+          startTimestamp,
+          lastUpdateTimestamp: startTimestamp,
+          elapsedBeforePause: currentElapsed
         });
       
         const interval = setInterval(() => {
@@ -104,6 +109,19 @@ export const useTimerStore = create<TimerState>()(
         audioStore.shufflePlaylist();
       },
       
+      resetCurrentCycle: () => {
+        set({
+          timeLeft: get().totalDuration,
+          isRunning: false,
+          lastUpdateTimestamp: Date.now(),
+          startTimestamp: 0,
+          elapsedBeforePause: 0,
+          showCompletionDialog: false,
+        });
+        const audioStore = useAudioStore.getState();
+        audioStore.resetAudio();
+      },
+
       // Définit une nouvelle durée pour la session courante
       setDuration: (duration) => {
         set({
@@ -116,30 +134,46 @@ export const useTimerStore = create<TimerState>()(
       },
       
       // Complète un cycle et bascule le type de session
-      completeCycle: () => {
-        const { isWorkSession, cyclesCompleted } = get();
+      completeCycle: (cycles_before_long_break?: number) => {
+        const { isWorkSession, cyclesCompleted, isLongBreak } = get();
+        
+        // Affiche la modal pour signaler la fin de la session courante
         set({
           showCompletionDialog: true,
           lastUpdateTimestamp: Date.now(),
           startTimestamp: 0,
-          elapsedBeforePause: 0
+          elapsedBeforePause: 0,
         });
+        // Utilise la valeur passée en paramètre ou 4 par défaut
+        const cyclesBeforeLongBreak = cycles_before_long_break !== undefined ? cycles_before_long_break : 4;
+        
         if (isWorkSession) {
-          // Fin d'une session de travail : passage en pause
+          // Fin d'une session de travail : passage en mode pause
           set({ isWorkSession: false });
         } else {
-          // Fin d'une pause : incrémenter le compteur et repasser en session de travail
-          set({
-            isWorkSession: true,
-            cyclesCompleted: cyclesCompleted + 1,
-          });
+          // Fin d'une pause : on vérifie si le prochain cycle correspond à la longue pause
+          if ((cyclesCompleted + 1) === cyclesBeforeLongBreak) {
+            if(isLongBreak){
+              // Après la longue pause, on réinitialise le compteur de cycles
+              set({ isWorkSession: true, cyclesCompleted: 0, isLongBreak: false });
+            } else {
+              // Sinon, on marque la pause longue
+              set({ isLongBreak: true });
+            }
+          } else {
+            // Sinon, on incrémente le compteur et on repasse en session de travail
+            set({ isWorkSession: true, cyclesCompleted: cyclesCompleted + 1 });
+          }
         }
-        // Jouer le son de complétion
+        
+        // Jouer le son de complétion et réinitialiser l'audio
         useAudioStore.getState().playCompletionSound();
         const audioStore = useAudioStore.getState();
         audioStore.resetAudio();
         audioStore.shufflePlaylist();
       },
+      
+      
 
       closeDialog: () => {
         set({ showCompletionDialog: false });

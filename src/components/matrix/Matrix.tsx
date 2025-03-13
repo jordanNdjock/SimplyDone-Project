@@ -3,7 +3,7 @@
 import { selectTasks, useTaskStore } from "@/src/store/taskSlice"
 import { ScrollArea, ScrollBar } from "@/src/components/ui/scroll-area";
 import { AlertTriangle, CalendarCheck, Clock, ZapOff } from "lucide-react";
-import { TaskListItems } from "../../tasks/TaskListItems";
+import { TaskListItems } from "../tasks/TaskListItems";
 
 export default function MatrixLayout() {
     const tasks = useTaskStore(selectTasks)
@@ -39,7 +39,7 @@ export default function MatrixLayout() {
         {Object.entries(quadrants).map(([key, quadrant]) => (
           <div 
             key={key}
-            className="relative flex flex-col rounded-lg bg-muted/50 p-1 shadow-sm h-80"
+            className="relative flex flex-col rounded-lg bg-muted/50 p-1 shadow-sm h-70"
           >
             <h2 className={`mb-4 flex items-center text-[10px] w-full md:text-lg font-semibold ${quadrant.color}`}>
               {quadrant.icon}

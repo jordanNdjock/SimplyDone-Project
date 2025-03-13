@@ -4,7 +4,7 @@ import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { Info, Volume2, VolumeX } from "lucide-react";
+import { Info, RotateCw, Volume2, VolumeX } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/components/ui/popover";
 import { selectMethodById, useMethodStore } from "@/src/store/methodSlice";
 import { useAudioStore } from "@/src/store/sessionAudioSlice";
@@ -45,7 +45,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
     setDuration,
     completeCycle,
     closeDialog,
-    checkTimerState
+    resetCurrentCycle,
   } = useTimerStore();
 
   // Initialisation et synchronisation
@@ -66,7 +66,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
     if (method && timeLeft <= 0 && !showCompletionDialog) {
       const nextDuration = calculateDuration();
       setDuration(nextDuration);
-      completeCycle();
+      completeCycle(method?.cycles_before_long_break);
     }
   }, [timeLeft, method]);
 
@@ -78,8 +78,13 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
   }, [isRunning]);
 
   const handleConfirmCycle = () => {
-    const nextDuration = calculateDuration();
-    setDuration(nextDuration);
+    // Si c'était un long break (après 4 cycles), on réinitialise les cycles
+    if (method && !isWorkSession && cyclesCompleted === method.cycles_before_long_break) {
+      // Dans le store, completeCycle devrait gérer la réinitialisation (cyclesCompleted = 0) après une longue pause.
+      setDuration(calculateDuration());
+    } else {
+      setDuration(calculateDuration());
+    }
     closeDialog();
   };
 
@@ -91,7 +96,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
       return work_duration * 60;
     } else {
       // Si le nombre de sessions de travail terminées est non nul et divisible par cycles_before_long_break, c'est une longue pause.
-      if (cyclesCompleted > 0 && cyclesCompleted % cycles_before_long_break === 0) {
+      if (cyclesCompleted > 0 && cyclesCompleted + 1 % cycles_before_long_break === 0) {
         return long_break_duration * 60;
       }
       return break_duration * 60;
@@ -127,26 +132,34 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
   // Messages du dialogue
   const getDialogContent = () => {
     if (timeLeft > 0) return null;
-  
-    // Si isWorkSession est faux, cela signifie que nous venons de terminer une session de travail (sans pause)
+    
+    // Si on vient de terminer une session de travail (donc, on est passé en mode pause)
     if (!isWorkSession) {
       return {
         title: "🍅 Session terminée",
         description: "Votre session de travail est terminée. Prenez une pause bien méritée !"
       };
     } else {
-      // Sinon, on est en mode pause : distinguer la pause longue de la pause courte
-      return method && cyclesCompleted % method.cycles_before_long_break === 0
-        ? {
-            title: "🏖️ Pause longue terminée",
-            description: "Votre pause longue est terminée. Prêt à reprendre le travail ?"
-          }
-        : {
-            title: "☕ Pause terminée",
-            description: "Votre pause est terminée. Prêt à reprendre le travail ?"
-          };
+      // On vient de terminer une pause
+      if (isLongBreak) {
+        return {
+          title: "🏖️ Pause longue terminée",
+          description: "Votre longue pause est terminée. Prêt à reprendre une nouvelle session de travail ?"
+        };
+      } else if (method && (cyclesCompleted + 1) === method.cycles_before_long_break) {
+        return {
+          title: "☕ Pause terminée",
+          description: "Votre pause est terminée. Vous allez passer à une grande pause."
+        };
+      } else {
+        return {
+          title: "☕ Pause terminée",
+          description: "Votre pause est terminée. Prêt à reprendre le travail ?"
+        };
+      }
     }
   };
+  
   
   
 
@@ -181,17 +194,21 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
 
       <CardContent className="flex flex-col items-center">
         {/* Timer circulaire */}
-        <div className="w-64 h-64">
+        <div className="relative w-64 h-64">
           <CircularProgressbar
             value={(totalDuration - timeLeft) / totalDuration * 100}
-            text={formatTime(timeLeft)}
+            text=""  // On gère le texte dans le conteneur overlay
             styles={buildStyles({
               pathColor: getProgressColor(),
-              textColor: "#3a4e6b",
               trailColor: "#e5e7eb",
-              textSize: '16px',
             })}
           />
+          <div className="absolute inset-0 flex items-center justify-center space-x-2">
+            <span className="text-[40px] text-[#3a4e6b]">
+              {formatTime(timeLeft)}
+            </span>
+            <RotateCw className="w-6 h-6cursor-pointer text-gray-300" onClick={resetCurrentCycle} />
+          </div>
         </div>
 
         {/* Contrôle du volume */}
@@ -212,7 +229,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
       </CardContent>
 
       {/* Contrôles principaux */}
-      <CardFooter className="flex justify-center gap-4">
+      <CardFooter className="flex justify-center gap-6">
         <Button 
           onClick={isRunning ? pauseTimer : startTimer} 
           variant={isRunning ? "destructive" : "default"}

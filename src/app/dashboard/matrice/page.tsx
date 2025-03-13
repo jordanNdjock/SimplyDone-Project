@@ -1,4 +1,4 @@
-import MatrixLayout from '../../../components/forms/matrix/Matrix';
+import MatrixLayout from '../../../components/matrix/Matrix';
 import FloatingActionButton from '../../../components/layout/FloatingActionButton';
 export default function Matrix() {
   return (

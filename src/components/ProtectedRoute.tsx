@@ -16,6 +16,18 @@ export default function ProtectedRoute({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/firebase-messaging-sw.js")
+        .then((registration) => {
+          console.log("Service Worker enregistré avec succès :", registration.scope);
+        })
+        .catch((err) => {
+          console.error("Erreur lors de l'enregistrement du Service Worker :", err);
+        });
+    }
+  }, []);
+  
+  useEffect(() => {
     listenToAppwrite();
     const checkAuthentication = async () => {
       try {

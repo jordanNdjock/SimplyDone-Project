@@ -1,15 +1,17 @@
-import Link from 'next/link';
+"use client";
 import Footer from '../../components/layout/Footer';
 import { Button } from '@/src/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function PrivacyPolicy() {
+  const router = useRouter();
   return (
     <>
       <div className="flex items-center justify-center min-h-screen flex-col">
-        <Link href="/" className='mt-1'>
-            <Button className="bg-accent hover:bg-purple-700 dark:bg-primary dark:hover:bg-blue-700"><ArrowLeft /> Retour à l&apos;accueil</Button>
-        </Link>
+        <a onClick={() => router.back()} className='mt-1'>
+            <Button className="bg-accent hover:bg-purple-700 dark:bg-primary dark:hover:bg-blue-700"><ArrowLeft /> Retour</Button>
+        </a>
         <div className="shadow-2xl rounded-md p-16 w-full max-w-4xl h-auto mt-8  font-mono text-left container">
           <h1 className="text-3xl font-bold text-center mb-6 text-accent dark:text-primary">Politique de confidentialité</h1>
           <p className="mb-4 sm:text-left">

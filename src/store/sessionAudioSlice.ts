@@ -173,6 +173,7 @@ export const useAudioStore = create<AudioState>()(
       partialize: (state) => ({
         soundEnabled: state.soundEnabled,
         soundVolume: state.soundVolume,
+        currentTrackIndex: state.currentTrackIndex,
         playbackProgress: state.playbackProgress,
         shuffledPlaylist: state.shuffledPlaylist
       })
