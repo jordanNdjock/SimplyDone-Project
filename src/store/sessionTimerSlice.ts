@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from 'zustand/middleware';
 import { useAudioStore } from "./sessionAudioSlice";
-import { useMethodStore } from "./methodSlice";
 
 interface TimerState {
   // État

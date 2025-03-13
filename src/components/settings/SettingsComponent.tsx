@@ -1,10 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Info, ChevronRight, Shield, Forward, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github } from "lucide-react";
-import { FaWhatsapp, FaFacebook, FaInstagram, FaTelegram, FaLinkedin } from "react-icons/fa";
+import { ArrowLeft, Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github } from "lucide-react";
+import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
 import { selectUser, useAuthStore } from "@/src/store/authSlice";
@@ -62,7 +61,7 @@ export default function SettingsComponent() {
         <div className="">
           <Link href="https://www.linkedin.com/in/jordan-ndjock-a58a02252" className="flex items-center rounded-md p-3" target="_blank">
             <UserRoundCheck className="text-gray-300 mr-3" />
-            <span className="flex-1">Suivre l'auteur</span>
+            <span className="flex-1">Suivre l&apos;auteur</span>
             <Linkedin className="text-gray-300 mr-3" />
             <ChevronRight className="text-gray-400" />
           </Link>
@@ -80,7 +79,7 @@ export default function SettingsComponent() {
         <div className="">
           <Link href="/conditions" className="flex items-center rounded-md p-3">
             <span className="text-gray-300 mr-3">📄</span>
-            <span className="flex-1">Conditions d'utilisation</span>
+            <span className="flex-1">Conditions d&apos;utilisation</span>
             <ChevronRight className="text-gray-400" />
           </Link>
         </div>
