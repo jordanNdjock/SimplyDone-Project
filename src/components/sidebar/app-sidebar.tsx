@@ -2,9 +2,12 @@
 
 import * as React from "react"
 import {
+  ChevronRight,
   Frame,
   Map,
   PieChart,
+  Settings,
+  Settings2,
 } from "lucide-react"
 
 import { FaCalendarDays, FaCircleDot, FaSquareCheck } from "react-icons/fa6";
@@ -21,6 +24,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/src/components/ui/sidebar"
 import { selectUser, useAuthStore } from "../../store/authSlice"
 import Image from 'next/image';
@@ -82,6 +86,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { setOpenMobile } = useSidebar();
   const user = useAuthStore(selectUser);
   const isMobile = useIsMobile();
   return (
@@ -111,6 +116,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         {!isMobile && <NavMain items={data.navMain} />}
         {/* <NavProjects projects={data.projects} /> */}
+        {isMobile && <div className="border shadow-sm rounded-lg mt-4">
+          <Link href="/dashboard/parametres" className="flex items-center rounded-md p-3" onClick={() => {if(isMobile) setOpenMobile(false)}}>
+            <Settings2 className="text-gray-300 mr-3" />
+            <span className="flex-1">Paramètres</span>
+            <ChevronRight className="text-gray-400" />
+          </Link>
+        </div>}
       </SidebarContent>
       <SidebarFooter>
         {/* <Button className="mb-5" variant="secondary"><Plus /> Ajouter une catégorie</Button> */}

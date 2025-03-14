@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from 'zustand/middleware';
-import { shuffleArray } from '@/src/lib/utils'; // Implémentez Fisher-Yates
+import { shuffleArray } from '@/src/lib/utils';
 
 interface AudioState {
   // État
@@ -158,6 +158,8 @@ export const useAudioStore = create<AudioState>()(
           '/assets/sounds/relax-21.mp3',
           '/assets/sounds/relax-22.mp3',
           '/assets/sounds/relax-23.mp3',
+          '/assets/sounds/relax-24.mp3',
+          '/assets/sounds/relax-25.mp3',
         ];
         
         const shuffled = shuffleArray(ambientSounds);

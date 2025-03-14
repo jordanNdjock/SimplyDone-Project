@@ -96,7 +96,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
       return work_duration * 60;
     } else {
       // Si le nombre de sessions de travail terminées est non nul et divisible par cycles_before_long_break, c'est une longue pause.
-      if (cyclesCompleted > 0 && cyclesCompleted + 1 % cycles_before_long_break === 0) {
+      if (cyclesCompleted > 0 && (cyclesCompleted + 1) % cycles_before_long_break === 0) {
         return long_break_duration * 60;
       }
       return break_duration * 60;
@@ -134,7 +134,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
     if (timeLeft > 0) return null;
     
     // Si on vient de terminer une session de travail (donc, on est passé en mode pause)
-    if (!isWorkSession) {
+    if (!isWorkSession && !isLongBreak) {
       return {
         title: "🍅 Session terminée",
         description: "Votre session de travail est terminée. Prenez une pause bien méritée !"
@@ -177,11 +177,11 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
                 : "Pause ☕"}
           </CardTitle>
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-medium">Cycle: {cyclesCompleted}/{method?.cycles_before_long_break}</span>
+            <span className="text-xs font-medium">Cycle: {isLongBreak ? cyclesCompleted + 1 : cyclesCompleted}/{method?.cycles_before_long_break}</span>
             {method && (
               <Popover>
                 <PopoverTrigger asChild>
-                    <Info className="w-4 h-4" />
+                    <Info className="w-4 h-4 cursor-pointer" />
                 </PopoverTrigger>
                 <PopoverContent className="">
                   <p className="text-sm">{method.description}</p>
@@ -207,7 +207,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
             <span className="text-[40px] text-[#3a4e6b]">
               {formatTime(timeLeft)}
             </span>
-            <RotateCw className="w-6 h-6cursor-pointer text-gray-300" onClick={resetCurrentCycle} />
+            <RotateCw className="w-6 h-6 cursor-pointer text-gray-300" onClick={resetCurrentCycle} />
           </div>
         </div>
 

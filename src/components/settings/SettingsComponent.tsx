@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github } from "lucide-react";
+import { ArrowLeft, Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Bell } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";
@@ -11,12 +11,15 @@ import { getInitials } from "@/src/utils/utils";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import Link from "next/link";
+import { usePWAStore } from "@/src/store/pwaSlice";
+import { Switch } from "../ui/switch";
 export default function SettingsComponent() {
   const router = useRouter();
   const user = useAuthStore(selectUser);
+  const {handleInstallClick, isInstalled } = usePWAStore();
 
   return (
-    <div className="min-h-screen p-4">
+    <div className=" p-4">
       <div className="flex items-center mb-4 mt-1 text-accent dark:text-white">
         <ArrowLeft
           className="cursor-pointer mr-2"
@@ -27,7 +30,7 @@ export default function SettingsComponent() {
 
       <Card className="">
         <CardContent>
-          <div className="flex items-center gap-4 pt-4">
+          <Link href="/dashboard/profil" className="flex items-center gap-4 pt-4 cursor-pointer">
           <Avatar className="h-16 w-16 rounded-full border-2 border-gray-200 hover:border-gray-500 transition duration-300">
             <AvatarImage src={user?.avatarUrl} alt={user?.name} />
             <AvatarFallback className="text-xl font-bold bg-gray-200 text-gray-600">
@@ -40,7 +43,7 @@ export default function SettingsComponent() {
                 <span>depuis le {user?.registeredAt ? format(new Date(user?.registeredAt), "PPP", {locale: fr}) : 'N/A'}</span>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Compte Premium */}
           {/* <div className="bg-[#292929] rounded-md p-3 mb-2 flex flex-col md:flex-row md:items-center md:justify-between">
@@ -57,8 +60,25 @@ export default function SettingsComponent() {
 
       {/* Liste des Paramètres */}
       <div className="mt-4 space-y-2">
-        {/* Recommandation d'amis */}
-        <div className="">
+        {/* installer l'application */}
+        {!isInstalled && <div className="border shadow-sm rounded-lg bg-gradient-to-r from-primary via-gray-500 to-accent">
+          <Link href="" className="flex items-center rounded-md p-3" onClick={handleInstallClick}>
+            <Download className="text-gray-300 mr-3 animate-bounce" />
+            <span className="flex-1 text-white">Installer SimplyDone</span>
+            <ChevronRight className="text-gray-400" />
+          </Link>
+        </div>}
+
+        {/* Notifications */}
+        {/* <div className="border shadow-sm rounded-lg">
+          <div className="flex items-center rounded-md p-3">
+            <Bell className="text-gray-300 mr-3" />
+            <span className="flex-1">Notifications</span>
+            <Switch className=""/>
+          </div>
+        </div> */}
+        {/* Suivre l'auteur */}
+        <div className="border shadow-sm rounded-lg">
           <Link href="https://www.linkedin.com/in/jordan-ndjock-a58a02252" className="flex items-center rounded-md p-3" target="_blank">
             <UserRoundCheck className="text-gray-300 mr-3" />
             <span className="flex-1">Suivre l&apos;auteur</span>
@@ -67,7 +87,7 @@ export default function SettingsComponent() {
           </Link>
         </div>
         {/* Crédits */}
-        <div className="">
+        <div className="border shadow-sm rounded-lg">
           <Link href="https://www.github.com/jordanNdjock" className="flex items-center rounded-md p-3" target="_blank">
             <BadgeCheck className="text-gray-300 mr-3" />
             <span className="flex-1">Voir les crédits</span>
@@ -76,7 +96,7 @@ export default function SettingsComponent() {
           </Link>
         </div>
         {/* Conditions d'utilisation */}
-        <div className="">
+        <div className="border shadow-sm rounded-lg">
           <Link href="/conditions" className="flex items-center rounded-md p-3">
             <span className="text-gray-300 mr-3">📄</span>
             <span className="flex-1">Conditions d&apos;utilisation</span>
@@ -84,7 +104,7 @@ export default function SettingsComponent() {
           </Link>
         </div>
         {/* Privacy Policy */}
-        <div className="">
+        <div className="border shadow-sm rounded-lg">
           <Link href="/privacy" className="flex items-center rounded-md p-3">
             <span className="text-gray-300 mr-3">🔒</span>
             <span className="flex-1">Politiques de confidentialité</span>
@@ -94,7 +114,7 @@ export default function SettingsComponent() {
       {/* Bouton Partager */}
       <Sheet>
         <SheetTrigger asChild>
-          <div className="flex items-center rounded-md p-3">
+          <div className="flex items-center p-3 border shadow-sm rounded-lg">
             <Share2 className="text-gray-300 mr-3 cursor-pointer" />
             <span className="flex-1">Partager cette application</span>
             <ChevronRight className="text-gray-400" />

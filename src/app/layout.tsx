@@ -4,6 +4,7 @@ import { inter } from "./config/font";
 import { ThemeProvider } from "@/src/components/theme/theme-provider";
 import { Toaster } from '@/src/components/ui/toaster';
 import { Analytics } from "@vercel/analytics/react"
+import PWAEventListener from "../components/PWAListener";
 
 export const metadata: Metadata = {
   title: {
@@ -32,15 +33,18 @@ export default function RootLayout({
       <body
         className={`${inter.className} antialiased`}
       >
+
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
-            {children}
-            <Toaster />
-            <Analytics />
+             <PWAEventListener>
+              {children}
+              <Toaster />
+              <Analytics />
+            </PWAEventListener>
           </ThemeProvider>
       </body>
     </html>

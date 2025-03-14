@@ -40,6 +40,7 @@ export function usePWAInstall() {
   }, []);
 
   const handleInstallClick = () => {
+
     if (installPrompt) {
       installPrompt.prompt();
       installPrompt.userChoice.then((choiceResult) => {

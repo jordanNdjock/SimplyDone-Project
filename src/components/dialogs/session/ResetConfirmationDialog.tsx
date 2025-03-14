@@ -32,7 +32,7 @@ const ResetConfirmationDialog: React.FC<ResetConfirmationDialogProps> = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex gap-2">
-          <AlertDialogAction onClick={onCancel} className="bg-transparent">
+          <AlertDialogAction onClick={onCancel} className="bg-slate-600 dark:bg-transparent">
             Annuler
           </AlertDialogAction>
           <AlertDialogAction onClick={onConfirm} className="bg-red-600 hover:bg-red-700">
