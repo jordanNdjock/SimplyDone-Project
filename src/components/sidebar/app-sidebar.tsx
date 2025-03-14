@@ -6,7 +6,6 @@ import {
   Frame,
   Map,
   PieChart,
-  Settings,
   Settings2,
 } from "lucide-react"
 
