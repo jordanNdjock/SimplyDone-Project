@@ -24,6 +24,7 @@ import { BsGridFill } from "react-icons/bs";
 import { FaCircleDot } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -275,6 +276,7 @@ const BottomBar = React.forwardRef<
   React.ComponentProps<"div">
 >(({ className, ...props }, ref) => {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const pathname = usePathname();
 
   const buttons = [
     { icon: <FaSquareCheck />, label: "Tâches", route: "/dashboard" },
@@ -301,7 +303,7 @@ const BottomBar = React.forwardRef<
           key={index}
           className={cn(
             "flex flex-col items-center text-sm transition-colors duration-300",
-            selectedIndex === index
+            selectedIndex === index && pathname === button.route
               ? "text-accent dark:text-primary"
               : " text-gray-400 dark:text-white hover:text-gray-500"
           )}

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/src/components/theme/theme-provider";
 import { Toaster } from '@/src/components/ui/toaster';
 import { Analytics } from "@vercel/analytics/react"
 import PWAEventListener from "../components/PWAListener";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
@@ -28,6 +29,21 @@ export default function RootLayout({
           <meta name="theme-color" content="#000000" />
           <meta name="description" content="SimplyDone App est une todo avancée" />
           <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+          <Script
+            src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+            strategy="afterInteractive"
+            defer
+          />
+          <Script id="onesignal-init" strategy="afterInteractive">
+            {`
+              window.OneSignalDeferred = window.OneSignalDeferred || [];
+              OneSignalDeferred.push(async function(OneSignal) {
+                await OneSignal.init({
+                  appId: "6c3468be-0c5d-4407-a609-b3a62cb4b4d3",
+                });
+              });
+            `}
+          </Script>
         </head>
         
       <body

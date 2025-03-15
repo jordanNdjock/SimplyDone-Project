@@ -1,6 +1,10 @@
 import { TaskList } from '@/src/components/tasks/TaskList';
 import FloatingActionButton from '../../components/layout/FloatingActionButton';
+import { Metadata } from "next";
 
+export const metadata : Metadata = {
+  title: "Mes tâches"
+}
 export default function Page() {
   return (
     <>
