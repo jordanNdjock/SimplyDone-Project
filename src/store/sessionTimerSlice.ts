@@ -11,6 +11,7 @@ interface TimerState {
   isLongBreak: boolean;
   isWorkSession: boolean;       // true : session de travail, false : pause
   showCompletionDialog: boolean;
+  isLongBreakFinish: boolean;
   lastUpdateTimestamp: number;  // Timestamp de la dernière mise à jour
   startTimestamp?: number;      // Pour le calcul du temps écoulé
   elapsedBeforePause: number; 
@@ -37,6 +38,7 @@ export const useTimerStore = create<TimerState>()(
       showCompletionDialog: false,
       lastUpdateTimestamp: Date.now(),
       elapsedBeforePause: 0,
+      isLongBreakFinish: false,
 
       // Démarre ou reprend le timer
       startTimer: () => {
@@ -101,7 +103,8 @@ export const useTimerStore = create<TimerState>()(
           showCompletionDialog: false,
           lastUpdateTimestamp: Date.now(),
           startTimestamp: 0,
-          elapsedBeforePause: 0
+          elapsedBeforePause: 0,
+          isLongBreakFinish: false
         });
         const audioStore = useAudioStore.getState();
         audioStore.resetAudio();
@@ -154,7 +157,7 @@ export const useTimerStore = create<TimerState>()(
           if ((cyclesCompleted + 1) === cyclesBeforeLongBreak) {
             if(isLongBreak){
               // Après la longue pause, on réinitialise le compteur de cycles
-              set({ isWorkSession: true, cyclesCompleted: 0, isLongBreak: false });
+              set({ isWorkSession: true, cyclesCompleted: 0, isLongBreak: false, isLongBreakFinish: true });
             } else {
               // Sinon, on marque la pause longue
               set({ isLongBreak: true });

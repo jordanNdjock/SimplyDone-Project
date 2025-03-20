@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/src/components/theme/theme-provider";
 import { Toaster } from '@/src/components/ui/toaster';
 import { Analytics } from "@vercel/analytics/react"
 import PWAEventListener from "../components/PWAListener";
-import Script from "next/script";
+// import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
@@ -29,21 +29,36 @@ export default function RootLayout({
           <meta name="theme-color" content="#000000" />
           <meta name="description" content="SimplyDone App est une todo avancée" />
           <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-          <Script
-            src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
-            strategy="afterInteractive"
-            defer
-          />
+          {/* <Script
+          id="onesignal-sw"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                  .then(function(registration) {
+                    console.log('OneSignal Service Worker registered with scope:', registration.scope);
+                  })
+                  .catch(function(error) {
+                    console.error('Service Worker registration failed:', error);
+                  });
+              }
+            `,
+          }}
+        />
           <Script id="onesignal-init" strategy="afterInteractive">
             {`
               window.OneSignalDeferred = window.OneSignalDeferred || [];
               OneSignalDeferred.push(async function(OneSignal) {
                 await OneSignal.init({
                   appId: "6c3468be-0c5d-4407-a609-b3a62cb4b4d3",
+                  notifyButton: {
+                    enable: true,
+                  },
                 });
               });
             `}
-          </Script>
+          </Script> */}
         </head>
         
       <body

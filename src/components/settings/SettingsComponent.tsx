@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download } from "lucide-react";
+import { ArrowLeft, Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Bell } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";
@@ -12,11 +12,69 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import Link from "next/link";
 import { usePWAStore } from "@/src/store/pwaSlice";
-// import { Switch } from "../ui/switch";
+import { Switch } from "../ui/switch";
+import OneSignal from "react-onesignal";
+
+
+
 export default function SettingsComponent() {
   const router = useRouter();
   const user = useAuthStore(selectUser);
   const {handleInstallClick, isInstalled } = usePWAStore();
+  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    OneSignal.init({
+      appId: "6c3468be-0c5d-4407-a609-b3a62cb4b4d3",
+      notifyButton: {
+        enable: true,
+      },
+    });
+  }, []);
+  
+  const requestPermission = (): void => {
+    if (!("Notification" in window)) {
+      console.log("Votre navigateur ne supporte pas les notifications.");
+      return;
+    }
+    Notification.requestPermission().then((permission: NotificationPermission) => {
+      if (permission === "granted") {
+        console.log("Permission accordée pour les notifications.");
+        setNotificationsEnabled(true);
+      } else if (permission === "denied") {
+        console.log("Permission refusée pour les notifications.");
+        setNotificationsEnabled(false);
+        // Affichage d'un popup pour demander à l'utilisateur s'il souhaite activer les notifications
+        const enable = window.confirm(
+          "Les notifications sont désactivées. Souhaitez-vous activer les notifications ?"
+        );
+        if (enable) {
+          // Tentative de redemander la permission
+          Notification.requestPermission().then((newPermission: NotificationPermission) => {
+            if (newPermission === "granted") {
+              console.log("Permission accordée après confirmation.");
+              setNotificationsEnabled(true);
+            } else {
+              console.log("Toujours refusé après confirmation.");
+            }
+          });
+        }
+      } else {
+        // Cas où la permission reste à 'default'
+        console.log("Permission non déterminée.");
+      }
+    });
+  };
+  
+
+  const handleSwitchChange = (checked: boolean): void => {
+    if (checked) {
+      requestPermission();
+    } else {
+      new Notification("Notifications désactivées");
+      setNotificationsEnabled(false);
+    }
+  };
 
   return (
     <div className=" p-4">
@@ -70,14 +128,17 @@ export default function SettingsComponent() {
         </div>}
 
         {/* Notifications */}
-        {/* <div className="border shadow-sm rounded-lg">
+        <div className="border shadow-sm rounded-lg">
           <div className="flex items-center rounded-md p-3">
             <Bell className="text-gray-300 mr-3" />
             <span className="flex-1">Notifications</span>
-            <Switch className=""/>
+            <Switch className="" 
+              checked={notificationsEnabled}
+              onCheckedChange={handleSwitchChange} 
+              />
           </div>
-        </div> */}
-        {/* Suivre l'auteur */}
+        </div>
+        {/* Suivre l'auteur*/}
         <div className="border shadow-sm rounded-lg">
           <Link href="https://www.linkedin.com/in/jordan-ndjock-a58a02252" className="flex items-center rounded-md p-3" target="_blank">
             <UserRoundCheck className="text-gray-300 mr-3" />
@@ -120,11 +181,11 @@ export default function SettingsComponent() {
             <ChevronRight className="text-gray-400" />
           </div>
         </SheetTrigger>
-        <SheetContent className=" text-white w-full md:w-[400px]" side="bottom">
+        <SheetContent className=" text-white w-full md:w-[400px] justify-items-center items-center" side="bottom">
           <h3 className="text-lg font-semibold mb-4">Partager sur les réseaux sociaux</h3>
           <div className="flex gap-4">
           <Link 
-              href={`https://wa.me/?text=${encodeURIComponent("Découvrez SimplyDone : l'appli de productivité ultime ! Organisez vos tâches avec une todolist avancée, priorisez grâce à la matrice d'Eisenhower, et boostez votre concentration avec la méthode Pomodoro. Essayez-la dès maintenant : https://simplydone.vercel.app")}`}              target="_blank"
+              href={`https://wa.me/?text=${encodeURIComponent("Découvrez SimplyDone : l'appli de productivité ultime ! Organisez vos tâches avec une todolist avancée, priorisez grâce à la matrice d'Eisenhower, et boostez votre concentration avec la méthode Pomodoro. Essayez-la dès maintenant : https://simplydone.vercel.app")}`} target="_blank"
               rel="noopener noreferrer"
             >
               <FaWhatsapp className="mr-2 h-10 w-10 text-green-600" />
@@ -171,8 +232,8 @@ export default function SettingsComponent() {
        
       </div>
       {/* Version */}
-      <div className="flex items-center rounded-md p-3 justify-center mt-8">
-        <Info className="text-gray-300 mr-3" />
+      <div className="flex justify-items-end rounded-md w-full p-3 mt-8 text-gray-400">
+        <Info className="text-gray-400 mr-3" />
         <span className="flex-1">SimplyDone 0.4.2 - LJN</span>
       </div>
     </div>

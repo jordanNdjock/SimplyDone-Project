@@ -5,6 +5,7 @@ import { useAuthStore, selectAuthenticated } from "@/src/store/authSlice";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 
+
 export default function ProtectedRoute({
   children,
 }: {
@@ -14,7 +15,7 @@ export default function ProtectedRoute({
   const { fetchUser, listenToAppwrite } = useAuthStore();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     listenToAppwrite();
     const checkAuthentication = async () => {

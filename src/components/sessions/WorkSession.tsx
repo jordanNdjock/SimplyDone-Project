@@ -39,6 +39,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
     isLongBreak,
     isWorkSession,
     showCompletionDialog,
+    isLongBreakFinish,
     startTimer,
     pauseTimer,
     resetTimer,
@@ -89,19 +90,15 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
   };
 
   const calculateDuration = (): number => {
-    if (!method) return 1500; // Valeur par défaut de 25 minutes
-
+    if (!method) return 1500;
     const { work_duration, break_duration, long_break_duration, cycles_before_long_break } = method;
-    if (isWorkSession) {
-      return work_duration * 60;
-    } else {
-      // Si le nombre de sessions de travail terminées est non nul et divisible par cycles_before_long_break, c'est une longue pause.
-      if (cyclesCompleted > 0 && (cyclesCompleted + 1) % cycles_before_long_break === 0) {
-        return long_break_duration * 60;
-      }
-      return break_duration * 60;
-    }
+    return isWorkSession
+      ? work_duration * 60
+      : cyclesCompleted > 0 && (cyclesCompleted + 1) % cycles_before_long_break === 0 && isLongBreak
+        ? long_break_duration * 60
+        : break_duration * 60;
   };
+  
 
   // Formatage du temps
   const formatTime = (seconds: number) => {
@@ -130,35 +127,32 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
   
 
   // Messages du dialogue
-  const getDialogContent = () => {
-    if (timeLeft > 0) return null;
-    
-    // Si on vient de terminer une session de travail (donc, on est passé en mode pause)
-    if (!isWorkSession && !isLongBreak) {
-      return {
-        title: "🍅 Session terminée",
-        description: "Votre session de travail est terminée. Prenez une pause bien méritée !"
-      };
-    } else {
-      // On vient de terminer une pause
-      if (isLongBreak) {
-        return {
+  const getDialogContent = () =>
+    timeLeft > 0
+      ? null
+      : !isWorkSession && !isLongBreak
+      ? {
+          title: "🍅 Session terminée",
+          description:
+            "Votre session de travail est terminée. Prenez une pause bien méritée !",
+        }
+      : isLongBreak
+      ? {
+          title: "☕ Pause terminée",
+          description:
+            "Votre pause est terminée. Vous allez passer à une grande pause.",
+        }
+      : isLongBreakFinish
+      ? {
           title: "🏖️ Pause longue terminée",
-          description: "Votre longue pause est terminée. Prêt à reprendre une nouvelle session de travail ?"
-        };
-      } else if (method && (cyclesCompleted + 1) === method.cycles_before_long_break) {
-        return {
+          description:
+            "Votre longue pause est terminée. Prêt à reprendre une nouvelle session de travail ?",
+        }
+      : {
           title: "☕ Pause terminée",
-          description: "Votre pause est terminée. Vous allez passer à une grande pause."
+          description: "Votre pause est terminée. Prêt à reprendre le travail ?",
         };
-      } else {
-        return {
-          title: "☕ Pause terminée",
-          description: "Votre pause est terminée. Prêt à reprendre le travail ?"
-        };
-      }
-    }
-  };
+  
   
   
   

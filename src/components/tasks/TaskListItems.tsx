@@ -147,7 +147,7 @@ export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="text-blue-500 text-sm" onClick={() => handleEditTask(task?? "")}>
+                      <DropdownMenuItem className="text-blue-500 text-sm cursor-pointer" onClick={() => handleEditTask(task?? "")}>
                         <Edit size={16} className="mr-2" /> Modifier
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
