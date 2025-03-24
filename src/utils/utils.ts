@@ -52,8 +52,12 @@ export function formatTaskDates(startDate: string, endDate: string): string {
     return "Demain"
   }
 
+  // Cas 3 : start_date est hier et end_date est aujourd'hui
+  if (isToday(end) && isYesterday(start)) {
+    return "Aujourd'hui"
+  }
 
-   // Cas 3 : Même mois et même année
+   // Cas 4 : Même mois et même année
    if (
     format(start, "MM yyyy", { locale: fr }) === format(end, "MM yyyy", { locale: fr })
   ) {
@@ -61,13 +65,13 @@ export function formatTaskDates(startDate: string, endDate: string): string {
     return `${format(start, "dd", { locale: fr })}-${format(end, yearFormat, { locale: fr })}`
   }
 
-  // Cas 4 : Même année mais mois différents
+  // Cas 5 : Même année mais mois différents
   if (format(start, "yyyy", { locale: fr }) === format(end, "yyyy", { locale: fr })) {
     const yearFormat = start.getFullYear() === currentYear ? "dd MMM" : "dd MMM yyyy"
     return `${format(start, "dd MMM", { locale: fr })} - ${format(end, yearFormat, { locale: fr })}`
   }
 
-  // Cas 5 : Années différentes
+  // Cas 6 : Années différentes
   return `${format(start, "dd MMM yyyy", { locale: fr })} - ${format(end, "dd MMM yyyy", { locale: fr })}`
 }
 

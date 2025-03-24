@@ -191,7 +191,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
         <div className="relative w-64 h-64">
           <CircularProgressbar
             value={(totalDuration - timeLeft) / totalDuration * 100}
-            text=""  // On gère le texte dans le conteneur overlay
+            text=""
             styles={buildStyles({
               pathColor: getProgressColor(),
               trailColor: "#e5e7eb",
