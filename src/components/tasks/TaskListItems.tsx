@@ -22,9 +22,10 @@ import { hasDatePassed } from "@/src/utils/utils";
 interface TaskListItemsProps {
   tasks: Task[];
   isMatrix?: boolean; 
+  isSearch?: boolean;
 }
 
-export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
+export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps) {
   const [longPressId, setLongPressId] = useState<string | null>(null);
   const [,startTransition] = useTransition();
   const { toggleTask, deleteTask } = useTaskStore();
@@ -162,7 +163,7 @@ export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
                 </div>
               </motion.div>
             ))}
-            {isMatrix && tasks.length === 0 && <div className="flex flex-col items-center justify-center h-full my-20">
+            {!isSearch && isMatrix && tasks.length === 0 && <div className="flex flex-col items-center justify-center h-full my-20">
               <div className="text-center text-muted-foreground opacity-60 text-xs md:text-lg">
                 Aucune tâche à afficher
               </div>

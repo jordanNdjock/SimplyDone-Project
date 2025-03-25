@@ -19,9 +19,11 @@ export interface Task {
 
 export interface TaskState {
     tasks: Task[];
+    searchTaskResults: Task[];
     fetchTasks: (userId: string) => Promise<void>;
     addTask: (task: Omit<Task, "id">, userId: string) => Promise<void>;
     toggleTask: (taskId: string) => Promise<void>;
     updateTask: (task: Task, updates: Partial<Task>) => Promise<void>;
     deleteTask: (taskId: string, imageId?: string) => Promise<void>;
+    searchTasks: (searchValue: string) => Promise<void>;
 }

@@ -5,11 +5,13 @@ import { ID, db, TaskCollectionId, databaseId, Query, storage, TasksImgBucketId}
 import { TaskState, Task } from "@/src/models/task";
 import { mapTaskInformation } from "../utils/mapTaskInformations";
 import { toast } from "../hooks/use-toast";
+import { selectUser, useAuthStore } from "./authSlice";
 
 export const useTaskStore = create(
   persist<TaskState>(
     (set) => ({
       tasks: [],
+      searchTaskResults: [],
       fetchTasks: async (userId: string) => {
         try {
           const result = await db.listDocuments(databaseId, TaskCollectionId, [Query.equal("user_id", userId)]);
@@ -109,6 +111,26 @@ export const useTaskStore = create(
           });
         }
       },
+      searchTasks: async (searchValue) => {
+        try {
+            const userId = useAuthStore.getState().user;
+            if (!userId) {
+              throw new Error("User ID is null. Please ensure the user is authenticated.");
+            }
+            const result = await db.listDocuments(databaseId, TaskCollectionId, [
+            Query.search("title", searchValue),
+            Query.equal("user_id", userId.$id),
+            ]);
+          const searchTaskResults = result.documents.map((task) => mapTaskInformation(task));
+          set({ searchTaskResults });
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
+            toast({
+              title: message,
+              variant: "error",
+            });
+        }
+      },
     }),
     {
       name: "task-storage"
@@ -118,3 +140,4 @@ export const useTaskStore = create(
 
 
 export const selectTasks = (state: TaskState) => state.tasks;
+export const selectSearchtasks = (state: TaskState) => state.searchTaskResults;
