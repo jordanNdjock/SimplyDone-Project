@@ -13,25 +13,33 @@ export default function MatrixLayout() {
         title: "Urgent et important",
         color: "text-red-500",
         icon: <AlertTriangle className="mr-2 h-5 w-4 md:w-5" />,
-        tasks: tasks.filter(task => task.priority === 'high')
+        tasks: tasks
+        .filter(task => task.priority === 'high')
+        .sort((a, b) => Number(a.completed) - Number(b.completed))
       },
       'not-urgent-important': {
         title: "Non urgent mais important",
         color: "text-yellow-500",
         icon: <CalendarCheck className="mr-2 h-5 w-4 md:w-5" />,
-        tasks: tasks.filter(task => task.priority === 'medium')
+        tasks: tasks
+        .filter(task => task.priority === 'medium')
+        .sort((a, b) => Number(a.completed) - Number(b.completed))
       },
       'urgent-not-important': {
         title: "Urgent mais non important",
         icon: <Clock className="mr-2 h-5 w-4 md:w-5" />,
         color: "text-blue-500",
-        tasks: tasks.filter(task => task.priority === 'low')
+        tasks: tasks
+        .filter(task => task.priority === 'low')
+        .sort((a, b) => Number(a.completed) - Number(b.completed))
       },
       'not-urgent-not-important': {
         title: "Pas urgent et non important",
         color: "text-green-500",
         icon: <ZapOff className="mr-2 h-5 w-4 md:w-5" />,
-        tasks: tasks.filter(task => task.priority === 'none')
+        tasks: tasks
+        .filter(task => task.priority === 'none')
+        .sort((a, b) => Number(a.completed) - Number(b.completed))
       }
     }
   return (

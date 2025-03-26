@@ -12,7 +12,6 @@ import { selectAuthenticated, useAuthStore } from "../store/authSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useTheme } from "next-themes";
-import { useTaskStore } from "../store/taskSlice";
 
 
 export default function Home() {
