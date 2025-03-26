@@ -19,7 +19,6 @@ export default function Home() {
   const selectuser = useAuthStore(selectAuthenticated);
   const router = useRouter();
   const { theme, fetchUser, listenToAppwrite } = useAuthStore();
-  const { listenToTasks } = useTaskStore();
   const { setTheme } = useTheme();
 
   useEffect(() => {
