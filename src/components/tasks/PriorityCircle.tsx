@@ -25,5 +25,5 @@ export function PriorityCircle({ priority = "none", isMatrix }: PriorityCirclePr
       break;
   }
 
-  return <Circle size={isMatrix ? 16 : 24} className={`${colorClass}`} />;
+  return <Circle size={isMatrix ? 14 : 20} className={`${colorClass}`} />;
 }

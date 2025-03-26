@@ -5,7 +5,7 @@ import { ID, db, TaskCollectionId, databaseId, Query, storage, TasksImgBucketId}
 import { TaskState, Task } from "@/src/models/task";
 import { mapTaskInformation } from "../utils/mapTaskInformations";
 import { toast } from "../hooks/use-toast";
-import { selectUser, useAuthStore } from "./authSlice";
+import { useAuthStore } from "./authSlice";
 
 export const useTaskStore = create(
   persist<TaskState>(
@@ -50,6 +50,9 @@ export const useTaskStore = create(
             tasks: state.tasks.map((task) =>
               task.id === taskId ? { ...task, completed: !task.completed } : task
             ),
+            searchTaskResults: state.searchTaskResults.map((task) =>
+              task.id === taskId ? { ...task, completed: !task.completed } : task
+            ),
           }));
     
           const updatedTask = useTaskStore.getState().tasks.find((task) => task.id === taskId);
@@ -74,6 +77,9 @@ export const useTaskStore = create(
         try {
           set((state) => ({
             tasks: state.tasks.map((t) =>
+              t.id === task.id ? { ...t, ...updates } : t
+            ),
+            searchTaskResults: state.searchTaskResults.map((t) =>
               t.id === task.id ? { ...t, ...updates } : t
             ),
           }));
@@ -118,8 +124,11 @@ export const useTaskStore = create(
               throw new Error("User ID is null. Please ensure the user is authenticated.");
             }
             const result = await db.listDocuments(databaseId, TaskCollectionId, [
-            Query.search("title", searchValue),
-            Query.equal("user_id", userId.$id),
+              Query.or([
+                Query.search("title", searchValue),
+                Query.search("description", searchValue),
+              ]),
+              Query.equal("user_id", userId.$id),
             ]);
           const searchTaskResults = result.documents.map((task) => mapTaskInformation(task));
           set({ searchTaskResults });

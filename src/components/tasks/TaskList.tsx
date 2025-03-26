@@ -45,14 +45,14 @@ export function TaskList() {
   completedTasks.sort((a, b) => (priorityMap[b.priority ?? 'none'] - priorityMap[a.priority ?? 'none']));
 
   return (
-    <div className="grid gap-4 mt-4">
+    <div className="grid gap-2 mt-4">
       {Array.isArray(tasks) && tasks.length > 0 ? (
     <>
       <TaskListItems tasks={activeTasks} />
       
       {completedTasks.length > 0 && (
-        <div className="mt-12 opacity-60 space-y-4">
-          <h2 className="text-lg md:text-2xl font-bold text-gray-500 mb-4">Terminées</h2>
+        <div className="mt-6 opacity-60 space-y-2">
+          <h2 className="text-lg md:text-2xl font-bold text-gray-500 mb-2">Terminées</h2>
           <TaskListItems tasks={completedTasks} />
         </div>
       )}

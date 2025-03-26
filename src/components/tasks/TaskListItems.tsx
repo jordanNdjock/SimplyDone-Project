@@ -90,7 +90,7 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                   }}
                 style={{ backgroundColor: task.color }}
               >
-              <div className={`flex gap-3 ${isMatrix ? "p-3" : "p-4"} items-center ${task.completed ? "opacity-60" : ""}`}>
+              <div className={`flex gap-1 ${isMatrix ? "p-2" : "p-3"} items-center ${task.completed ? "opacity-45" : ""}`}>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -98,17 +98,17 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                 }}
                 >
                   {task.completed ? (
-                    <CheckCircle size={isMatrix ? 16 : 24} className="text-green-400" />
+                    <CheckCircle size={isMatrix ? 14 : 20} className="text-green-400" />
                   ) : (
                     PriorityCircle({priority: task.priority, isMatrix})
                   )}
                 </button>
     
                 <div className="flex-1">
-                  <h3 className={`font-semibold text-white line-clamp-2 leading-tight ${isMatrix && "text-xs"}  ${task.completed ? "line-through " : ""}`}>
+                  <h3 className={`font-semibold text-white line-clamp-1 leading-tight ${isMatrix ? "text-[10px]" : "text-sm" }  ${task.completed ? "line-through " : ""}`}>
                     {task.title}
                   </h3>
-                  {task.description && <p className={`${isMatrix ? "text-[10px]": "text-sm"} line-clamp-1 text-gray-400`}>{task.description}</p>}
+                  {task.description && <p className={`${isMatrix ? "text-[8px]": "text-xs"} line-clamp-1 text-gray-400`}>{task.description}</p>}
                 </div>
     
                 {task.image_url && (
@@ -122,7 +122,7 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                 )}
 
                 {task.start_date && task.end_date && (
-                    <div className={`flex items-center gap-2 ${isMatrix ? "text-[8px]" : "text-xs"} ${hasDatePassed(task.end_date) ? "text-red-300" : "text-blue-300" } font-bold`}>
+                    <div className={`flex items-center gap-2 ${isMatrix ? "text-[7px]" : "text-[10px]"} ${hasDatePassed(task.end_date) ? "text-red-300" : "text-blue-300" } font-bold`}>
                         {formatTaskDates(task.start_date, task.end_date)}
                     </div>
                 )}
@@ -158,8 +158,8 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                   </DropdownMenu>
                 </div>
                 </div>
-                <div className="flex items-center w-full -mx-4 opacity-60 gap-2 md:hidden m-0 justify-end">
-                    {task.image_url && <ImageIcon className={`${isMatrix ? "w-3 h-3" : "w-4 h-4"} mb-1 text-white`}/>}
+                <div className={`flex items-center w-full ${task.image_url && "-mt-2"} -mx-4 opacity-60 gap-1 md:hidden m-0 justify-end`}>
+                    {task.image_url && <ImageIcon className={`${isMatrix ? "w-2 h-2" : "w-4 h-4"} mb-1 text-white`}/>}
                 </div>
               </motion.div>
             ))}

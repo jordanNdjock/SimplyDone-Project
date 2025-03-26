@@ -24,7 +24,6 @@ export default function SearchComponent() {
   const initialSearch = searchParams.get("search") || "";
   const {searchTasks} = useTaskStore()
   const Tasks = useTaskStore(selectSearchtasks);
-  console.log(Tasks);
 
   const {
     register,
@@ -56,7 +55,6 @@ export default function SearchComponent() {
 
   const clearSearch = () => {
     setValue("search", "");
-
   };
 
   const onSubmit = (data: SearchFormValues) => {
@@ -74,7 +72,7 @@ export default function SearchComponent() {
         <Input
           {...register("search")}
           placeholder="Rechercher vos tâches..."
-          className="pl-10 pr-10"
+          className="pl-10 pr-10 h-10"
         />
 
         {searchValue && (
@@ -89,7 +87,7 @@ export default function SearchComponent() {
       </div>
     </form>
     {(!searchValue || (searchValue && Tasks.length === 0)) && (
-        
+
         <div className="flex flex-col items-center mt-16">
             <div className="flex justify-center items-center m-auto p-4">
             <Image
@@ -110,7 +108,7 @@ export default function SearchComponent() {
             <>
                 <h3 className="dark:text-white">Vous cherchez quoi ?</h3>
                 <p className="mt-4 text-xs text-gray-500 text-center">
-                Appuyez sur la zone de saisie pour rechercher vos tâches.
+                    Appuyez sur la zone de saisie pour rechercher vos tâches.
                 </p>
             </>
             )}
@@ -118,9 +116,10 @@ export default function SearchComponent() {
         )}
 
 
-      {Tasks.length > 0 && (
-        <div className="mt-8 space-y-4">
-          <TaskListItems tasks={Tasks} isMatrix={true} isSearch={true} />
+      {Tasks.length > 0 && searchValue && (
+        <div className="mt-8 space-y-2">
+          <p className="text-xs text-gray-400">{Tasks.length} Tâche(s) trouvée(s)</p>
+          <TaskListItems tasks={Tasks} isSearch={true} />
         </div>
       )}
     </>

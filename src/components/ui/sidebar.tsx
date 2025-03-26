@@ -303,7 +303,7 @@ const BottomBar = React.forwardRef<
           key={index}
           className={cn(
             "flex flex-col items-center text-sm transition-colors duration-300",
-            selectedIndex === index && pathname === button.route
+            pathname === button.route
               ? "text-accent dark:text-primary"
               : " text-gray-400 dark:text-white hover:text-gray-500"
           )}
