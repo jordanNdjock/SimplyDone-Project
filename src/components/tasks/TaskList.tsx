@@ -13,6 +13,8 @@ export function TaskList() {
   const user = useAuthStore(selectUser);
 
   const [isPending, startTransition] = useTransition();
+  const { listenToTasks } = useTaskStore();
+
 
   useEffect(() => {
     try {
@@ -28,6 +30,9 @@ export function TaskList() {
     }
   }, [fetchTasks, user]);
 
+  useEffect(() => {
+    listenToTasks()
+  },[listenToTasks]);
 
   if(isPending) return <div className="mt-8"><SkeletonTask/></div>;
 
@@ -45,7 +50,7 @@ export function TaskList() {
   completedTasks.sort((a, b) => (priorityMap[b.priority ?? 'none'] - priorityMap[a.priority ?? 'none']));
 
   return (
-    <div className="grid gap-2 mt-4">
+    <div className="grid gap-2.5 mt-4">
       {Array.isArray(tasks) && tasks.length > 0 ? (
     <>
       <TaskListItems tasks={activeTasks} />

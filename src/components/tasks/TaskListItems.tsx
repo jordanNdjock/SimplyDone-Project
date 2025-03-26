@@ -90,7 +90,7 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                   }}
                 style={{ backgroundColor: task.color }}
               >
-              <div className={`flex gap-1 ${isMatrix ? "p-2" : "p-3"} items-center ${task.completed ? "opacity-45" : ""}`}>
+              <div className={`flex gap-1.5 ${isMatrix ? "p-2" : "p-3"} items-center ${task.completed ? "opacity-45" : ""}`}>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();

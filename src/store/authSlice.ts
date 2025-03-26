@@ -151,7 +151,7 @@ export const useAuthStore = create(
 
         if (typeof window === "undefined") return;
 
-        const unsubscribe = client.subscribe("account", async (response) => {
+        const subscribe = client.subscribe("account", async (response) => {
           if (response.events.includes("users.*.update.prefs")) {
             const userResponse = await account.get();
             const newTheme = userResponse.prefs.theme || "system";
@@ -160,7 +160,7 @@ export const useAuthStore = create(
           }
         });
     
-        return unsubscribe;
+        return subscribe;
       },
     }),
    

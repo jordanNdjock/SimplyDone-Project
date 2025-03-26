@@ -26,4 +26,5 @@ export interface TaskState {
     updateTask: (task: Task, updates: Partial<Task>) => Promise<void>;
     deleteTask: (taskId: string, imageId?: string) => Promise<void>;
     searchTasks: (searchValue: string) => Promise<void>;
+    listenToTasks: () => void;
 }

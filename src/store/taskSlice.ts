@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import { persist } from "zustand/middleware";
-import { ID, db, TaskCollectionId, databaseId, Query, storage, TasksImgBucketId} from "@/src/lib/appwrite";
+import { ID, db, TaskCollectionId, databaseId, Query, storage, TasksImgBucketId, client} from "@/src/lib/appwrite";
 import { TaskState, Task } from "@/src/models/task";
 import { mapTaskInformation } from "../utils/mapTaskInformations";
 import { toast } from "../hooks/use-toast";
@@ -108,6 +108,7 @@ export const useTaskStore = create(
           await db.deleteDocument(databaseId, TaskCollectionId, taskId);
           set((state) => ({
             tasks: state.tasks.filter((task) => task.id !== taskId),
+            searchTaskResults: state.searchTaskResults.filter((task) => task.id !== taskId),
           }));
         } catch (error) {
           const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
@@ -139,6 +140,45 @@ export const useTaskStore = create(
               variant: "error",
             });
         }
+      },
+      listenToTasks: () => {
+        if (typeof window === "undefined") return;
+        const subscription = client.subscribe(
+          `databases.${databaseId}.collections.${TaskCollectionId}.documents`,
+          async (response) => {
+            if (response.events.includes("databases.*.collections.*.documents.*.create")) {
+              const newTask = mapTaskInformation(response.payload);
+              set((state) => {
+                const exists = state.tasks.some((task) => task.id === newTask.id);
+                if (exists) {
+                  return {};
+                }
+                return { tasks: [...state.tasks, newTask] };
+              });
+            }            
+            if (response.events.includes("databases.*.collections.*.documents.*.update")) {
+              const updatedTask = mapTaskInformation(response.payload);
+              set((state) => ({
+                tasks: state.tasks.map((task) =>
+                  task.id === updatedTask.id ? updatedTask : task
+                ),
+                searchTaskResults: state.searchTaskResults.map((task) =>
+                  task.id === updatedTask.id ? updatedTask : task
+                ),
+              }));
+            }
+            if (response.events.includes("databases.*.collections.*.documents.*.delete")) {
+              const deletedTaskId = (response.payload as { $id: string }).$id;
+              set((state) => ({
+                tasks: state.tasks.filter((task) => task.id !== deletedTaskId),
+                searchTaskResults: state.searchTaskResults.filter(
+                  (task) => task.id !== deletedTaskId
+                ),
+              }));
+            }
+          }
+        );
+        return subscription;
       },
     }),
     {
