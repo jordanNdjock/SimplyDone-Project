@@ -53,9 +53,8 @@ const DynamicDropdownMenu: React.FC = () => {
         <EllipsisVertical />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuSeparator />
         {items.map((item, index) => (
-          <DropdownMenuItem key={index} onClick={item.onClick} className="flex items-center cursor-pointer">
+          <DropdownMenuItem key={index} onClick={item.onClick} className="flex items-center cursor-pointer space-y-2">
             {item.icon}
             <span className="truncate max-w-[150px]">{item.label}</span>
           </DropdownMenuItem>
