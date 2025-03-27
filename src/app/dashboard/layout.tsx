@@ -9,7 +9,6 @@ import {
 } from "@/src/components/ui/sidebar";
 import { Separator } from "@/src/components/ui/separator";
 import DynamicBreadcrumb from "@/src/components/layout/DynamicBreadcrumbs";
-import { ToggleTheme } from "@/src/components/theme/ToggleTheme";
 import DynamicDropdownMenu from '../../components/layout/DynamicDropdownMenu';
 
 export default function DashboardLayout({
@@ -29,7 +28,6 @@ export default function DashboardLayout({
             <DynamicBreadcrumb />
           </div>
           <div className="flex items-center mr-4 md:w-auto lg:-mr-6 space-x-2 md:space-x-4">
-            <ToggleTheme />
             <DynamicDropdownMenu />
           </div>
         </header>

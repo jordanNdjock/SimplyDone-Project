@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Bell } from "lucide-react";
+import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Bell, Paintbrush } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";
@@ -14,11 +13,12 @@ import Link from "next/link";
 import { usePWAStore } from "@/src/store/pwaSlice";
 import { Switch } from "../ui/switch";
 import OneSignal from "react-onesignal";
+import { ToggleTheme } from "../theme/ToggleTheme";
+import BackToPage from "../layout/BackToPage";
 
 
 
 export default function SettingsComponent() {
-  const router = useRouter();
   const user = useAuthStore(selectUser);
   const {handleInstallClick, isInstalled } = usePWAStore();
   const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(false);
@@ -77,19 +77,14 @@ export default function SettingsComponent() {
   };
 
   return (
-    <div className=" p-4">
-      <div className="flex items-center mb-4 mt-1 text-accent dark:text-white">
-        <ArrowLeft
-          className="cursor-pointer mr-2"
-          onClick={() => router.back()}
-        />
-        <h1 className="text-xl font-semibold">Paramètres</h1>
-      </div>
+    <div className="px-4">
+
+      <BackToPage title="Paramètres" />
 
       <Card className="">
         <CardContent>
           <Link href="/dashboard/profil" className="flex items-center gap-4 pt-4 cursor-pointer">
-          <Avatar className="h-16 w-16 rounded-full border-2 border-gray-200 hover:border-gray-500 transition duration-300">
+          <Avatar className="h-16 w-16 rounded-full">
             <AvatarImage src={user?.avatarUrl} alt={user?.name} />
             <AvatarFallback className="text-xl font-bold bg-gray-200 text-gray-600">
               {getInitials(user?.name)}
@@ -118,6 +113,7 @@ export default function SettingsComponent() {
 
       {/* Liste des Paramètres */}
       <div className="mt-4 space-y-2">
+
         {/* installer l'application */}
         {!isInstalled && <div className="border shadow-sm rounded-lg bg-gradient-to-r from-primary via-gray-500 to-accent">
           <Link href="" className="flex items-center rounded-md p-3" onClick={handleInstallClick}>
@@ -127,12 +123,20 @@ export default function SettingsComponent() {
           </Link>
         </div>}
 
+        {/* Thème */}
+        <div className="border shadow-sm rounded-lg">
+          <div className="flex items-center rounded-md p-3">
+            <Paintbrush className="text-gray-300 mr-3" />
+            <span className="flex-1">Thème de l&apos;application</span>
+            <ToggleTheme  />
+          </div>
+        </div>
         {/* Notifications */}
         <div className="border shadow-sm rounded-lg">
           <div className="flex items-center rounded-md p-3">
             <Bell className="text-gray-300 mr-3" />
             <span className="flex-1">Notifications</span>
-            <Switch className="" 
+            <Switch className="mr-2" 
               checked={notificationsEnabled}
               onCheckedChange={handleSwitchChange} 
               />
@@ -234,7 +238,7 @@ export default function SettingsComponent() {
       {/* Version */}
       <div className="flex justify-items-end rounded-md w-full p-3 mt-8 text-gray-400">
         <Info className="text-gray-400 mr-3" />
-        <span className="flex-1">SimplyDone 0.4.2 - LJN</span>
+        <span className="flex-1">SimplyDone App 0.5.2 - LJN</span>
       </div>
     </div>
   );

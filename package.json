@@ -1,6 +1,6 @@
 {
   "name": "simplydone-project",
-  "version": "0.4.2",
+  "version": "0.5.2",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

@@ -4,9 +4,15 @@ import { selectTasks, useTaskStore } from "@/src/store/taskSlice"
 import { ScrollArea, ScrollBar } from "@/src/components/ui/scroll-area";
 import { AlertTriangle, CalendarCheck, Clock, ZapOff } from "lucide-react";
 import { TaskListItems } from "../tasks/TaskListItems";
+import { usePrefUserStore } from "@/src/store/prefUserSlice";
 
 export default function MatrixLayout() {
-    const tasks = useTaskStore(selectTasks)
+    let tasks = useTaskStore(selectTasks);
+    const { matrice_DisplayFinishedTasks } = usePrefUserStore();
+
+    if (!matrice_DisplayFinishedTasks) {
+      tasks = tasks.filter(task => !task.completed);
+    }
 
     const quadrants = {
       'urgent-important': {
@@ -42,6 +48,9 @@ export default function MatrixLayout() {
         .sort((a, b) => Number(a.completed) - Number(b.completed))
       }
     }
+  
+  if(tasks.length === 0) return null;
+
   return (
     <div className="grid h-full grid-cols-2 grid-rows-2 gap-2">
         {Object.entries(quadrants).map(([key, quadrant]) => (

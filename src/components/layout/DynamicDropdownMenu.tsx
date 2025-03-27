@@ -5,42 +5,47 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "@/src/components/ui/dropdown-menu";
-import { EllipsisVertical } from "lucide-react";
-import Link from "next/link";
+import { EllipsisVertical, CheckSquare, List, SlidersHorizontal, Unplug, EyeOff, CaptionsOff } from "lucide-react";
+import React from "react";
+import { usePrefUserStore } from "@/src/store/prefUserSlice";
 
 type MenuItem = {
   label: string;
-  href: string;
+  onClick: () => void;
+  icon: React.ReactElement;
 };
 
 const DynamicDropdownMenu: React.FC = () => {
+  const displayFinishedTasks = usePrefUserStore((state) => state.tasklist_DisplayFinishedTasks);
+  const displayDetailsTasks = usePrefUserStore((state) => state.tasklist_DisplayDetailsTasks);
+  const matrice_DisplayFinishedTasks = usePrefUserStore((state) => state.matrice_DisplayFinishedTasks);
+  const { setTasklistDisplayFinishedTasks, setTasklistDisplayDetailsTasks, setMatriceDisplayFinishedTasks } = usePrefUserStore.getState();
   const pathname = usePathname();
 
   const menuItems: Record<string, MenuItem[]> = {
     "/dashboard": [
-      { label: "Trier", href: "/dashboard/profile" },
-      { label: "Afficher details", href: "/dashboard/billing" },
-      { label: "Liste", href: "/dashboard/settings" },
+      { label: `${displayFinishedTasks ? "Masquer" : "Afficher"} Terminées`, onClick: () => setTasklistDisplayFinishedTasks(displayFinishedTasks), icon: displayFinishedTasks ? <EyeOff size={16} /> : <CheckSquare size={16} /> },
+      { label: `${displayDetailsTasks ? "Masquer" : "Afficher"} Details`, onClick: () => setTasklistDisplayDetailsTasks(displayDetailsTasks), icon: displayDetailsTasks ? <CaptionsOff size={16} /> : <List size={16} /> },
+      { label: "Collaborer", onClick: () => console.log("Collaborer clicked"), icon: <Unplug size={16} /> },
     ],
-    "/dashboard/profil": [
-      { label: "Edit Profile", href: "/dashboard/profile/edit" },
-      { label: "Privacy Settings", href: "/dashboard/profile/privacy" },
+    "/dashboard/matrice": [
+      { label: `${matrice_DisplayFinishedTasks ? "Masquer" : "Afficher"} Terminées`, onClick: () => setMatriceDisplayFinishedTasks(matrice_DisplayFinishedTasks), icon: matrice_DisplayFinishedTasks ? <EyeOff size={16} /> : <CheckSquare size={16}/> },        
     ],
-    "/dashboard/parametres": [
-      { label: "General", href: "/dashboard/settings/general" },
-      { label: "Security", href: "/dashboard/settings/security" },
+    "/dashboard/sessions": [
+      { label: "Paramètres pour rester concentré.e", onClick: () => console.log("Afficher Terminées clicked"), icon: <SlidersHorizontal size={16} /> },        
+    ],
+    "/dashboard/calendrier": [
+      { label: "Afficher Terminées", onClick: () => console.log("Afficher Terminées clicked"), icon: <CheckSquare size={16} /> },
+      { label: "Afficher Details", onClick: () => console.log("Afficher Details clicked"), icon: <List size={16} /> },
     ],
   };
+  
+  if(pathname === "/dashboard/parametres" || pathname === "/dashboard/profil" || pathname === "/dashboard/rechercher" ) return null;
 
-
-  const items = menuItems[pathname] ?? [
-    { label: "Home", href: "/" },
-    { label: "Contact Support", href: "/support" },
-  ];
+  const items: MenuItem[] = menuItems[pathname];
 
   return (
     <DropdownMenu>
@@ -48,11 +53,11 @@ const DynamicDropdownMenu: React.FC = () => {
         <EllipsisVertical />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Options</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {items.map((item, index) => (
-          <DropdownMenuItem key={index} asChild>
-            <Link href={item.href}>{item.label}</Link>
+          <DropdownMenuItem key={index} onClick={item.onClick} className="flex items-center cursor-pointer">
+            {item.icon}
+            <span className="truncate max-w-[150px]">{item.label}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

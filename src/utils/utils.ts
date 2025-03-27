@@ -1,18 +1,19 @@
 import { format, isToday, isTomorrow, parseISO, isYesterday } from "date-fns";
 import { fr } from "date-fns/locale";
 
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
 export const getInitials = (name?: string): string | null => {
-    if (!name || name.trim().length === 0) {
-      return null;
-    }
-  
-    const names = name.trim().split(" ");
-    if (names.length >= 2) {
-      return `${names[0][0].toUpperCase()}${names[1][0].toUpperCase()}`;
-    }
-  
-    return names[0][0].toUpperCase();
+  if (!name || !name.trim()) return null;
+
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) {
+    return capitalize(words[0].substring(0, 5));
+  } else {
+    return words.map(word => word[0].toUpperCase()).join("").slice(0, 5);
+  }
 };
+
 
 export const getProrityLabel = (priority: "none" | "low" | "medium" | "high") => {
   switch (priority) {

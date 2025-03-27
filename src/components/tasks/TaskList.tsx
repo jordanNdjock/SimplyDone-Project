@@ -6,11 +6,13 @@ import { selectUser, useAuthStore } from "@/src/store/authSlice";
 import { SkeletonTask } from "../loaderSkeletons/SkeletonTask";
 import { toast } from "@/src/hooks/use-toast";
 import { TaskListItems } from './TaskListItems';
+import { usePrefUserStore } from "@/src/store/prefUserSlice";
 
 export function TaskList() {
   const { fetchTasks } = useTaskStore();
   const tasks = useTaskStore(selectTasks);
   const user = useAuthStore(selectUser);
+  const { tasklist_DisplayFinishedTasks } = usePrefUserStore();
 
   const [isPending, startTransition] = useTransition();
   const { listenToTasks } = useTaskStore();
@@ -55,9 +57,9 @@ export function TaskList() {
     <>
       <TaskListItems tasks={activeTasks} />
       
-      {completedTasks.length > 0 && (
+      {completedTasks.length > 0 && tasklist_DisplayFinishedTasks && (
         <div className="mt-6 opacity-60 space-y-2">
-          <h2 className="text-lg md:text-2xl font-bold text-gray-500 mb-2">Terminées</h2>
+          <h2 className="text-lg md:text-xl font-bold text-gray-500 mb-2">Terminées</h2>
           <TaskListItems tasks={completedTasks} />
         </div>
       )}

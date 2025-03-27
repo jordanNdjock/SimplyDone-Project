@@ -275,7 +275,7 @@ const BottomBar = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div">
 >(({ className, ...props }, ref) => {
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [, setSelectedIndex] = React.useState(0);
   const pathname = usePathname();
 
   const buttons = [
@@ -334,7 +334,7 @@ const SidebarTrigger = React.forwardRef<
       data-sidebar="trigger"
       variant="ghost"
       size="lg"
-      className={cn("h-9 w-9", className)}
+      className={cn("h-9 w-9 outline-none", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()

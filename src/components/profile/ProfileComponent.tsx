@@ -11,11 +11,11 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
-import { Camera, Trash2, Edit, LoaderCircle, ArrowLeft } from "lucide-react";
+import { Camera, Trash2, Edit, LoaderCircle } from "lucide-react";
 import { getInitials } from "@/src/utils/utils";
 import { toast } from "@/src/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/src/components/ui/alert-dialog";
-import { useRouter } from "next/navigation";
+import BackToPage from '../layout/BackToPage';
 
 const ProfileComponent: React.FC = () => {
   const user = useAuthStore(selectUser);
@@ -24,7 +24,6 @@ const ProfileComponent: React.FC = () => {
   const [username, setUsername] = useState(user?.name || "");
   const [avatar, setAvatar] = useState(user?.avatarUrl || "");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -89,13 +88,7 @@ const ProfileComponent: React.FC = () => {
   return (
   <>
      
-    <div className="flex items-center mb-4 ml-4 mt-6 text-accent dark:text-white">
-        <ArrowLeft
-          className="cursor-pointer mr-2"
-          onClick={() => router.back()}
-        />
-      <h1 className="text-xl font-semibold">Mon compte</h1>
-    </div>
+    <div className="px-4"><BackToPage title="Mon compte" /></div>
     <div className="flex flex-col items-center justify-start space-y-6 p-6">
       <div className="relative">
         <Avatar className="h-32 w-32 rounded-full border-2 border-gray-200 hover:border-gray-500 transition duration-300">

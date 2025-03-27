@@ -18,6 +18,8 @@ import { formatTaskDates } from "@/src/utils/utils";
 import { TaskDialog } from "../dialogs/task/TaskDialog";
 import { useIsMobile } from "@/src/hooks/use-mobile";
 import { hasDatePassed } from "@/src/utils/utils";
+import { usePrefUserStore } from "@/src/store/prefUserSlice";
+import { cn } from "@/src/lib/utils";
 
 interface TaskListItemsProps {
   tasks: Task[];
@@ -32,6 +34,8 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const isMobile = useIsMobile();
+  const { tasklist_DisplayDetailsTasks } = usePrefUserStore();
+  
 
   const pressTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -105,10 +109,22 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                 </button>
     
                 <div className="flex-1">
-                  <h3 className={`font-semibold text-white line-clamp-1 leading-tight ${isMatrix ? "text-[10px]" : "text-sm" }  ${task.completed ? "line-through " : ""}`}>
-                    {task.title}
-                  </h3>
-                  {task.description && <p className={`${isMatrix ? "text-[8px]": "text-xs"} line-clamp-1 text-gray-400`}>{task.description}</p>}
+                    <h3 className={cn(
+                      "font-semibold text-white line-clamp-1 leading-tight",
+                      isMatrix ? "text-[10px]" : "text-sm",
+                      task.completed && "line-through"
+                    )}>
+                      {task.title}
+                    </h3>
+                    {task.description && (
+                      <p className={cn(
+                        isMatrix ? "text-[9px]" : "text-xs",
+                        "line-clamp-1 text-gray-400",
+                        !isMatrix && !tasklist_DisplayDetailsTasks && "hidden",
+                      )}>
+                        {task.description}
+                      </p>
+                    )}
                 </div>
     
                 {task.image_url && (
