@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+
 import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Bell, Paintbrush } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -12,66 +13,22 @@ import { fr } from "date-fns/locale";
 import Link from "next/link";
 import { usePWAStore } from "@/src/store/pwaSlice";
 import { Switch } from "../ui/switch";
-import OneSignal from "react-onesignal";
 import { ToggleTheme } from "../theme/ToggleTheme";
 import BackToPage from "../layout/BackToPage";
-
+import OneSignal from "react-onesignal";
 
 
 export default function SettingsComponent() {
   const user = useAuthStore(selectUser);
   const {handleInstallClick, isInstalled } = usePWAStore();
-  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(false);
-
-  useEffect(() => {
-    OneSignal.init({
-      appId: "6c3468be-0c5d-4407-a609-b3a62cb4b4d3",
-      notifyButton: {
-        enable: true,
-      },
-    });
-  }, []);
-  
-  const requestPermission = (): void => {
-    if (!("Notification" in window)) {
-      console.log("Votre navigateur ne supporte pas les notifications.");
-      return;
-    }
-    Notification.requestPermission().then((permission: NotificationPermission) => {
-      if (permission === "granted") {
-        console.log("Permission accordée pour les notifications.");
-        setNotificationsEnabled(true);
-      } else if (permission === "denied") {
-        console.log("Permission refusée pour les notifications.");
-        setNotificationsEnabled(false);
-        // Affichage d'un popup pour demander à l'utilisateur s'il souhaite activer les notifications
-        const enable = window.confirm(
-          "Les notifications sont désactivées. Souhaitez-vous activer les notifications ?"
-        );
-        if (enable) {
-          // Tentative de redemander la permission
-          Notification.requestPermission().then((newPermission: NotificationPermission) => {
-            if (newPermission === "granted") {
-              console.log("Permission accordée après confirmation.");
-              setNotificationsEnabled(true);
-            } else {
-              console.log("Toujours refusé après confirmation.");
-            }
-          });
-        }
-      } else {
-        // Cas où la permission reste à 'default'
-        console.log("Permission non déterminée.");
-      }
-    });
-  };
+  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(true);
   
 
   const handleSwitchChange = (checked: boolean): void => {
     if (checked) {
-      requestPermission();
+      setNotificationsEnabled(true);
+      OneSignal.Slidedown.promptPush();
     } else {
-      new Notification("Notifications désactivées");
       setNotificationsEnabled(false);
     }
   };
@@ -90,7 +47,9 @@ export default function SettingsComponent() {
             </AvatarFallback>
           </Avatar>
             <div>
-              <h2 className="text-lg font-semibold flex gap-2">{user?.name || "Utilisateur"} <Shield className="w-5 h-5 mt-1"/></h2>
+              <h2 className="text-lg font-semibold flex gap-2">{user?.name || "Utilisateur"} 
+                {user?.role && user?.role == "admin" ? <BadgeCheck className="w-5 h-5 mt-1"/> : <Shield className="w-5 h-5 mt-1"/>}
+              </h2>
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <span>depuis le {user?.registeredAt ? format(new Date(user?.registeredAt), "PPP", {locale: fr}) : 'N/A'}</span>
               </div>

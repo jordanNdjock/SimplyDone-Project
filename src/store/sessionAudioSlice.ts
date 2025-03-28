@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from 'zustand/middleware';
 import { shuffleArray } from '@/src/lib/utils';
+import { useTimerStore } from "./sessionTimerSlice";
 
 interface AudioState {
   // État
@@ -46,6 +47,15 @@ export const useAudioStore = create<AudioState>()(
         audio.addEventListener('timeupdate', () => {
           set({ playbackProgress: audio.currentTime });
         });
+
+        audio.addEventListener("pause", () => {
+          useTimerStore.getState().pauseTimer();
+        });
+      
+        audio.addEventListener("play", () => {
+          useTimerStore.getState().startTimer();
+        });
+      
       
         audio.addEventListener('ended', () => {
           get().playNextTrack();

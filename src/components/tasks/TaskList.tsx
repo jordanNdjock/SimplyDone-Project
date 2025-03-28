@@ -7,6 +7,7 @@ import { SkeletonTask } from "../loaderSkeletons/SkeletonTask";
 import { toast } from "@/src/hooks/use-toast";
 import { TaskListItems } from './TaskListItems';
 import { usePrefUserStore } from "@/src/store/prefUserSlice";
+import OneSignal from "react-onesignal";
 
 export function TaskList() {
   const { fetchTasks } = useTaskStore();
@@ -17,6 +18,18 @@ export function TaskList() {
   const [isPending, startTransition] = useTransition();
   const { listenToTasks } = useTaskStore();
 
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !window.__ONE_SIGNAL_INITIALIZED__) {
+      OneSignal.init({
+        appId: "6c3468be-0c5d-4407-a609-b3a62cb4b4d3",
+        notifyButton: { enable: true },
+        allowLocalhostAsSecureOrigin: true,
+      });
+      window.__ONE_SIGNAL_INITIALIZED__ = true;
+    }
+    OneSignal.Slidedown.promptPush();
+  }, []);
 
   useEffect(() => {
     try {
