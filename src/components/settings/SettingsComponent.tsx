@@ -77,10 +77,9 @@ export default function SettingsComponent() {
   };
 
   return (
+<>
+    <BackToPage title="Paramètres" />
     <div className="px-4">
-
-      <BackToPage title="Paramètres" />
-
       <Card className="">
         <CardContent>
           <Link href="/dashboard/profil" className="flex items-center gap-4 pt-4 cursor-pointer">
@@ -241,5 +240,6 @@ export default function SettingsComponent() {
         <span className="flex-1">SimplyDone App 0.5.2 - LJN</span>
       </div>
     </div>
+</>
   );
 }

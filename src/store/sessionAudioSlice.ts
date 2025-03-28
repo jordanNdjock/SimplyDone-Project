@@ -111,6 +111,9 @@ export const useAudioStore = create<AudioState>()(
         const completionAudio = new Audio('/assets/sounds/complete.mp3');
         completionAudio.volume = get().soundVolume;
         completionAudio.play().catch(e => console.error("Erreur son de complétion:", e));
+        if ("vibrate" in navigator) {
+          navigator.vibrate([100, 50, 100, 50, 100]);
+        }
       },
 
       // Activation/Désactivation du son

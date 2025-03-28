@@ -14,12 +14,8 @@ import {
 import { useAuthStore } from "@/src/store/authSlice";
 
 export function ToggleTheme() {
-  const { theme, setTheme } = useAuthStore();
+  const { setTheme } = useAuthStore();
   const { setTheme: setNextTheme } = useTheme();
-
-  React.useEffect(() => {
-    setNextTheme(theme);
-  }, [theme, setNextTheme]);
 
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);

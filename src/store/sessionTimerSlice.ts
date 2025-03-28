@@ -15,8 +15,9 @@ interface TimerState {
   lastUpdateTimestamp: number;  // Timestamp de la dernière mise à jour
   startTimestamp?: number;      // Pour le calcul du temps écoulé
   elapsedBeforePause: number; 
-  closeDialog: () => void;
+  
   // Actions
+  closeDialog: () => void;
   startTimer: () => void;
   resetCurrentCycle: () => void;
   pauseTimer: () => void;

@@ -4,6 +4,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { useAuthStore, selectAuthenticated } from "@/src/store/authSlice";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
+import { useTheme } from "next-themes";
 
 
 export default function ProtectedRoute({
@@ -15,6 +16,13 @@ export default function ProtectedRoute({
   const { fetchUser, listenToAppwrite } = useAuthStore();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+
+  const { theme} = useAuthStore();
+  const { setTheme: setNextTheme } = useTheme();
+
+  React.useEffect(() => {
+    setNextTheme(theme);
+  }, [theme, setNextTheme]);
 
   useEffect(() => {
     listenToAppwrite();

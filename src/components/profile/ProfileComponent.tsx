@@ -88,7 +88,7 @@ const ProfileComponent: React.FC = () => {
   return (
   <>
      
-    <div className="px-4"><BackToPage title="Mon compte" /></div>
+    <BackToPage title="Mon compte" />
     <div className="flex flex-col items-center justify-start space-y-6 p-6">
       <div className="relative">
         <Avatar className="h-32 w-32 rounded-full border-2 border-gray-200 hover:border-gray-500 transition duration-300">

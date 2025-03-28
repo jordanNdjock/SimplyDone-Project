@@ -230,7 +230,7 @@ const WorkSession = ({ methodId }: WorkSessionProps) => {
         >
           {isRunning ? "Pause ⏸" : "Démarrer ▶"}
         </Button>
-        <Button variant="outline" onClick={() => setOpenResetModal(true)}>
+        <Button className="outline-none hover:bg-transparent" variant="outline" onClick={() => setOpenResetModal(true)}>
           Réinitialiser 🔄
         </Button>
       </CardFooter>

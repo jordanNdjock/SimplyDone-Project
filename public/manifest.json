@@ -1,6 +1,6 @@
 {
   "name": "SimplyDone App",
-  "short_name": "SD",
+  "short_name": "Simply Done",
   "start_url": "/",
   "description": "SimplyDone App est une application de todo avancée utile pour planifier vos tâches en fonction des priorités",
   "icons": [

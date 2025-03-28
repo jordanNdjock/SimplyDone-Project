@@ -5,7 +5,6 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuSeparator,
   DropdownMenuItem,
 } from "@/src/components/ui/dropdown-menu";
 import { EllipsisVertical, CheckSquare, List, SlidersHorizontal, Unplug, EyeOff, CaptionsOff } from "lucide-react";

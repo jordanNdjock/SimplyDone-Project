@@ -8,7 +8,7 @@ interface BackToPageProps {
 export default function BackToPage({ title }: BackToPageProps) {
     const router = useRouter();
     return (
-        <div className="flex items-center mb-4  mt-6 text-accent dark:text-white">
+        <div className="flex px-4 items-center mb-4  mt-6 text-accent dark:text-white">
                 <ArrowLeft
                   className="cursor-pointer mr-2"
                   onClick={() => router.back()}
