@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 
-import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Bell, Paintbrush } from "lucide-react";
+import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";
@@ -12,26 +12,24 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import Link from "next/link";
 import { usePWAStore } from "@/src/store/pwaSlice";
-import { Switch } from "../ui/switch";
+// import { Switch } from "../ui/switch";
 import { ToggleTheme } from "../theme/ToggleTheme";
 import BackToPage from "../layout/BackToPage";
-import OneSignal from "react-onesignal";
 
 
 export default function SettingsComponent() {
   const user = useAuthStore(selectUser);
   const {handleInstallClick, isInstalled } = usePWAStore();
-  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(true);
+  // const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(true);
   
 
-  const handleSwitchChange = (checked: boolean): void => {
-    if (checked) {
-      setNotificationsEnabled(true);
-      OneSignal.Slidedown.promptPush();
-    } else {
-      setNotificationsEnabled(false);
-    }
-  };
+  // const handleSwitchChange = (checked: boolean): void => {
+  //   if (checked) {
+  //     setNotificationsEnabled(true);
+  //   } else {
+  //     setNotificationsEnabled(false);
+  //   }
+  // };
 
   return (
 <>
@@ -90,7 +88,7 @@ export default function SettingsComponent() {
           </div>
         </div>
         {/* Notifications */}
-        <div className="border shadow-sm rounded-lg">
+        {/* <div className="border shadow-sm rounded-lg">
           <div className="flex items-center rounded-md p-3">
             <Bell className="text-gray-300 mr-3" />
             <span className="flex-1">Notifications</span>
@@ -99,7 +97,7 @@ export default function SettingsComponent() {
               onCheckedChange={handleSwitchChange} 
               />
           </div>
-        </div>
+        </div> */}
         {/* Suivre l'auteur*/}
         <div className="border shadow-sm rounded-lg">
           <Link href="https://www.linkedin.com/in/jordan-ndjock-a58a02252" className="flex items-center rounded-md p-3" target="_blank">

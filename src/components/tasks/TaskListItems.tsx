@@ -3,7 +3,7 @@
 import { useTransition, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { CheckCircle, MoreVertical, Edit, Image as ImageIcon } from "lucide-react";
+import { CheckCircle, MoreVertical, Edit, Image as ImageIcon, AlignJustify } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -176,6 +176,7 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                 </div>
                 <div className={`flex items-center w-full ${task.image_url && "-mt-2"} -mx-4 opacity-60 gap-1 md:hidden m-0 justify-end`}>
                     {task.image_url && <ImageIcon className={`${isMatrix ? "w-2 h-2" : "w-4 h-4"} mb-1 text-white`}/>}
+                    {!tasklist_DisplayDetailsTasks && task.description && !isMatrix && <AlignJustify className="w-3 h-3 -mt-2 mb-1 text-white" />}
                 </div>
               </motion.div>
             ))}

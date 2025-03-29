@@ -9,7 +9,7 @@ export const getInitials = (name?: string, isDashboard?: boolean): string | null
   const words = name.trim().split(/\s+/);
   if (words.length === 1) {
     return isDashboard
-    ? capitalize(words[0].slice(0, 10))
+    ? capitalize(words[0].slice(0, 7))
     : capitalize(words[0].slice(0, 1)); 
   } else {
     return words.map(word => word[0].toUpperCase()).join("").slice(0, 5);

@@ -22,9 +22,9 @@ const DynamicBreadcrumb = () => {
   function getGreeting(): string {
     const hour = new Date().getHours();
     if(isMobile) {
-      return hour >= 6 && hour < 13  ? `Bonjour ☀️ ${getInitials(user?.name, true)}` : hour >= 13 && hour < 19 ? `Bonsoir 🌇 ${getInitials(user?.name, true)}` : `B'Nuit 🌙 ${getInitials(user?.name, true)}`;
+      return hour >= 6 && hour < 13  ? `Bonjour ☀️ ${getInitials(user?.name, true)}` : hour >= 13 && hour < 20 ? `Bonsoir 🌇 ${getInitials(user?.name, true)}` : `Bonne Nuit 🌙 ${getInitials(user?.name, true)}`;
     } 
-      return hour >= 6 && hour < 13  ? `Bonjour ☀️ ${user?.name}` : hour >= 13 && hour < 19 ? `Bonsoir 🌇 ${user?.name}` : `Bonne Nuit 🌙 ${user?.name}`;
+      return hour >= 6 && hour < 13  ? `Bonjour ☀️ ${user?.name}` : hour >= 13 && hour < 20 ? `Bonsoir 🌇 ${user?.name}` : `Bonne Nuit 🌙 ${user?.name}`;
   }
 
   if(pathname === "/dashboard") {
