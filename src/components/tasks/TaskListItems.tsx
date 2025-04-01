@@ -174,9 +174,9 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                   </DropdownMenu>
                 </div>
                 </div>
-                <div className={`flex items-center w-full ${task.image_url && "-mt-2"} -mx-4 opacity-60 gap-1 md:hidden m-0 justify-end`}>
-                    {task.image_url && <ImageIcon className={`${isMatrix ? "w-2 h-2" : "w-4 h-4"} mb-1 text-white`}/>}
-                    {!tasklist_DisplayDetailsTasks && task.description && !isMatrix && <AlignJustify className="w-3 h-3 -mt-2 mb-1 text-white" />}
+                <div className={`flex items-center w-full ${task.image_url && "-mt-2"} -mx-3 opacity-60 gap-1 md:hidden m-0 justify-end`}>
+                    {task.image_url && <ImageIcon className={`${isMatrix ? "w-2 h-2" : "w-3 h-3 -mt-1"} mb-1 text-white`}/>}
+                    {!tasklist_DisplayDetailsTasks && task.description && !isMatrix && <AlignJustify className="w-3 h-3 -mt-1 mb-1 text-white" />}
                 </div>
               </motion.div>
             ))}
