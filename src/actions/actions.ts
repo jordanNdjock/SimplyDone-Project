@@ -1,46 +1,23 @@
 'use server'
  
-import webpush from 'web-push';
- 
-webpush.setVapidDetails(
-  'mailto:clothairegastalia@gmail.com',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-)
- 
-let subscription: PushSubscription | null = null
- 
-export async function subscribeUser(sub: PushSubscription) {
-  subscription = sub
-  // In a production environment, you would want to store the subscription in a database
-  // For example: await db.subscriptions.create({ data: sub })
-  return { success: true }
-}
- 
-export async function unsubscribeUser() {
-  subscription = null
-  // In a production environment, you would want to remove the subscription from the database
-  // For example: await db.subscriptions.delete({ where: { ... } })
-  return { success: true }
-}
- 
-export async function sendNotification(message: string) {
-  if (!subscription) {
-    throw new Error('No subscription available')
-  }
- 
-  try {
-    await webpush.sendNotification(
-      subscription,
-      JSON.stringify({
-        title: 'Test Notification',
-        body: message,
-        icon: '/icons/icon-512x512.png',
-      })
-    )
-    return { success: true }
-  } catch (error) {
-    console.error('Error sending push notification:', error)
-    return { success: false, error: 'Failed to send notification' }
-  }
-}
+export async function sendNotifs(): Promise<void> {
+  const url = 'https://api.onesignal.com/notifications?c=push';
+  const options = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Key ${process.env.NEXT_PUBLIC_ONESIGNAL_API_KEY}`,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      app_id: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID,
+      contents: {en: 'Your message body here.'},
+      included_segments: ['Test Users']
+    })
+  };
+  
+  fetch(url, options)
+    .then(res => res.json())
+    .then(json => console.log(json))
+    .catch(err => console.error(err));
+};

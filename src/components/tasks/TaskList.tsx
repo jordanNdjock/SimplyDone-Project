@@ -22,7 +22,8 @@ export function TaskList() {
   useEffect(() => {
     if (typeof window !== "undefined" && !window.__ONE_SIGNAL_INITIALIZED__) {
       OneSignal.init({
-        appId: "6c3468be-0c5d-4407-a609-b3a62cb4b4d3",
+        appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
+        allowNative: true,
         notifyButton: { enable: true },
         allowLocalhostAsSecureOrigin: true,
       });
