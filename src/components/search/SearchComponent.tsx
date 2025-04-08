@@ -95,6 +95,7 @@ export default function SearchComponent() {
                 alt="search image"
                 width={120}
                 height={120}
+                unoptimized
             />
             </div>
             {searchValue ? (
