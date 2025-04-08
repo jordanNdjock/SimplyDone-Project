@@ -134,6 +134,7 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                         className="hidden md:block w-12 h-12 rounded-md object-cover"
                         width={100}
                         height={100}
+                        unoptimized
                     />
                 )}
 

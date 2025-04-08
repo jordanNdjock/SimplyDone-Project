@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   /* config options here */
 };
 module.exports = withPWA({
+  StrictMode: false,
   images: {
     remotePatterns: [
       {

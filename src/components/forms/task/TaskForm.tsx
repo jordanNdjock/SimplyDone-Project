@@ -23,6 +23,7 @@ import Image from "next/image";
 import { fr } from "date-fns/locale";
 import { taskSchema } from "@/src/utils/schemas";
 import { Task } from "@/src/models/task";
+import { getOriginalImageUrl } from "@/src/utils/utils";
 // import { ColorSelect } from '../../tasks/ColorSelect';
 
 
@@ -79,6 +80,7 @@ export function TaskForm({ onClose, task }: TaskFormProps) {
         }
         const response = await storage.createFile(TasksImgBucketId, ID.unique(), file);
         image_url = storage.getFilePreview(TasksImgBucketId, response.$id);
+        image_url = getOriginalImageUrl(image_url) || "";
         image_id = response.$id;
       }
       if(!data.image_url && existingImageId){

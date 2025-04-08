@@ -86,3 +86,8 @@ export function hasDatePassed(dateInput: string) {
   
   return givenDate < today;
 }
+
+export function getOriginalImageUrl(url: string) {
+  if (!url) return null;
+  return url.replace('/preview?', '/view?');
+}

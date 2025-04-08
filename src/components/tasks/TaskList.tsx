@@ -50,7 +50,7 @@ export function TaskList() {
     listenToTasks()
   },[listenToTasks]);
 
-  if(isPending) return <div className="mt-8"><SkeletonTask/></div>;
+  if(isPending) return <div className="mt-4"><SkeletonTask/></div>;
 
   
   const activeTasks = tasks.filter((task) => !task.completed);
