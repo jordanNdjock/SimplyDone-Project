@@ -19,11 +19,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { format } from "date-fns";
 import {Calendar} from "@/src/components/ui/calendar";
 import { toast } from "@/src/hooks/use-toast";
-import Image from "next/image";
 import { fr } from "date-fns/locale";
 import { taskSchema } from "@/src/utils/schemas";
 import { Task } from "@/src/models/task";
 import { getOriginalImageUrl } from "@/src/utils/utils";
+import ImageWithDialog from "../../dialogs/layout/ImageWithDialog";
 // import { ColorSelect } from '../../tasks/ColorSelect';
 
 
@@ -331,13 +331,15 @@ export function TaskForm({ onClose, task }: TaskFormProps) {
                   {form.watch("image_url") && (
                   <>
                     <div className="mt-4 w-full">
-                      <Image
-                        src={form.watch("image_url") || ""}
-                        width={300}
-                        height={300}
-                        alt="Task Image"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                      <ImageWithDialog
+                          imageUrl={form.watch("image_url") || ""}
+                          alt={form.watch("title") || ""}
+                          thumbnailWidth={300}
+                          thumbnailHeight={300}
+                          enlargedWidth={400}
+                          enlargedHeight={400}
+                          thumbnailClassName="w-screen h-32 rounded-lg"
+                        />
                     </div>
                       <Button
                         type="button"

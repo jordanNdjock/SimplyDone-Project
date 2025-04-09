@@ -2,7 +2,6 @@
 
 import { useTransition, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { CheckCircle, MoreVertical, Edit, Image as ImageIcon, AlignJustify } from "lucide-react";
 import {
   DropdownMenu,
@@ -20,6 +19,7 @@ import { useIsMobile } from "@/src/hooks/use-mobile";
 import { hasDatePassed } from "@/src/utils/utils";
 import { usePrefUserStore } from "@/src/store/prefUserSlice";
 import { cn } from "@/src/lib/utils";
+import ImageWithDialog from "../dialogs/layout/ImageWithDialog";
 
 interface TaskListItemsProps {
   tasks: Task[];
@@ -128,12 +128,14 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                 </div>
     
                 {task.image_url && (
-                    <Image 
-                        src={task.image_url} 
-                        alt="Task" 
-                        className="hidden md:block w-12 h-12 rounded-md object-cover"
-                        width={100}
-                        height={100}
+                    <ImageWithDialog
+                      imageUrl={task.image_url}
+                      alt={task.title}
+                      thumbnailWidth={100}
+                      thumbnailHeight={100}
+                      enlargedWidth={400}
+                      enlargedHeight={400}
+                      thumbnailClassName="w-12 h-12 mr-4 hidden md:block rounded-md"
                     />
                 )}
 

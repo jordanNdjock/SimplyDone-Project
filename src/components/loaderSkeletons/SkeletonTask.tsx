@@ -19,9 +19,10 @@ export function SkeletonTask() {
             <Skeleton className="h-4 w-1/2 bg-gray-300 dark:bg-gray-600 rounded" />
             {task.description && <Skeleton className="h-3 w-3/4 bg-gray-300 dark:bg-gray-600 rounded" />}
           </div>
-          {task.image_url &&<Skeleton className="h-12 w-12 bg-gray-300 mr-6 dark:bg-gray-600 rounded-md hidden md:block"/>}
+          {task.image_url && <Skeleton className="h-12 w-12 bg-gray-300 mr-6 dark:bg-gray-600 rounded-md hidden md:block"/>}
           {task.end_date && <Skeleton className="w-1/5 lg:w-1/12 lg:mr-4 h-2 bg-gray-300 dark:bg-gray-600 rounded-md" />}
           <Skeleton className="w-2 h-6 mr-4 bg-gray-300 dark:bg-gray-600 rounded-md hidden md:block" />
+          {task.image_url && <Skeleton className="w-3 h-3 bg-gray-300 dark:bg-gray-600 rounded-sm md:hidden mt-8" />}
         </motion.div>
       ))}
     </div>
