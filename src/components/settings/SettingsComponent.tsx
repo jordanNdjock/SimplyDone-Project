@@ -2,7 +2,7 @@
 import React from "react";
 
 import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush } from "lucide-react";
-import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin } from "react-icons/fa";
+import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin, FaShieldAlt } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";
 import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
@@ -15,6 +15,8 @@ import { usePWAStore } from "@/src/store/pwaSlice";
 // import { Switch } from "../ui/switch";
 import { ToggleTheme } from "../theme/ToggleTheme";
 import BackToPage from "../layout/BackToPage";
+import { FaXTwitter } from "react-icons/fa6";
+import { TbContract } from "react-icons/tb";
 
 
 export default function SettingsComponent() {
@@ -119,7 +121,7 @@ export default function SettingsComponent() {
         {/* Conditions d'utilisation */}
         <div className="border shadow-sm rounded-lg">
           <Link href="/conditions" className="flex items-center rounded-md p-3">
-            <span className="text-gray-300 mr-3">📄</span>
+            <TbContract className="text-gray-300 mr-3" size={20} />
             <span className="flex-1">Conditions d&apos;utilisation</span>
             <ChevronRight className="text-gray-400" />
           </Link>
@@ -127,7 +129,7 @@ export default function SettingsComponent() {
         {/* Privacy Policy */}
         <div className="border shadow-sm rounded-lg">
           <Link href="/privacy" className="flex items-center rounded-md p-3">
-            <span className="text-gray-300 mr-3">🔒</span>
+            <FaShieldAlt className="text-gray-300 mr-3" size={20} />
             <span className="flex-1">Politiques de confidentialité</span>
             <ChevronRight className="text-gray-400" />
           </Link>
@@ -135,8 +137,8 @@ export default function SettingsComponent() {
       {/* Bouton Partager */}
       <Sheet>
         <SheetTrigger asChild>
-          <div className="flex items-center p-3 border shadow-sm rounded-lg">
-            <Share2 className="text-gray-300 mr-3 cursor-pointer" />
+          <div className="flex items-center p-3 cursor-pointer border shadow-sm rounded-lg">
+            <Share2 className="text-gray-300 mr-3" />
             <span className="flex-1">Partager cette application</span>
             <ChevronRight className="text-gray-400" />
           </div>
@@ -160,6 +162,18 @@ export default function SettingsComponent() {
                 rel="noopener noreferrer"
               >
                 <FaFacebook className="mr-2 h-10 w-10 text-blue-600" />
+              </Link>
+
+              <Link
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                  "https://simplydone.vercel.app"
+                )}&text=${encodeURIComponent(
+                  "Découvrez SimplyDone 🚀 : l'appli de productivité ultime ! Organisez vos tâches avec une todolist avancée, priorisez grâce à la matrice d'Eisenhower 🔥, et boostez votre concentration avec la méthode Pomodoro 🍅. Essayez-la dès maintenant !"
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaXTwitter className="mr-2 h-10 w-10 text-gray-200" />
               </Link>
 
             <Link

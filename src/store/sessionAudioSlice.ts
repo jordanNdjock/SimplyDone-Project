@@ -48,7 +48,7 @@ export const useAudioStore = create<AudioState>()(
           set({ playbackProgress: audio.currentTime });
         });
 
-        audio.addEventListener("pause", () => {
+        audio.addEventListener("pause", () => {  
           useTimerStore.getState().pauseTimer();
         });
       

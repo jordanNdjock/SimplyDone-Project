@@ -1,7 +1,7 @@
 "use client";
 
 import { selectTasks, useTaskStore } from "@/src/store/taskSlice"
-import { ScrollArea, ScrollBar } from "@/src/components/ui/scroll-area";
+import { ScrollArea } from "@/src/components/ui/scroll-area";
 import { AlertTriangle, CalendarCheck, Clock, ZapOff } from "lucide-react";
 import { TaskListItems } from "../tasks/TaskListItems";
 import { usePrefUserStore } from "@/src/store/prefUserSlice";
@@ -52,28 +52,28 @@ export default function MatrixLayout() {
   if(tasks.length === 0) return null;
 
   return (
-    <div className="grid h-full grid-cols-2 grid-rows-2 gap-2">
+    <div className="grid h-[80vh] grid-cols-2 grid-rows-2 gap-2">
         {Object.entries(quadrants).map(([key, quadrant]) => (
           <div 
             key={key}
-            className="relative flex flex-col rounded-lg bg-muted/50 p-1 shadow-sm h-70"
+            className="relative flex flex-col rounded-lg bg-muted/50 p-1.5 shadow-sm h-full overflow-hidden"
           >
             <h2 className={`mb-4 flex items-center text-[10px] w-full md:text-lg font-semibold ${quadrant.color}`}>
               {quadrant.icon}
               {quadrant.title}
             </h2>
             
-            <ScrollArea className="flex-1 overflow-auto">
+            <ScrollArea className="flex-1">
               <div className="space-y-2">
                 <TaskListItems 
                   tasks={quadrant.tasks}
                   isMatrix={true}
                 />
               </div>
-              <ScrollBar orientation="horizontal" />
+
             </ScrollArea>
           </div>
         ))}
-      </div>
+    </div>
   )
 }

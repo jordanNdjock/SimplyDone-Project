@@ -43,7 +43,7 @@ export const useTimerStore = create<TimerState>()(
 
       // Démarre ou reprend le timer
       startTimer: () => {
-        if (get().isRunning) return;
+        if (get().isRunning) return;    
       
         const startTimestamp = Date.now();
         const currentElapsed = get().totalDuration - get().timeLeft;
