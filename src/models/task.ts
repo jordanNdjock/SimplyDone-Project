@@ -15,6 +15,7 @@ export interface Task {
     taskList?: Array<string>;
     comments?: Array<string>;
     user_id: string;
+    createdAt?: string;
 }
 
 export interface TaskState {
@@ -23,7 +24,7 @@ export interface TaskState {
     fetchTasks: (userId: string) => Promise<void>;
     addTask: (task: Omit<Task, "id">, userId: string) => Promise<void>;
     toggleTask: (taskId: string) => Promise<void>;
-    updateTask: (task: Task, updates: Partial<Task>) => Promise<void>;
+    updateTask: (taskId: string, updates: Partial<Task>) => Promise<void>;
     deleteTask: (taskId: string, imageId?: string) => Promise<void>;
     searchTasks: (searchValue: string) => Promise<void>;
     listenToTasks: () => void;

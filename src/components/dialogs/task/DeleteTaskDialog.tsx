@@ -15,7 +15,7 @@ export function DeleteTaskDialog({ taskID, imageID, handleDeleteTask }: DeleteTa
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
 
         <AlertDialogTrigger className="w-full flex items-center text-sm text-red-500 hover:bg-accent p-2 rounded-md hover:text-white outline-none">
-            <Trash size={16} onClick={(e) => {e.stopPropagation(); setIsOpen(true)}} className="mr-2 bg-red-500 text-white rounded-full w-6 h-4" />
+            <Trash size={16}  onClick={(e) => {e.stopPropagation(); setIsOpen(true)}} className="mr-2 bg-red-500 text-white rounded-full w-6 h-4" />
             <span className="hidden md:block">Supprimer</span>
         </AlertDialogTrigger>
 

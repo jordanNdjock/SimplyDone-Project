@@ -9,12 +9,12 @@ import { useAuthStore } from "./authSlice";
 
 export const useTaskStore = create(
   persist<TaskState>(
-    (set) => ({
+    (set, get) => ({
       tasks: [],
       searchTaskResults: [],
       fetchTasks: async (userId: string) => {
         try {
-          const result = await db.listDocuments(databaseId, TaskCollectionId, [Query.equal("user_id", userId)]);
+          const result = await db.listDocuments(databaseId, TaskCollectionId, [Query.equal("user_id", userId), Query.orderDesc("$createdAt") ]);
           const tasks = result.documents.map((task) => mapTaskInformation(task));
           set({ tasks });
         } catch (error: unknown) {
@@ -27,23 +27,32 @@ export const useTaskStore = create(
       },
       addTask: async (task, userId) => {
         try {
+          const duplicateTask = get().tasks.find(
+            (t) => t.title === task.title && t.user_id === userId
+          );
+          if (duplicateTask) {
+            toast({ title: "Tâche déjà existante", variant: "error" });
+          }
+      
           const documentId = ID.unique();
           const newTask: Task = {
             ...task,
             user_id: userId,
             completed: false,
           };
-          await db.createDocument(databaseId, TaskCollectionId,documentId, newTask);
-          const taskWithId = {...newTask, id:documentId};
-          set((state) => ({ tasks: [...state.tasks, taskWithId] }));
+      
+          await db.createDocument(databaseId, TaskCollectionId, documentId, newTask);
+          const taskWithId = { ...newTask, id: documentId };
+      
+          set((state) => ({ tasks: [taskWithId, ...state.tasks] }));
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
-          toast({
-            title: message,
-            variant: "error",
-          });
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Une erreur inconnue est survenue";
+          toast({ title: message, variant: "error" });
         }
-      },
+      },      
       toggleTask: async (taskId) => {
         try {
           set((state) => ({
@@ -73,21 +82,20 @@ export const useTaskStore = create(
         }
       },
     
-      updateTask: async (task, updates) => {
+      updateTask: async (taskId, updates) => {
         try {
           set((state) => ({
             tasks: state.tasks.map((t) =>
-              t.id === task.id ? { ...t, ...updates } : t
+              t.id === taskId ? { ...t, ...updates } : t
             ),
             searchTaskResults: state.searchTaskResults.map((t) =>
-              t.id === task.id ? { ...t, ...updates } : t
+              t.id === taskId ? { ...t, ...updates } : t
             ),
           }));
-          
           await db.updateDocument(
             databaseId,
             TaskCollectionId,
-            task.id??"",
+            taskId??"",
             updates
           );
 

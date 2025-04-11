@@ -8,15 +8,20 @@ import { toast } from "@/src/hooks/use-toast";
 import { TaskListItems } from './TaskListItems';
 import { usePrefUserStore } from "@/src/store/prefUserSlice";
 import OneSignal from "react-onesignal";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
 
 export function TaskList() {
-  const { fetchTasks } = useTaskStore();
+  const { fetchTasks, toggleTask, listenToTasks } = useTaskStore();
   const tasks = useTaskStore(selectTasks);
   const user = useAuthStore(selectUser);
   const { tasklist_DisplayFinishedTasks } = usePrefUserStore();
 
   const [isPending, startTransition] = useTransition();
-  const { listenToTasks } = useTaskStore();
 
 
   useEffect(() => {
@@ -65,22 +70,96 @@ export function TaskList() {
   activeTasks.sort((a, b) => (priorityMap[b.priority ?? 'none'] - priorityMap[a.priority ?? 'none']));
   completedTasks.sort((a, b) => (priorityMap[b.priority ?? 'none'] - priorityMap[a.priority ?? 'none']));
 
+  const handleDragEnd = (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId) return;
+
+    const draggedTask = tasks.find((t) => t.id === draggableId);
+    if (!draggedTask) return;
+
+    if (draggedTask.id) {
+      toggleTask(draggedTask.id);
+    }
+  };
+
   return (
-    <div className="grid gap-2.5 mt-4">
-      {Array.isArray(tasks) && tasks.length > 0 ? (
-    <>
-      <TaskListItems tasks={activeTasks} />
-      
-      {completedTasks.length > 0 && tasklist_DisplayFinishedTasks && (
-        <div className="mt-6 opacity-60 space-y-2">
-          <h2 className="text-lg md:text-xl font-bold text-gray-500 mb-2">Terminées</h2>
-          <TaskListItems tasks={completedTasks} />
-        </div>
-      )}
-    </>
-      ) : (
-        <p className="text-gray-500 text-center mt-32">Aucune tâche pour le moment.</p>
-      )}
-    </div>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <div className="grid gap-2.5 mt-4">
+        {tasks.length > 0 ? (
+          <>
+            <Droppable droppableId="active">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {activeTasks.length > 0 ? (
+                    activeTasks.map((task, index) => (
+                      <Draggable
+                        key={task.id}
+                        draggableId={task.id!}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="gap-2.5 mt-2"
+                          >
+                            <TaskListItems tasks={[task]} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-center mt-4">
+                      Aucune tâche active pour le moment.
+                    </p>
+                  )}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+
+            {completedTasks.length > 0 && tasklist_DisplayFinishedTasks && (
+              <Droppable droppableId="completed">
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="mt-6 opacity-60 space-y-2"
+                  >
+                    <h2 className="text-lg md:text-xl font-bold text-gray-500 mb-2">
+                      Terminées
+                    </h2>
+                    {completedTasks.map((task, index) => (
+                      <Draggable
+                        key={task.id}
+                        draggableId={task.id!}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <TaskListItems tasks={[task]} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            )}
+          </>
+        ) : (
+          <p className="text-gray-500 text-center mt-32">
+            Aucune tâche pour le moment.
+          </p>
+        )}
+      </div>
+    </DragDropContext>
   );
 }

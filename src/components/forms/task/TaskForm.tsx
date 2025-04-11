@@ -98,7 +98,7 @@ export function TaskForm({ onClose, task }: TaskFormProps) {
       };
 
       if (task?.id) {
-        await updateTask(task, taskData);
+        await updateTask(task.id, taskData);
       } else {
         await addTask(taskData, user?.$id || "");
       }

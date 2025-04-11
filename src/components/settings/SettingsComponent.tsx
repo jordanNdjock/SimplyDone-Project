@@ -12,26 +12,16 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import Link from "next/link";
 import { usePWAStore } from "@/src/store/pwaSlice";
-// import { Switch } from "../ui/switch";
 import { ToggleTheme } from "../theme/ToggleTheme";
 import BackToPage from "../layout/BackToPage";
 import { FaXTwitter } from "react-icons/fa6";
 import { TbContract } from "react-icons/tb";
+// import { NotificationToggle } from './NotificationToggle';
 
 
 export default function SettingsComponent() {
   const user = useAuthStore(selectUser);
   const {handleInstallClick, isInstalled } = usePWAStore();
-  // const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(true);
-  
-
-  // const handleSwitchChange = (checked: boolean): void => {
-  //   if (checked) {
-  //     setNotificationsEnabled(true);
-  //   } else {
-  //     setNotificationsEnabled(false);
-  //   }
-  // };
 
   return (
 <>
@@ -90,16 +80,7 @@ export default function SettingsComponent() {
           </div>
         </div>
         {/* Notifications */}
-        {/* <div className="border shadow-sm rounded-lg">
-          <div className="flex items-center rounded-md p-3">
-            <Bell className="text-gray-300 mr-3" />
-            <span className="flex-1">Notifications</span>
-            <Switch className="mr-2" 
-              checked={notificationsEnabled}
-              onCheckedChange={handleSwitchChange} 
-              />
-          </div>
-        </div> */}
+          {/* <NotificationToggle /> */}
         {/* Suivre l'auteur*/}
         <div className="border shadow-sm rounded-lg">
           <Link href="https://www.linkedin.com/in/jordan-ndjock-a58a02252" className="flex items-center rounded-md p-3" target="_blank">

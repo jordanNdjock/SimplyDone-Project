@@ -120,7 +120,7 @@ export default function SearchComponent() {
       {Tasks.length > 0 && searchValue && (
         <div className="mt-8 space-y-2">
           <p className="text-xs text-gray-400">{Tasks.length} Tâche(s) trouvée(s)</p>
-          <TaskListItems tasks={Tasks} isSearch={true} />
+          <TaskListItems tasks={Tasks} />
         </div>
       )}
     </>

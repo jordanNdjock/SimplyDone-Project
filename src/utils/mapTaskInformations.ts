@@ -16,6 +16,7 @@ export const mapTaskInformation = (task: any): Task => {
       category: task.category ?? null,
       priority: task.priority ?? null,
       image_id: task.image_id ?? null,
+      createdAt: task.$createdAt ?? null,
     };
   };
   /* eslint-enable @typescript-eslint/no-explicit-any */

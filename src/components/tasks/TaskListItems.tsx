@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition, useState, useRef } from "react";
+import { useTransition, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, MoreVertical, Edit, Image as ImageIcon, AlignJustify } from "lucide-react";
 import {
@@ -24,10 +24,9 @@ import ImageWithDialog from "../dialogs/layout/ImageWithDialog";
 interface TaskListItemsProps {
   tasks: Task[];
   isMatrix?: boolean; 
-  isSearch?: boolean;
 }
 
-export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps) {
+export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
   const [longPressId, setLongPressId] = useState<string | null>(null);
   const [,startTransition] = useTransition();
   const { toggleTask, deleteTask } = useTaskStore();
@@ -58,8 +57,16 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
     startPressTimer(taskId);
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (task: Task) => {
     cancelPressTimer();
+    if (!longPressId) {
+      handleEditTask(task);
+    }
+  };
+
+  const handleTouchCancel = () => {
+    cancelPressTimer();
+    setLongPressId(null);
   };
 
   const handleDeleteTask = (taskId: string, imageId: string) => {
@@ -70,6 +77,15 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
     setSelectedTask(task);
     setOpen(true);
   };
+
+  useEffect(() => {
+    if (longPressId !== null) {
+      const timer = setTimeout(() => {
+        setLongPressId(null);
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [longPressId]);
 
   return (
 <>
@@ -82,20 +98,25 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
                 className="relative flex-col items-center rounded-lg shadow-lg"
-                onTouchStart={() => handleTouchStart(task.id ?? "")}
-                onTouchEnd={handleTouchEnd}
-                onClick={() => {
-                    if (isMobile) {
-                      if(longPressId){
-                        setLongPressId(null);
-                      }
-                      handleEditTask(task);
+                {...(isMobile
+                  ? {
+                      onTouchStart: () => handleTouchStart(task.id ?? ""),
+                      onTouchEnd: () => handleTouchEnd(task),
+                      onTouchCancel: handleTouchCancel,
                     }
-                  }}
+                  : {
+                    }
+                )}
                 style={{ backgroundColor: task.color }}
               >
               <div className={`flex gap-1.5 ${isMatrix ? "p-2" : "p-3"} items-center ${task.completed ? "opacity-45" : ""}`}>
                 <button
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                  }}
                   onClick={(e) => {
                     e.stopPropagation();
                     startTransition(() => toggleTask(task.id??""))
@@ -152,7 +173,11 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-2 right-2 p-1 rounded-full"
+                    className="absolute -top-1 -right-1 p-1 rounded-full outline-none"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      startTransition(() => toggleTask(task.id??""))
+                  }}
                   >
                     <DeleteTaskDialog taskID={task.id?? ""} imageID={task.image_id?? ""} handleDeleteTask={handleDeleteTask} />
                   </motion.button>
@@ -182,11 +207,6 @@ export function TaskListItems({ tasks, isMatrix, isSearch }: TaskListItemsProps)
                 </div>
               </motion.div>
             ))}
-            {!isSearch && isMatrix && tasks.length === 0 && <div className="flex flex-col items-center justify-center h-full my-20">
-              <div className="text-center text-muted-foreground opacity-60 text-xs md:text-lg">
-                Aucune tâche à afficher
-              </div>
-            </div>}
           </AnimatePresence>
           <TaskDialog 
             open={open} 
