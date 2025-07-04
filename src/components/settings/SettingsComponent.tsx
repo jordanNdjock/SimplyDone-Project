@@ -1,13 +1,13 @@
 "use client";
 import React from "react";
 
-import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush } from "lucide-react";
+import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush, Headset } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin, FaShieldAlt } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";
 import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
 import { selectUser, useAuthStore } from "@/src/store/authSlice";
-import { getInitials } from "@/src/utils/utils";
+import { getInitials, getOriginalImageUrl } from "@/src/utils/utils";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import Link from "next/link";
@@ -31,7 +31,7 @@ export default function SettingsComponent() {
         <CardContent>
           <Link href="/dashboard/profil" className="flex items-center gap-4 pt-4 cursor-pointer">
           <Avatar className="h-16 w-16 rounded-full">
-            <AvatarImage src={user?.avatarUrl} alt={user?.name} />
+            <AvatarImage src={getOriginalImageUrl(user?.avatarUrl ?? "") || ""} alt={user?.name} />
             <AvatarFallback className="text-xl font-bold bg-gray-200 text-gray-600">
               {getInitials(user?.name)}
             </AvatarFallback>
@@ -41,7 +41,7 @@ export default function SettingsComponent() {
                 {user?.role && user?.role == "admin" ? <BadgeCheck className="w-5 h-5 mt-1"/> : <Shield className="w-5 h-5 mt-1"/>}
               </h2>
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <span>depuis le {user?.registeredAt ? format(new Date(user?.registeredAt), "PPP", {locale: fr}) : 'N/A'}</span>
+                <span>depuis le {user?.registeredAt ? format(new Date(user?.registeredAt), "PPP", {locale: fr}) : '-'}</span>
               </div>
             </div>
           </Link>
@@ -81,6 +81,7 @@ export default function SettingsComponent() {
         </div>
         {/* Notifications */}
           {/* <NotificationToggle /> */}
+        
         {/* Suivre l'auteur*/}
         <div className="border shadow-sm rounded-lg">
           <Link href="https://www.linkedin.com/in/jordan-ndjock-a58a02252" className="flex items-center rounded-md p-3" target="_blank">
@@ -112,6 +113,17 @@ export default function SettingsComponent() {
           <Link href="/privacy" className="flex items-center rounded-md p-3">
             <FaShieldAlt className="text-gray-300 mr-3" size={20} />
             <span className="flex-1">Politiques de confidentialité</span>
+            <ChevronRight className="text-gray-400" />
+          </Link>
+        </div>
+        {/* Besoin d'assistance */}
+        <div className="border shadow-sm rounded-lg">
+          <Link 
+           href={`https://wa.me/+237695380197?text=${encodeURIComponent("Assistance SimplyDone App : Salut Admin, j'aimerais avoir d'assistance pour faire une tâche")}`} target="_blank"
+           rel="noopener noreferrer"
+           className="flex items-center rounded-md p-3">
+            <Headset className="text-gray-300 mr-3" size={20} />
+            <span className="flex-1">Besoin d&apos;assistance</span>
             <ChevronRight className="text-gray-400" />
           </Link>
         </div>

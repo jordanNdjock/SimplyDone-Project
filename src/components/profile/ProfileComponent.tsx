@@ -12,7 +12,7 @@ import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
 import { Camera, Trash2, Edit, LoaderCircle } from "lucide-react";
-import { getInitials } from "@/src/utils/utils";
+import { getInitials, getOriginalImageUrl } from "@/src/utils/utils";
 import { toast } from "@/src/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/src/components/ui/alert-dialog";
 import BackToPage from '../layout/BackToPage';
@@ -22,8 +22,9 @@ const ProfileComponent: React.FC = () => {
   const updateProfile = useAuthStore((state) => state.updateProfile);
 
   const [username, setUsername] = useState(user?.name || "");
-  const [avatar, setAvatar] = useState(user?.avatarUrl || "");
+  const [avatar, setAvatar] = useState(getOriginalImageUrl(user?.avatarUrl ?? "") || "");
   const [loading, setLoading] = useState(false);
+  const [loadingAvatar, setLoadingAvatar] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,7 +33,6 @@ const ProfileComponent: React.FC = () => {
     setLoading(true);
     try {
       await updateProfile(username, avatar);
-      console.log("Nom mis à jour !");
       toast({
         title: "Nom d'utilisateur mis à jour avec succès !",
         variant: "success",
@@ -49,11 +49,12 @@ const ProfileComponent: React.FC = () => {
 
   const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setLoading(true);
+      setLoadingAvatar(true);
       try {
         const file = event.target.files[0];
         const response = await storage.createFile(AvatarsBucketId, ID.unique(), file);
-        const fileUrl = storage.getFilePreview(AvatarsBucketId, response.$id);
+        let fileUrl = storage.getFilePreview(AvatarsBucketId, response.$id);
+        fileUrl = getOriginalImageUrl(fileUrl) ?? "";
         setAvatar(fileUrl);
         await updateProfile(username, fileUrl);
         toast({
@@ -67,7 +68,7 @@ const ProfileComponent: React.FC = () => {
           variant: "error",
         });
       }
-      setLoading(false);
+      setLoadingAvatar(false);
     }
   };
 
@@ -101,7 +102,10 @@ const ProfileComponent: React.FC = () => {
           className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md hover:bg-gray-200 transition"
           onClick={() => fileInputRef.current?.click()}
         >
-          <Camera className="w-5 h-5 text-gray-700" />
+          {loadingAvatar ?
+                <LoaderCircle className="animate-spin text-blue-500" size={20} />
+             : <Camera className="w-5 h-5 text-gray-700" />
+          }
         </Button>
         <Input
           type="file"
@@ -109,6 +113,7 @@ const ProfileComponent: React.FC = () => {
           className="hidden"
           ref={fileInputRef}
           onChange={handleAvatarChange}
+          disabled={loading}
         />
       </div>
 
@@ -122,6 +127,7 @@ const ProfileComponent: React.FC = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Nouveau nom"
+            disabled={loading}
           />
           <Button onClick={handleUsernameChange} disabled={loading} variant="default" className="bg-accent hover:bg-purple-700 dark:bg-primary dark:hover:bg-blue-700 ">
             {loading ?  

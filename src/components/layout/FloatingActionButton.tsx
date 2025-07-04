@@ -9,7 +9,7 @@ import { TaskDialog } from "@/src/components/dialogs/task/TaskDialog";
 import clsx from "clsx";
 import { useSidebar } from "../ui/sidebar";
 
-export default function FloatingActionButton() {
+export default function FloatingActionButton({isCalendar = false}: {isCalendar?: boolean}) {
   const [open, setOpen] = useState(false);
   const { isMobile } = useSidebar();
 
@@ -29,7 +29,7 @@ export default function FloatingActionButton() {
         </motion.button>
 
         {/* {!isMobile ? ( */}
-          <TaskDialog open={open} onClose={() => setOpen(false)} />
+          <TaskDialog open={open} onClose={() => setOpen(false)} isCalendar={isCalendar} />
          {/* ) : ( */}
         {/* <TaskDrawer open={open} onClose={() => setOpen(false)} /> */}
         {/* )} */}

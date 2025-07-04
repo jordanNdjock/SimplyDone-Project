@@ -31,9 +31,10 @@ import ImageWithDialog from "../../dialogs/layout/ImageWithDialog";
 interface TaskFormProps {
   onClose: () => void;
   task?: Task | null;
+  isCalendar?: boolean;
 }
 
-export function TaskForm({ onClose, task }: TaskFormProps) {
+export function TaskForm({ onClose, task, isCalendar }: TaskFormProps) {
   const user = useAuthStore(selectUser);
   const { addTask, updateTask } = useTaskStore();
   const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -61,8 +62,9 @@ export function TaskForm({ onClose, task }: TaskFormProps) {
       const today = new Date();
       const formattedDate = today.toLocaleDateString("fr-CA").split("T")[0];
       form.setValue("start_date", formattedDate);
+      if(isCalendar) form.setValue("end_date", formattedDate);
     }
-  }, [form, task?.start_date])
+  }, [form, task?.start_date, isCalendar]);
 
   const handleRemoveImage = () => {
     setFile(undefined);
@@ -196,6 +198,7 @@ export function TaskForm({ onClose, task }: TaskFormProps) {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
+                        disabled={isCalendar ? true : false}
                         mode="single"
                         selected={field.value ? new Date(field.value) : undefined}
                         onSelect={(date) => {
@@ -245,6 +248,7 @@ export function TaskForm({ onClose, task }: TaskFormProps) {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
                     <Calendar
+                        disabled={isCalendar ? true : false}
                         mode="single"
                         selected={field.value ? new Date(field.value) : undefined}
                         onSelect={(date) => {
