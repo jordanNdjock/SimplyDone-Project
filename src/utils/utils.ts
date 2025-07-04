@@ -1,4 +1,4 @@
-import { format, isToday, isTomorrow, parseISO, isYesterday } from "date-fns";
+import { format, isToday, isTomorrow, parseISO, isYesterday, isSameDay } from "date-fns";
 import { fr } from "date-fns/locale";
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -91,3 +91,11 @@ export function getOriginalImageUrl(url: string) {
   if (!url) return null;
   return url.replace('/preview?', '/view?');
 }
+
+export const dateLabel = (targetDate: Date, today: Date) => isSameDay(targetDate, today)
+    ? "d'aujourd'hui 🔥"
+    : isTomorrow(targetDate)
+    ? "de demain ⏳"
+    : isYesterday(targetDate)
+    ? "d'hier 📆"
+    : `du ${format(targetDate, 'dd MMM yyyy', { locale: fr })} 📌`;

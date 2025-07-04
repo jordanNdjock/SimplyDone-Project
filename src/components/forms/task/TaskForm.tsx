@@ -31,10 +31,10 @@ import ImageWithDialog from "../../dialogs/layout/ImageWithDialog";
 interface TaskFormProps {
   onClose: () => void;
   task?: Task | null;
-  isCalendar?: boolean;
+  dateCalendar?: Date;
 }
 
-export function TaskForm({ onClose, task, isCalendar }: TaskFormProps) {
+export function TaskForm({ onClose, task, dateCalendar }: TaskFormProps) {
   const user = useAuthStore(selectUser);
   const { addTask, updateTask } = useTaskStore();
   const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -59,12 +59,12 @@ export function TaskForm({ onClose, task, isCalendar }: TaskFormProps) {
 
   useEffect(() => {
     if (!task?.start_date) {
-      const today = new Date();
+      const today = dateCalendar ?? new Date();
       const formattedDate = today.toLocaleDateString("fr-CA").split("T")[0];
       form.setValue("start_date", formattedDate);
-      if(isCalendar) form.setValue("end_date", formattedDate);
+      if(dateCalendar) form.setValue("end_date", formattedDate);
     }
-  }, [form, task?.start_date, isCalendar]);
+  }, [form, task?.start_date, dateCalendar]);
 
   const handleRemoveImage = () => {
     setFile(undefined);
@@ -198,7 +198,6 @@ export function TaskForm({ onClose, task, isCalendar }: TaskFormProps) {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
-                        disabled={isCalendar ? true : false}
                         mode="single"
                         selected={field.value ? new Date(field.value) : undefined}
                         onSelect={(date) => {
@@ -248,7 +247,6 @@ export function TaskForm({ onClose, task, isCalendar }: TaskFormProps) {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
                     <Calendar
-                        disabled={isCalendar ? true : false}
                         mode="single"
                         selected={field.value ? new Date(field.value) : undefined}
                         onSelect={(date) => {

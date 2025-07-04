@@ -1,4 +1,3 @@
-import FloatingActionButton from '@/src/components/layout/FloatingActionButton';
 import CalendarComponent from '../../../components/calendar/CalendarComponent';
 import { Metadata } from "next";
 
@@ -9,7 +8,6 @@ export default function Calendar(){
     return (
         <>
           <CalendarComponent />
-          <FloatingActionButton isCalendar={true} />
         </>
     );
 }

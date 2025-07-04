@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   format,
   startOfWeek,
@@ -13,18 +13,26 @@ import {
   parseISO,
   isWithinInterval,
   startOfDay,
-  isTomorrow,
-  isYesterday,
 } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { Button } from "@/src/components/ui/button"
 import { useIsMobile } from "@/src/hooks/use-mobile"
 import { selectTasks, useTaskStore } from '@/src/store/taskSlice'
 import { TaskListItems } from '../tasks/TaskListItems';
+import { CalendarFold } from 'lucide-react'
+import { useToast } from '@/src/hooks/use-toast'
+import { selectUser, useAuthStore } from '@/src/store/authSlice'
+import FloatingActionButton from '../layout/FloatingActionButton'
+import { dateLabel, formatTaskDates } from '@/src/utils/utils'
+import { Draggable, Droppable } from '@hello-pangea/dnd'
+
 
 const CalendarComponent: React.FC = () => {
   const tasks = useTaskStore(selectTasks);
+  const { listenToTasks, fetchTasks } = useTaskStore();
   const isMobile = useIsMobile();
+  const user = useAuthStore(selectUser);
+  const { toast } = useToast();
 
   const today = startOfDay(new Date());
 
@@ -54,23 +62,40 @@ const CalendarComponent: React.FC = () => {
     });
   }, [tasks, targetDate]);
 
-  const dateLabel = isSameDay(targetDate, today)
-    ? "d'aujourd'hui 🔥"
-    : isTomorrow(targetDate)
-    ? "de demain ⏳"
-    : isYesterday(targetDate)
-    ? "d'hier 📅"
-    : `du ${format(targetDate, 'dd MMM yyyy', { locale: fr })} 📌`;
+  const activeTasks = tasksForTargetDate.filter((task) => !task.completed);
+  const completedTasks = tasksForTargetDate.filter((task) => task.completed);
+
+  useEffect(() => {
+      listenToTasks();
+    },[listenToTasks]);
+
+  useEffect(() => {
+        try {
+          if (user) {
+            fetchTasks(user.$id);
+          }
+        } catch (error:unknown) {
+          const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
+          toast({
+            title: message,
+            variant: "error",
+          })
+        }
+      }, [fetchTasks, user]);
 
   return (
+<>
     <div className="max-w-full mx-auto w-full flex-col items-center justify-center bg-gray-100 dark:bg-black text-gray-800 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
       <div className="w-full max-w-7xl px-4 py-6">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
           <Button variant="outline" className='font-bold outline-none' onClick={goToPreviousWeek}>←</Button>
-          <h2 className={`text-center flex-1 font-semibold ${isMobile ? 'text-sm' : 'text-2xl'}`}>
-            📅 {isMobile
-              ? `${format(start, 'dd/MM/yyyy')} - ${format(end, 'dd/MM/yyyy')}`
-              : `Semaine du ${format(start, 'dd MMM yyyy', { locale: fr })} au ${format(end, 'dd MMM yyyy', { locale: fr })}`}
+          <h2 className={`text-center flex font-semibold ${isMobile ? 'text-lg' : 'text-2xl'}`}>
+              <CalendarFold className={`mr-2 ${isMobile ? 'w-5 h-7' : 'w-6 h-8'}`} />
+              <span>
+                {isMobile
+                ? `${formatTaskDates(startOfDay(start).toISOString(), end.toISOString())} ${format(end, 'yyyy', { locale: fr }) < "2026" ? format(end, 'yyyy', { locale: fr }) : ""}`
+                : `Semaine du ${format(start, 'dd MMM', { locale: fr })} au ${format(end, 'dd MMM yyyy', { locale: fr })}`}
+              </span>
           </h2>
           <Button variant="outline" className='font-bold outline-none' onClick={goToNextWeek}>→</Button>
         </div>
@@ -109,16 +134,32 @@ const CalendarComponent: React.FC = () => {
 
         <div className='mt-12 space-y-2'>
           <h2 className='text-lg md:text-xl font-bold mb-6'>
-            Tâches {dateLabel}
+            Tâches {dateLabel(targetDate, today)}
           </h2>
-          {tasksForTargetDate.length > 0 ? (
-            <TaskListItems tasks={tasksForTargetDate} />
+          {activeTasks.length > 0 ? (
+            <TaskListItems tasks={activeTasks} />
           ) : (
-            <h3 className='text-gray-500'>Aucune tâche pour ce jour</h3>
+            // <h3 className='text-gray-500'>Aucune tâche pour ce jour</h3>
+            <></>
           )}
         </div>
+
+        {completedTasks.length > 0 && (
+            <div className="mt-6 opacity-60 space-y-2">
+                  <h2 className="text-lg md:text-xl font-bold text-gray-500 mb-2">
+                      Terminées
+                  </h2>
+                    {completedTasks.map((task, index) => (
+                          <div key={index}>
+                            <TaskListItems tasks={[task]} />
+                          </div>
+                    ))}
+            </div>
+        )}
       </div>
     </div>
+    <FloatingActionButton dateCalendar={targetDate} />
+</>
   );
 };
 

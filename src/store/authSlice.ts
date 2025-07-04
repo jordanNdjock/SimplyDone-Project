@@ -104,7 +104,7 @@ export const useAuthStore = create(
         }
       },
 
-      updateProfile: async (name: string, avatarUrl: string) => {
+      updateProfile: async (name: string, avatarUrl: string, avatarId: string) => {
         try {
           // if (email) {
           //   await account.updateEmail(email, password);
@@ -115,6 +115,7 @@ export const useAuthStore = create(
           await account.updatePrefs({
             ...currentPrefs,
             avatar: avatarUrl,
+            avatarId,
           });
           await account.updateName(name);
           const updatedUser = await account.get();

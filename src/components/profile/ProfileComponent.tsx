@@ -23,6 +23,7 @@ const ProfileComponent: React.FC = () => {
 
   const [username, setUsername] = useState(user?.name || "");
   const [avatar, setAvatar] = useState(getOriginalImageUrl(user?.avatarUrl ?? "") || "");
+  const [avatarId, setAvatarId] = useState(getOriginalImageUrl(user?.avatarId ?? "") || "");
   const [loading, setLoading] = useState(false);
   const [loadingAvatar, setLoadingAvatar] = useState(false);
 
@@ -32,7 +33,7 @@ const ProfileComponent: React.FC = () => {
     if (!username.trim()) return;
     setLoading(true);
     try {
-      await updateProfile(username, avatar);
+      await updateProfile(username, avatar, avatarId);
       toast({
         title: "Nom d'utilisateur mis à jour avec succès !",
         variant: "success",
@@ -52,11 +53,15 @@ const ProfileComponent: React.FC = () => {
       setLoadingAvatar(true);
       try {
         const file = event.target.files[0];
+        if(avatarId){
+          await storage.deleteFile(AvatarsBucketId, avatarId);
+        }
         const response = await storage.createFile(AvatarsBucketId, ID.unique(), file);
         let fileUrl = storage.getFilePreview(AvatarsBucketId, response.$id);
         fileUrl = getOriginalImageUrl(fileUrl) ?? "";
         setAvatar(fileUrl);
-        await updateProfile(username, fileUrl);
+        setAvatarId(response.$id);
+        await updateProfile(username, fileUrl, response.$id);
         toast({
           title: "Avatar mis à jour avec succès!",
           variant: "success",

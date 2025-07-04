@@ -5,6 +5,7 @@ export interface User {
     registeredAt?: string;
     avatarUrl?: string;
     role?: string;
+    avatarId?: string;
 }
   
 export interface AuthState {
@@ -16,7 +17,7 @@ export interface AuthState {
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
-    updateProfile: (name: string, avatarUrl: string) => Promise<void>;
+    updateProfile: (name: string, avatarUrl: string, avatarId: string) => Promise<void>;
     signup: (name: string, email: string, password: string) => Promise<void>;
     listenToAppwrite: () => void;
   }
