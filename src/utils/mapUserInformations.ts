@@ -7,6 +7,7 @@ export const mapUserInformation = (user: any): User => {
       email: user.email ?? null,
       registeredAt: user.registration ?? null,
       avatarUrl: user.prefs.avatar ?? null,
+      avatarId: user.prefs.avatarId ?? null,
       role: user.labels[0] ?? null,
     };
   };

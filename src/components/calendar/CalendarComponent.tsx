@@ -19,15 +19,16 @@ import { Button } from "@/src/components/ui/button"
 import { useIsMobile } from "@/src/hooks/use-mobile"
 import { selectTasks, useTaskStore } from '@/src/store/taskSlice'
 import { TaskListItems } from '../tasks/TaskListItems';
-import { CalendarFold } from 'lucide-react'
+import { CalendarFold, ChevronDown, ChevronUp } from 'lucide-react'
 import { useToast } from '@/src/hooks/use-toast'
 import { selectUser, useAuthStore } from '@/src/store/authSlice'
 import FloatingActionButton from '../layout/FloatingActionButton'
 import { dateLabel, formatTaskDates } from '@/src/utils/utils'
-import { Draggable, Droppable } from '@hello-pangea/dnd'
 
 
 const CalendarComponent: React.FC = () => {
+  const [showAllActive, setShowAllActive] = useState(false);
+  const [showAllCompleted, setShowAllCompleted] = useState(false);
   const tasks = useTaskStore(selectTasks);
   const { listenToTasks, fetchTasks } = useTaskStore();
   const isMobile = useIsMobile();
@@ -132,30 +133,78 @@ const CalendarComponent: React.FC = () => {
           })}
         </div>
 
-        <div className='mt-12 space-y-2'>
-          <h2 className='text-lg md:text-xl font-bold mb-6'>
+        <div className="mt-12 space-y-2">
+          <h2 className="text-lg md:text-xl font-bold mb-6">
             Tâches {dateLabel(targetDate, today)}
           </h2>
-          {activeTasks.length > 0 ? (
-            <TaskListItems tasks={activeTasks} />
+
+          {tasksForTargetDate.length > 0 ? (
+            <>
+              <div className="space-y-2">
+                {activeTasks.length > 0 && (
+                  <>
+                    {(showAllActive ? activeTasks : activeTasks.slice(0, 4)).map((task) => (
+                      <TaskListItems key={task.id} tasks={[task]} />
+                    ))}
+
+                    {activeTasks.length > 4 && (
+                      <button
+                        onClick={() => setShowAllActive(!showAllActive)}
+                        className="text-blue-600 text-sm mt-3 flex"
+                      >
+                        {showAllActive ? (
+                            <>
+                              Voir moins
+                              <ChevronUp className="w-5 h-5 ml-1" />
+                            </>
+                          ) : (
+                            <>
+                              Voir plus
+                              <ChevronDown className="w-5 h-5 ml-1" />
+                            </>
+                          )}
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {completedTasks.length > 0 && (
+                <div className="opacity-60 space-y-2">
+                  <h2 className="text-md md:text-lg font-bold text-gray-500 mb-2 mt-6">
+                    Terminées
+                  </h2>
+
+                  {(showAllCompleted ? completedTasks : completedTasks.slice(0, 2)).map((task) => (
+                    <TaskListItems key={task.id} tasks={[task]} />
+                  ))}
+
+                  {completedTasks.length > 2 && (
+                    <button
+                      onClick={() => setShowAllCompleted(!showAllCompleted)}
+                      className="text-blue-600 text-sm opacity-100 mt-3 flex"
+                    >
+                      {showAllCompleted ? (
+                            <>
+                              Voir moins
+                              <ChevronUp className="w-5 h-5 ml-1" />
+                            </>
+                          ) : (
+                            <>
+                              Voir plus
+                              <ChevronDown className="w-5 h-5 ml-1" />
+                            </>
+                          )}
+                    </button>
+                  )}
+                </div>
+              )}
+            </>
           ) : (
-            // <h3 className='text-gray-500'>Aucune tâche pour ce jour</h3>
-            <></>
+            <div className="text-gray-500 mt-6">Aucune tâche pour cette date.</div>
           )}
         </div>
 
-        {completedTasks.length > 0 && (
-            <div className="mt-6 opacity-60 space-y-2">
-                  <h2 className="text-lg md:text-xl font-bold text-gray-500 mb-2">
-                      Terminées
-                  </h2>
-                    {completedTasks.map((task, index) => (
-                          <div key={index}>
-                            <TaskListItems tasks={[task]} />
-                          </div>
-                    ))}
-            </div>
-        )}
       </div>
     </div>
     <FloatingActionButton dateCalendar={targetDate} />

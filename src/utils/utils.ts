@@ -97,5 +97,5 @@ export const dateLabel = (targetDate: Date, today: Date) => isSameDay(targetDate
     : isTomorrow(targetDate)
     ? "de demain ⏳"
     : isYesterday(targetDate)
-    ? "d'hier 📆"
+    ? "d'hier 🕓"
     : `du ${format(targetDate, 'dd MMM yyyy', { locale: fr })} 📌`;

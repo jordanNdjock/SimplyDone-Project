@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useTaskStore, selectTasks } from "@/src/store/taskSlice";
 import { selectUser, useAuthStore } from "@/src/store/authSlice";
 import { SkeletonTask } from "../loaderSkeletons/SkeletonTask";
@@ -14,12 +14,17 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import React from "react";
 
 export function TaskList() {
   const { fetchTasks, toggleTask, listenToTasks } = useTaskStore();
   const tasks = useTaskStore(selectTasks);
   const user = useAuthStore(selectUser);
   const { tasklist_DisplayFinishedTasks } = usePrefUserStore();
+
+  const [showAllActive, setShowAllActive] = useState(false);
+  const [showAllCompleted, setShowAllCompleted] = useState(false);
 
   const [isPending, startTransition] = useTransition();
 
@@ -92,7 +97,8 @@ export function TaskList() {
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   {activeTasks.length > 0 ? (
-                    activeTasks.map((task, index) => (
+                    <>
+                    {(showAllActive ? activeTasks : activeTasks.slice(0, 5)).map((task, index) => (
                       <Draggable
                         key={task.id}
                         draggableId={task.id!}
@@ -105,11 +111,30 @@ export function TaskList() {
                             {...provided.dragHandleProps}
                             className="gap-2.5 mt-2"
                           >
-                            <TaskListItems tasks={[task]} />
+                            <TaskListItems key={task.id} tasks={[task]} />
                           </div>
                         )}
                       </Draggable>
-                    ))
+                    ))}
+                    {activeTasks.length > 5 && (
+                      <button
+                        onClick={() => setShowAllActive(!showAllActive)}
+                        className="text-blue-600 text-sm mt-2 opacity-95 flex"
+                      >
+                        {showAllActive ? (
+                            <>
+                              Voir moins
+                              <ChevronUp className="w-5 h-5 ml-1" />
+                            </>
+                          ) : (
+                            <>
+                              Voir plus
+                              <ChevronDown className="w-5 h-5 ml-1" />
+                            </>
+                          )}
+                      </button>
+                    )}
+                  </>
                   ) : (
                     <p className="text-gray-500 text-center mt-4">
                       Aucune tâche active pour le moment.
@@ -121,37 +146,57 @@ export function TaskList() {
             </Droppable>
 
             {completedTasks.length > 0 && tasklist_DisplayFinishedTasks && (
-              <Droppable droppableId="completed">
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className="mt-6 opacity-60 space-y-2"
-                  >
-                    <h2 className="text-lg md:text-xl font-bold text-gray-500 mb-2">
-                      Terminées
-                    </h2>
-                    {completedTasks.map((task, index) => (
-                      <Draggable
-                        key={task.id}
-                        draggableId={task.id!}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
+              <>
+                <Droppable droppableId="completed">
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="mt-6 opacity-60 space-y-2"
+                    >
+                      <h2 className="text-lg md:text-xl font-bold text-gray-500 mb-2">
+                        Terminées
+                      </h2>
+                       {(showAllCompleted ? completedTasks : completedTasks.slice(0, 3)).map((task, index) => (
+                        <Draggable
+                          key={task.id}
+                          draggableId={task.id!}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <TaskListItems key={task.id} tasks={[task]} />
+                            </div>
+                          )}
+                        </Draggable>
+                        ))}
+                        {completedTasks.length > 3 && (
+                          <button
+                            onClick={() => setShowAllCompleted(!showAllCompleted)}
+                            className="text-blue-600 text-sm opacity-100 mt-2 flex"
                           >
-                            <TaskListItems tasks={[task]} />
-                          </div>
+                            {showAllCompleted ? (
+                                  <>
+                                    Voir moins
+                                    <ChevronUp className="w-5 h-5 ml-1" />
+                                  </>
+                                ) : (
+                                  <>
+                                    Voir plus
+                                    <ChevronDown className="w-5 h-5 ml-1" />
+                                  </>
+                                )}
+                          </button>
                         )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </>
             )}
           </>
         ) : (
