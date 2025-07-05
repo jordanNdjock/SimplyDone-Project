@@ -90,7 +90,7 @@ const AddSuggestionModal: React.FC<AddSuggestionModalProps> = ({ open, onOpenCha
           ))}
         </div>
 
-        {rating === 0 && <span className="text-xs dark:text-gray-400 text-gray-500 ">Veuillez ajouter un nombre d&apoos;étoiles pour noter cette application</span>}
+        {rating === 0 && <span className="text-xs dark:text-gray-400 text-gray-500 ">Veuillez ajouter un nombre d&apos;étoiles pour noter cette application</span>}
 
         <Textarea
           placeholder="Votre avis..."
