@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
-import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush, Headset } from "lucide-react";
+import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush, Headset, MessageSquareText, Square, Star } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin, FaShieldAlt } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";
@@ -16,12 +16,14 @@ import { ToggleTheme } from "../theme/ToggleTheme";
 import BackToPage from "../layout/BackToPage";
 import { FaXTwitter } from "react-icons/fa6";
 import { TbContract } from "react-icons/tb";
+import AddSuggestionModal from "../dialogs/suggestion/AddSuggestionModal";
 // import { NotificationToggle } from './NotificationToggle';
 
 
 export default function SettingsComponent() {
   const user = useAuthStore(selectUser);
   const {handleInstallClick, isInstalled } = usePWAStore();
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
 <>
@@ -74,7 +76,7 @@ export default function SettingsComponent() {
         {/* Thème */}
         <div className="border shadow-sm rounded-lg">
           <div className="flex items-center rounded-md p-3">
-            <Paintbrush className="text-gray-300 mr-3" />
+            <Paintbrush className="text-gray-400 dark:text-gray-300 mr-3" />
             <span className="flex-1">Thème de l&apos;application</span>
             <ToggleTheme  />
           </div>
@@ -85,25 +87,37 @@ export default function SettingsComponent() {
         {/* Suivre l'auteur*/}
         <div className="border shadow-sm rounded-lg">
           <Link href="https://www.linkedin.com/in/jordan-ndjock-a58a02252" className="flex items-center rounded-md p-3" target="_blank">
-            <UserRoundCheck className="text-gray-300 mr-3" />
+            <UserRoundCheck className="text-gray-400 dark:text-gray-300 mr-3" />
             <span className="flex-1">Suivre l&apos;auteur</span>
-            <Linkedin className="text-gray-300 mr-3" />
+            <Linkedin className="text-gray-400 dark:text-gray-300 mr-3" />
+            <ChevronRight className="text-gray-400" />
+          </Link>
+        </div>
+        {/* Laisser son avis*/}
+        <div className="border shadow-sm rounded-lg">
+            <Link href="" className="flex items-center rounded-md p-3" onClick={(e) => {
+              e.preventDefault();
+              setModalOpen(true);
+            }}>
+            <MessageSquareText className="text-gray-400 dark:text-gray-300 mr-3" />
+            <span className="flex-1">Laisser un avis</span>
+            <Star className="dark:text-yellow-300 text-yellow-400 mr-3" />
             <ChevronRight className="text-gray-400" />
           </Link>
         </div>
         {/* Crédits */}
         <div className="border shadow-sm rounded-lg">
           <Link href="https://www.github.com/jordanNdjock" className="flex items-center rounded-md p-3" target="_blank">
-            <BadgeCheck className="text-gray-300 mr-3" />
+            <BadgeCheck className="text-gray-400 dark:text-gray-300 mr-3" />
             <span className="flex-1">Voir les crédits</span>
-            <Github className="text-gray-300 mr-3" />
+            <Github className="text-gray-400 dark:text-gray-300 mr-3" />
             <ChevronRight className="text-gray-400" />
           </Link>
         </div>
         {/* Conditions d'utilisation */}
         <div className="border shadow-sm rounded-lg">
           <Link href="/conditions" className="flex items-center rounded-md p-3">
-            <TbContract className="text-gray-300 mr-3" size={20} />
+            <TbContract className="text-gray-400 dark:text-gray-300 mr-3" size={20} />
             <span className="flex-1">Conditions d&apos;utilisation</span>
             <ChevronRight className="text-gray-400" />
           </Link>
@@ -111,7 +125,7 @@ export default function SettingsComponent() {
         {/* Privacy Policy */}
         <div className="border shadow-sm rounded-lg">
           <Link href="/privacy" className="flex items-center rounded-md p-3">
-            <FaShieldAlt className="text-gray-300 mr-3" size={20} />
+            <FaShieldAlt className="text-gray-400 dark:text-gray-300 mr-3" size={20} />
             <span className="flex-1">Politiques de confidentialité</span>
             <ChevronRight className="text-gray-400" />
           </Link>
@@ -122,7 +136,7 @@ export default function SettingsComponent() {
            href={`https://wa.me/+237695380197?text=${encodeURIComponent("Assistance SimplyDone App : Salut Admin, j'aimerais avoir d'assistance pour faire une tâche")}`} target="_blank"
            rel="noopener noreferrer"
            className="flex items-center rounded-md p-3">
-            <Headset className="text-gray-300 mr-3" size={20} />
+            <Headset className="text-gray-400 dark:text-gray-300 mr-3" size={20} />
             <span className="flex-1">Besoin d&apos;assistance</span>
             <ChevronRight className="text-gray-400" />
           </Link>
@@ -131,7 +145,7 @@ export default function SettingsComponent() {
       <Sheet>
         <SheetTrigger asChild>
           <div className="flex items-center p-3 cursor-pointer border shadow-sm rounded-lg">
-            <Share2 className="text-gray-300 mr-3" />
+            <Share2 className="text-gray-400 dark:text-gray-300 mr-3" />
             <span className="flex-1">Partager cette application</span>
             <ChevronRight className="text-gray-400" />
           </div>
@@ -201,9 +215,11 @@ export default function SettingsComponent() {
       {/* Version */}
       <div className="flex justify-items-end rounded-md w-full p-3 mt-8 text-gray-400">
         <Info className="text-gray-400 mr-3" />
-        <span className="flex-1">SimplyDone App 0.5.2 - LJN</span>
+        <span className="flex-1">SimplyDone App 0.8.2 - LJN</span>
       </div>
     </div>
+
+    <AddSuggestionModal open={modalOpen} onOpenChange={setModalOpen} />
 </>
   );
 }

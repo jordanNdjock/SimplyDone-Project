@@ -17,4 +17,5 @@ export const AvatarsBucketId = process.env.NEXT_PUBLIC_APPWRITE_AVATARS_BUCKET_I
 export const TasksImgBucketId = process.env.NEXT_PUBLIC_APPWRITE_TASKS_IMG_BUCKET_ID || '';
 export const SessionCollectionId = process.env.NEXT_PUBLIC_APPWRITE_SESSION_COLLECTION_ID || '';
 export const MethodCollectionId = process.env.NEXT_PUBLIC_APPWRITE_METHOD_COLLECTION_ID || '';
+export const SuggestionCollectionId = process.env.NEXT_PUBLIC_APPWRITE_SUGGESTION_COLLECTION_ID || ''; 
 export { ID, Query, Permission, Role } from 'appwrite';
