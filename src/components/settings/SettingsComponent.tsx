@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush, Headset, MessageSquareText, Square, Star } from "lucide-react";
+import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush, Headset, MessageSquareText, Star } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin, FaShieldAlt } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";

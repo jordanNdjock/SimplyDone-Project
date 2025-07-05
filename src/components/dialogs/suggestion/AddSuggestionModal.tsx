@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -53,9 +52,10 @@ const AddSuggestionModal: React.FC<AddSuggestionModalProps> = ({ open, onOpenCha
       setComment("");
       setRating(0);
       onOpenChange(false);
-    } catch (err) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
       toast({
-        title: "Erreur",
+        title: message,
         description: "Impossible d'envoyer la suggestion.",
         variant: "error",
       });
@@ -69,7 +69,7 @@ const AddSuggestionModal: React.FC<AddSuggestionModalProps> = ({ open, onOpenCha
 
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Laissez un avis à l'auteur💡</DialogTitle>
+          <DialogTitle>Laissez un avis à l&apos;auteur💡</DialogTitle>
         </DialogHeader>
 
         <div className="flex items-center gap-2 mt-2">
@@ -90,7 +90,7 @@ const AddSuggestionModal: React.FC<AddSuggestionModalProps> = ({ open, onOpenCha
           ))}
         </div>
 
-        {rating === 0 && <span className="text-xs dark:text-gray-400 text-gray-500 ">Veuillez ajouter un nombre d'étoiles pour noter cette application</span>}
+        {rating === 0 && <span className="text-xs dark:text-gray-400 text-gray-500 ">Veuillez ajouter un nombre d&apoos;étoiles pour noter cette application</span>}
 
         <Textarea
           placeholder="Votre avis..."
