@@ -10,7 +10,6 @@ import {
 import { EllipsisVertical, CheckSquare, List, SlidersHorizontal, Unplug, EyeOff, CaptionsOff, Columns4, AlignVerticalSpaceAround, Grid2X2 } from "lucide-react";
 import React from "react";
 import { usePrefUserStore } from "@/src/store/prefUserSlice";
-import { TbGrid4X4 } from "react-icons/tb";
 
 type MenuItem = {
   label: string;

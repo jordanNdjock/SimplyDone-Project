@@ -125,7 +125,7 @@ const CalendarComponent: React.FC = () => {
         toast({ title: message, variant: "error" })
       }
     }
-  }, [fetchTasks, user])
+  }, [fetchTasks, user, toast])
 
   const getTitleLabel = () => {
     if (calendar_ViewMode === "mois") {
