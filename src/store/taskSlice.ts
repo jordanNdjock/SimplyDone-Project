@@ -32,19 +32,19 @@ export const useTaskStore = create(
           );
           if (duplicateTask) {
             toast({ title: "Tâche déjà existante", variant: "error" });
+          }else{
+            const documentId = ID.unique();
+            const newTask: Task = {
+              ...task,
+              user_id: userId,
+              completed: false,
+            };
+        
+            await db.createDocument(databaseId, TaskCollectionId, documentId, newTask);
+            const taskWithId = { ...newTask, id: documentId };
+        
+            set((state) => ({ tasks: [taskWithId, ...state.tasks] }));
           }
-      
-          const documentId = ID.unique();
-          const newTask: Task = {
-            ...task,
-            user_id: userId,
-            completed: false,
-          };
-      
-          await db.createDocument(databaseId, TaskCollectionId, documentId, newTask);
-          const taskWithId = { ...newTask, id: documentId };
-      
-          set((state) => ({ tasks: [taskWithId, ...state.tasks] }));
         } catch (error) {
           const message =
             error instanceof Error
@@ -95,7 +95,7 @@ export const useTaskStore = create(
           await db.updateDocument(
             databaseId,
             TaskCollectionId,
-            taskId??"",
+            taskId ??"",
             updates
           );
 
@@ -161,7 +161,7 @@ export const useTaskStore = create(
                 if (exists) {
                   return {};
                 }
-                return { tasks: [...state.tasks, newTask] };
+                return { tasks: [newTask, ...state.tasks] };
               });
             }            
             if (response.events.includes("databases.*.collections.*.documents.*.update")) {

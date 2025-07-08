@@ -177,7 +177,7 @@ const CalendarComponent: React.FC = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {daysToDisplay.map((day) => (
-                      <SelectItem key={day.toISOString()} value={day.toISOString()}>
+                      <SelectItem className="cursor-pointer" key={day.toISOString()} value={day.toISOString()}>
                         {format(day, "EEEE dd MMM", { locale: fr })}
                       </SelectItem>
                     ))}
