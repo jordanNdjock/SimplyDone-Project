@@ -42,8 +42,8 @@ export default function SubscribeToNotificationsButton() {
         await subscription?.optOut();
         await subscription?.optIn();
         setNotificationSubscribed(true);
-        
-        await fetch("/api/send-notif", {
+
+        await fetch("/api/send-notifs", {
             method: "POST",
             headers: {
             "Content-Type": "application/json",
