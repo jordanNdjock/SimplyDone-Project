@@ -6,6 +6,7 @@ import { useAuthStore } from "../store/authSlice";
 import { toast } from "../hooks/use-toast";
 import { Button } from "./ui/button";
 import { usePrefUserStore } from "../store/prefUserSlice";
+import { getInitials } from "../utils/utils";
 
 export default function SubscribeToNotificationsButton() {
   const [isSupported, setIsSupported] = useState(false);
@@ -41,6 +42,19 @@ export default function SubscribeToNotificationsButton() {
         await subscription?.optOut();
         await subscription?.optIn();
         setNotificationSubscribed(true);
+        
+        await fetch("/api/send-notif", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            userId: user.$id,
+            title: `👋 Bienvenue sur SimplyDone ${getInitials(user.name)}`,
+            message: "Merci d’avoir activé les notifications. Vous serez désormais alerté en temps utile 😎",
+            }),
+        });
+
         toast({
             title: "✅ Notifications activées !",
             description:
