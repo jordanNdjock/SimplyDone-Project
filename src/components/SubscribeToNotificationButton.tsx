@@ -44,6 +44,8 @@ export default function SubscribeToNotificationsButton() {
       const granted = await OneSignal.Notifications.permission;
       if (granted && user) {
         await OneSignal.login(user.$id);
+        const subscription = OneSignal.User?.PushSubscription;
+        await subscription?.optIn();
         setIsSubscribed(true);
         toast({
           title: "Souscription réussie",
