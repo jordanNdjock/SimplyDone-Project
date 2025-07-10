@@ -31,7 +31,11 @@ export default function SubscribeToNotificationsButton() {
         await OneSignal.Notifications.requestPermission(); // déclenche la popup navigateur
       }
 
-      const subscription = OneSignal.User?.PushSubscription;
+       const subscription = OneSignal.User?.PushSubscription;
+       await OneSignal.logout(); // ⛔ Déconnecter pour éviter des données inutiles
+       await subscription?.optOut(); // ⛔ Forcer désabonnement si inscrit
+       await OneSignal.Slidedown.promptPush();
+
       await subscription?.optIn();
 
       const granted = await OneSignal.Notifications.permission;
@@ -51,7 +55,7 @@ export default function SubscribeToNotificationsButton() {
       {isSupported ? (
         <button
           onClick={subscribe}
-          disabled={isSubscribed}
+        //   disabled={isSubscribed}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
           {isSubscribed ? "✅ Notifications activées" : "🔔 Activer les notifications"}
