@@ -39,7 +39,7 @@ export function TaskList() {
         await OneSignal.init({
           appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
           allowNative: true,
-          notifyButton: { enable: false },
+          notifyButton: { enable: true },
           allowLocalhostAsSecureOrigin: true,
         });
         window.__ONE_SIGNAL_INITIALIZED__ = true;
