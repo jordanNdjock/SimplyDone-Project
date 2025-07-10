@@ -32,36 +32,60 @@ export function TaskList() {
 
   useEffect(() => {
     const initOneSignal = async () => {
-      if (typeof window !== "undefined") {
+      if (typeof window === "undefined") return;
+
+      // 👉 Initialisation unique
+      if (!window.__ONE_SIGNAL_INITIALIZED__) {
         await OneSignal.init({
           appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
           allowNative: true,
-          notifyButton: { enable: true },
+          notifyButton: { enable: false },
           allowLocalhostAsSecureOrigin: true,
         });
+        window.__ONE_SIGNAL_INITIALIZED__ = true;
       }
 
-      const isSubscribed = await OneSignal.Notifications.permission === true;
-      if (!isSubscribed) {
-        await OneSignal.Slidedown.promptPush();
+      // 👉 Récupère l’état d’abonnement
+      const permission = await OneSignal.Notifications.permission;
+      const subscription = OneSignal.User?.PushSubscription;
+      const optedIn = subscription?.optedIn;
+
+      if (permission !== true || !optedIn) {
+        console.log("🔕 Utilisateur non abonné — déclenchement du prompt");
+        await OneSignal.logout(); // ⛔ Déconnecter pour éviter des données inutiles
+        await subscription?.optOut(); // ⛔ Forcer désabonnement si inscrit
+        await OneSignal.Slidedown.promptPush(); // 🔔 Demander la permission
       }
+
+      // ✅ Si user connecté ET abonné, on connecte à OneSignal
+      if (user && (await OneSignal.Notifications.permission) === true) {
+        try {
+          await OneSignal.login(user.$id);
+          console.log("🔐 Login OneSignal OK:", user.$id);
+        } catch (error) {
+          console.error("❌ Erreur login OneSignal:", error);
+        }
+      }
+
+      // 📥 Récupère le OneSignal ID
       const currentId = OneSignal.User?.onesignalId;
-
       if (currentId) {
         setOneSignalId(currentId);
-        console.log("✅ ID OneSignal :", currentId);
+        console.log("✅ OneSignal ID :", currentId);
       }
-       OneSignal.User?.addEventListener("change", (event) => {
+
+      // 🔁 Écoute les changements d’identifiant
+      OneSignal.User?.addEventListener("change", (event) => {
         const newId = event.current.onesignalId;
         if (newId) {
           setOneSignalId(newId);
-          console.log("🔄 ID OneSignal changé :", newId);
+          console.log("🔄 OneSignal ID mis à jour :", newId);
         }
       });
     };
 
     initOneSignal();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     try {
