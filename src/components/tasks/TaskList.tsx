@@ -16,6 +16,7 @@ import {
 } from "@hello-pangea/dnd";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import React from "react";
+import SubscribeToNotificationsButton from '../SubscribeToNotificationButton';
 
 export function TaskList() {
   const { fetchTasks, toggleTask, listenToTasks } = useTaskStore();
@@ -99,7 +100,7 @@ export function TaskList() {
     }
     OneSignal.Slidedown.promptPush();
   }, []);
-  
+
   useEffect(() => {
     try {
       if (user) {
@@ -147,6 +148,8 @@ export function TaskList() {
   };
 
   return (
+    <>
+    <SubscribeToNotificationsButton />
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className="grid gap-2.5 mt-4">
         {tasks.length > 0 ? (
@@ -264,5 +267,6 @@ export function TaskList() {
         )}
       </div>
     </DragDropContext>
+  </>
   );
 }
