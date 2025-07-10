@@ -26,7 +26,7 @@ export const usePrefUserStore = create<PrefUserState>()(
       notification_Subscribed: false,
       calendar_ViewMode: "mois",
 
-      setNotificationSubscribed: (value: boolean) => set({ notification_Subscribed: !value }),
+      setNotificationSubscribed: (value: boolean) => set({ notification_Subscribed: value }),
       setCalendarViewMode: (viewMode: "mois" | "semaine" | "jour") => set({ calendar_ViewMode: viewMode }),
       setCalendarDisplayFinishedTasks: (value: boolean) => set({ calendar_DisplayFinishedTasks: !value }),
       setTasklistDisplayFinishedTasks: (value: boolean) => set({ tasklist_DisplayFinishedTasks: !value }),

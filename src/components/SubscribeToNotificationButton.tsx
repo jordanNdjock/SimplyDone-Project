@@ -33,8 +33,6 @@ export default function SubscribeToNotificationsButton() {
       }
 
        await OneSignal.logout();
-       await OneSignal.Slidedown.promptPush();
-       setNotificationSubscribed(false);
 
       const granted = await OneSignal.Notifications.permission;
       if (granted && user) {
@@ -46,7 +44,7 @@ export default function SubscribeToNotificationsButton() {
         toast({
             title: "✅ Notifications activées !",
             description:
-                "📅 Vous recevrez désormais des rappels pour vos tâches, échéances et activités importantes. Restez organisé(e) et ne manquez plus rien 🔔💪",
+                "Vous recevrez désormais des rappels pour vos tâches, échéances et activités importantes. Restez organisé(e) et ne manquez plus rien 🔔💪",
             variant: "success",
         });
       } else {
@@ -71,8 +69,8 @@ export default function SubscribeToNotificationsButton() {
      {isSupported ? (
         <Button
           onClick={subscribe}
-          className={`px-4 py-2 rounded text-white ${
-            notification_Subscribed ? "bg-green-600" : loading ? "bg-gray-400" : "bg-tranparent hover:bg-blue-700"
+          className={`px-4 py-2 rounded outline-none text-white ${
+            notification_Subscribed ? "bg-green-600" : loading ? "bg-gray-400" : "bg-transparent"
         }`}
         >
           {loading

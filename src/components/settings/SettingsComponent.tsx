@@ -17,8 +17,7 @@ import BackToPage from "../layout/BackToPage";
 import { FaXTwitter } from "react-icons/fa6";
 import { TbContract } from "react-icons/tb";
 import AddSuggestionModal from "../dialogs/suggestion/AddSuggestionModal";
-import SubscribeToNotificationsButton from "../SubscribeToNotificationButton";
-// import { NotificationToggle } from './NotificationToggle';
+import { NotificationToggle } from "./NotificationToggle";
 
 
 export default function SettingsComponent() {
@@ -83,9 +82,7 @@ export default function SettingsComponent() {
           </div>
         </div>
         {/* Notifications */}
-        <div className="border shadow-sm rounded-lg p-4">
-          <SubscribeToNotificationsButton />
-        </div>
+        <NotificationToggle />
         
         {/* Suivre l'auteur*/}
         <div className="border shadow-sm rounded-lg">
