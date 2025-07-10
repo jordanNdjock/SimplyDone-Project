@@ -9,11 +9,11 @@ export async function POST(req: Request) {
     method: 'POST',
     headers: {
       accept: 'application/json',
-      Authorization: `Bearer ${process.env.ONESIGNAL_PUBLIC_API_KEY}`,
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_ONESIGNAL_API_KEY}`,
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      app_id: process.env.ONESIGNAL_PUBLIC_APP_ID,
+      app_id: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID,
       headings: { en: title },
       contents: { en: message },
       target_channel: 'push',
