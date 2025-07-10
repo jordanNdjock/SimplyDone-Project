@@ -68,7 +68,7 @@ export default function SubscribeToNotificationsButton() {
 
   return (
     <>
-     {isSupported && notification_Subscribed ? (
+     {isSupported ? (
         <Button
           onClick={subscribe}
           className={`px-4 py-2 rounded text-white ${
