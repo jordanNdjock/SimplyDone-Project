@@ -50,7 +50,7 @@ export function TaskList() {
       const subscription = OneSignal.User?.PushSubscription;
       const optedIn = subscription?.optedIn;
 
-      if (permission !== true || !optedIn) {
+      if (permission === true || optedIn) {
         console.log("🔕 Utilisateur non abonné — déclenchement du prompt");
         await OneSignal.logout(); // ⛔ Déconnecter pour éviter des données inutiles
         await subscription?.optOut(); // ⛔ Forcer désabonnement si inscrit
