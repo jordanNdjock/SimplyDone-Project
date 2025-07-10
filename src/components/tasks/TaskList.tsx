@@ -27,19 +27,40 @@ export function TaskList() {
   const [showAllCompleted, setShowAllCompleted] = useState(false);
 
   const [isPending, startTransition] = useTransition();
+  const [onesignalId, setOneSignalId] = useState<string | null>(null);
 
 
   useEffect(() => {
-    if (typeof window !== "undefined" && !window.__ONE_SIGNAL_INITIALIZED__) {
-      OneSignal.init({
-        appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
-        allowNative: true,
-        notifyButton: { enable: true },
-        allowLocalhostAsSecureOrigin: true,
+    const initOneSignal = async () => {
+      if (typeof window !== "undefined") {
+        await OneSignal.init({
+          appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
+          allowNative: true,
+          notifyButton: { enable: true },
+          allowLocalhostAsSecureOrigin: true,
+        });
+      }
+
+      const isSubscribed = await OneSignal.Notifications.permission === true;
+      if (!isSubscribed) {
+        await OneSignal.Slidedown.promptPush();
+      }
+      const currentId = OneSignal.User?.onesignalId;
+
+      if (currentId) {
+        setOneSignalId(currentId);
+        console.log("✅ ID OneSignal :", currentId);
+      }
+       OneSignal.User?.addEventListener("change", (event) => {
+        const newId = event.current.onesignalId;
+        if (newId) {
+          setOneSignalId(newId);
+          console.log("🔄 ID OneSignal changé :", newId);
+        }
       });
-      window.__ONE_SIGNAL_INITIALIZED__ = true;
-    }
-    OneSignal.Slidedown.promptPush();
+    };
+
+    initOneSignal();
   }, []);
 
   useEffect(() => {
@@ -128,7 +149,7 @@ export function TaskList() {
                             </>
                           ) : (
                             <>
-                              Voir plus
+                              Voir plus {onesignalId}
                               <ChevronDown className="w-5 h-5 ml-1" />
                             </>
                           )}
