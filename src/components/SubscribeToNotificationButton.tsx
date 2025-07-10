@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from "react";
 import OneSignal from "react-onesignal";
+import { useAuthStore } from "../store/authSlice";
+import { toast } from "../hooks/use-toast";
 
 export default function SubscribeToNotificationsButton() {
   const [isSupported, setIsSupported] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     const checkSupportAndStatus = async () => {
@@ -28,20 +31,25 @@ export default function SubscribeToNotificationsButton() {
     try {
       const permission = await OneSignal.Notifications.permission;
       if (permission) {
-        await OneSignal.Notifications.requestPermission(); // déclenche la popup navigateur
+        await OneSignal.Notifications.requestPermission();
       }
 
        const subscription = OneSignal.User?.PushSubscription;
-       await OneSignal.logout(); // ⛔ Déconnecter pour éviter des données inutiles
-       await subscription?.optOut(); // ⛔ Forcer désabonnement si inscrit
+       await OneSignal.logout();
+       await subscription?.optOut();
        await OneSignal.Slidedown.promptPush();
 
       await subscription?.optIn();
 
       const granted = await OneSignal.Notifications.permission;
-      if (granted) {
+      if (granted && user) {
+        await OneSignal.login(user.$id);
         setIsSubscribed(true);
-        console.log("✅ Souscription réussie !");
+        toast({
+          title: "Souscription réussie",
+          description: "Vous recevrez désormais des notifications.",
+          variant: "success",
+        })
       } else {
         console.warn("⚠️ Permission refusée");
       }
