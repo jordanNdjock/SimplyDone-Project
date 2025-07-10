@@ -13,7 +13,7 @@ interface TaskDialogProps {
 export function TaskDialog({ open, onClose, task, dateCalendar }: TaskDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[525px] max-h-[80vh] overflow-y-auto" aria-describedby="ajouter une tâche" aria-description="ajouter une tâche">
+      <DialogContent className="sm:max-w-[525px] max-h-[80vh] rounded-lg  overflow-y-auto" aria-describedby="ajouter une tâche" aria-description="ajouter une tâche">
         <DialogHeader>
           <DialogTitle> {task ? "Modifier la tâche" : dateCalendar ? `Ajouter la tâche ${dateLabel(dateCalendar ?? new Date(), new Date())}` : "Ajouter une tâche"}</DialogTitle>
         </DialogHeader>

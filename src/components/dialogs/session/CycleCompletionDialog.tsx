@@ -27,7 +27,7 @@ const CycleCompletionDialog: React.FC<CycleCompletionDialogProps> = ({
   if (!dialogContent) return null;
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent>
+      <AlertDialogContent className="sm:max-w-md max-w-xs rounded-lg">
         <AlertDialogHeader>
           <AlertDialogTitle>{dialogContent.title}</AlertDialogTitle>
           <AlertDialogDescription>

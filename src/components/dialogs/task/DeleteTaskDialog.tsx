@@ -19,7 +19,7 @@ export function DeleteTaskDialog({ taskID, imageID, handleDeleteTask }: DeleteTa
             <span className="hidden md:block">Supprimer</span>
         </AlertDialogTrigger>
 
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-lg">
           <AlertDialogHeader>
             <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer cette tâche ?</AlertDialogTitle>
             <AlertDialogDescription>

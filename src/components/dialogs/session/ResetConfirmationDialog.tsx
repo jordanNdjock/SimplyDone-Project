@@ -23,7 +23,7 @@ const ResetConfirmationDialog: React.FC<ResetConfirmationDialogProps> = ({
 }) => {
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent>
+      <AlertDialogContent className="sm:max-w-md rounded-lg">
         <AlertDialogHeader>
           <AlertDialogTitle>Confirmer la réinitialisation 🔄</AlertDialogTitle>
           <AlertDialogDescription>

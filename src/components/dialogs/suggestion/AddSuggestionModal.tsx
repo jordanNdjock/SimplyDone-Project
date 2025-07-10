@@ -67,7 +67,7 @@ const AddSuggestionModal: React.FC<AddSuggestionModalProps> = ({ open, onOpenCha
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
 
-      <DialogContent className="max-w-md">
+      <DialogContent className="rounded-lg">
         <DialogHeader>
           <DialogTitle>Laissez un avis à l&apos;auteur💡</DialogTitle>
         </DialogHeader>

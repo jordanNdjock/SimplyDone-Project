@@ -16,7 +16,7 @@ export default function SubscribeToNotificationDialog() {
 
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md max-w-xs rounded-lg">
                 <DialogHeader>
                 <DialogTitle className="mb-1"> Activer les notifications</DialogTitle>
                 <DialogDescription>
