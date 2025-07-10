@@ -30,3 +30,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Erreur envoi notification" }, { status: 500 });
   }
 }
+
+export async function GET() {
+  return NextResponse.json({ message: "✅ API /send-notifs opérationnelle" });
+}
