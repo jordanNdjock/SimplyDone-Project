@@ -123,7 +123,7 @@ export default function SettingsComponent() {
             setShowGuide(true);
           }}>
             <BookOpen className="text-gray-400 dark:text-gray-300 mr-3" />
-            <span className="flex-1">Guide d'utilisation</span>
+            <span className="flex-1">Guide d&apos;utilisation</span>
             <ChevronRight className="text-gray-400" />
           </Link>
         </div>
