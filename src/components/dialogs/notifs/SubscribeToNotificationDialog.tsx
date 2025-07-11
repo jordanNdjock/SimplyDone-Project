@@ -4,14 +4,20 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 import SubscribeToNotificationsButton from "../../SubscribeToNotificationButton";
+import { selectUser, useAuthStore } from "@/src/store/authSlice";
 
 export default function SubscribeToNotificationDialog() {
+    const user = useAuthStore(selectUser);
      const [open, setOpen] = useState(false);
      const { notification_Subscribed } = usePrefUserStore((state) => state);
 
     useEffect(() => {
         if (notification_Subscribed) setOpen(false);
-        else setOpen(true);
+        else{ 
+            if(user?.hasSeenIntro === true){
+                setOpen(true)
+            }
+        };
     }, [notification_Subscribed]);
 
     return (

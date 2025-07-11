@@ -99,3 +99,12 @@ export const dateLabel = (targetDate: Date, today: Date) => isSameDay(targetDate
     : isYesterday(targetDate)
     ? "d'hier 🕓"
     : `du ${format(targetDate, 'dd MMM yyyy', { locale: fr })} 📌`;
+
+export const isNewUser = (userRegisteredAt: string) => {
+  const createdAt = new Date(userRegisteredAt);
+  const now = new Date();
+  const diffInMinutes = (now.getTime() - createdAt.getTime()) / (1000 * 60);
+  return diffInMinutes < 10;
+}
+
+export const toBoolean = (str: string) => String(str).trim().toLowerCase() === 'true';

@@ -4,6 +4,7 @@ import { account, client, ID } from "@/src/lib/appwrite";
 import { AuthState } from "@/src/models/user";
 import { mapUserInformation } from "../utils/mapUserInformations";
 import { toast } from "../hooks/use-toast";
+import { isNewUser } from "../utils/utils";
 
 export const useAuthStore = create(
   persist<AuthState>(
@@ -37,6 +38,9 @@ export const useAuthStore = create(
           const result = await account.create(ID.unique(), email, password, name);
           await account.createEmailPasswordSession(email, password);
           const user = mapUserInformation(result);
+          await account.updatePrefs({
+            hasSeenIntro: false,
+          });
           if(user != null){
             set({ user, authenticated: true });
           }else{
@@ -60,6 +64,11 @@ export const useAuthStore = create(
           await account.createEmailPasswordSession(email, password);
           const result = await account.get();
           const user = mapUserInformation(result);
+          if (user?.registeredAt && isNewUser(user.registeredAt)) {
+            await account.updatePrefs({
+              hasSeenIntro: false,
+            });
+          }
           if(user == null){
             toast({
               title: "Erreur lors de la connexion",
@@ -127,6 +136,23 @@ export const useAuthStore = create(
               title: message,
               variant: "error",
             });
+        }
+      },
+      markUserAsSeenIntro: async (val: boolean) => {
+        try {
+          const user = await account.get();
+          const currentPrefs = user.prefs || {};
+
+          await account.updatePrefs({
+            ...currentPrefs,
+            hasSeenIntro: val,
+          });
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Erreur lors de la mise à jour de l'état de l'introduction de l'utilisateur";
+          toast({
+            title: message,
+            variant: "error",
+          });
         }
       },
       setTheme: async (theme) => {

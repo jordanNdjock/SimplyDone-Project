@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush, Headset, MessageSquareText, Star } from "lucide-react";
+import { Info, ChevronRight, Shield, UserRoundCheck, Linkedin, Share2, BadgeCheck, Github, Download, Paintbrush, Headset, MessageSquareText, Star, BookOpen } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTelegram, FaLinkedin, FaShieldAlt } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";
@@ -18,12 +18,14 @@ import { FaXTwitter } from "react-icons/fa6";
 import { TbContract } from "react-icons/tb";
 import AddSuggestionModal from "../dialogs/suggestion/AddSuggestionModal";
 import { NotificationToggle } from "./NotificationToggle";
+import WelcomeGuide from "../dialogs/welcomeGuide/WelcomeGuide";
 
 
 export default function SettingsComponent() {
   const user = useAuthStore(selectUser);
   const {handleInstallClick, isInstalled } = usePWAStore();
   const [modalOpen, setModalOpen] = useState(false);
+  const [showGuide, setShowGuide] = useState(false)
 
   return (
 <>
@@ -111,6 +113,17 @@ export default function SettingsComponent() {
             <BadgeCheck className="text-gray-400 dark:text-gray-300 mr-3" />
             <span className="flex-1">Voir les crédits</span>
             <Github className="text-gray-400 dark:text-gray-300 mr-3" />
+            <ChevronRight className="text-gray-400" />
+          </Link>
+        </div>
+        {/* Guide d'utilisation */}
+        <div className="border shadow-sm rounded-lg">
+          <Link href="" className="flex items-center rounded-md p-3" onClick={(e) => {
+            e.preventDefault();
+            setShowGuide(true);
+          }}>
+            <BookOpen className="text-gray-400 dark:text-gray-300 mr-3" />
+            <span className="flex-1">Guide d'utilisation</span>
             <ChevronRight className="text-gray-400" />
           </Link>
         </div>
@@ -215,11 +228,12 @@ export default function SettingsComponent() {
       {/* Version */}
       <div className="flex justify-items-end rounded-md w-full p-3 mt-8 text-gray-400">
         <Info className="text-gray-400 mr-3" />
-        <span className="flex-1">SimplyDone App 0.8.2 - LJN</span>
+        <span className="flex-1">SimplyDone App 1.0.1 - LJN</span>
       </div>
     </div>
 
     <AddSuggestionModal open={modalOpen} onOpenChange={setModalOpen} />
+    <WelcomeGuide open={showGuide} onFinish={() => setShowGuide(false)} />
 </>
   );
 }

@@ -7,7 +7,6 @@ import { SkeletonTask } from "../loaderSkeletons/SkeletonTask";
 import { toast } from "@/src/hooks/use-toast";
 import { TaskListItems } from './TaskListItems';
 import { usePrefUserStore } from "@/src/store/prefUserSlice";
-import OneSignal from "react-onesignal";
 import {
   DragDropContext,
   Droppable,
@@ -17,31 +16,22 @@ import {
 import { ChevronDown, ChevronUp } from "lucide-react";
 import React from "react";
 import SubscribeToNotificationDialog from "../dialogs/notifs/SubscribeToNotificationDialog";
+import WelcomeGuide from "../dialogs/welcomeGuide/WelcomeGuide";
 
 export function TaskList() {
   const { fetchTasks, toggleTask, listenToTasks } = useTaskStore();
+  const { markUserAsSeenIntro } = useAuthStore();
   const tasks = useTaskStore(selectTasks);
   const user = useAuthStore(selectUser);
+  const hasSeenIntro = user?.hasSeenIntro ?? false;
+  console.log(hasSeenIntro);
   const { tasklist_DisplayFinishedTasks } = usePrefUserStore();
+  const [showGuide, setShowGuide] = useState(false)
 
   const [showAllActive, setShowAllActive] = useState(false);
   const [showAllCompleted, setShowAllCompleted] = useState(false);
 
   const [isPending, startTransition] = useTransition();
-  const [onesignalId, setOneSignalId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && !window.__ONE_SIGNAL_INITIALIZED__) {
-      OneSignal.init({
-        appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
-        allowNative: true,
-        notifyButton: { enable: true },
-        allowLocalhostAsSecureOrigin: true,
-      });
-      window.__ONE_SIGNAL_INITIALIZED__ = true;
-    }
-    OneSignal.Slidedown.promptPush();
-  }, []);
 
   useEffect(() => {
     try {
@@ -56,6 +46,12 @@ export function TaskList() {
       })
     }
   }, [fetchTasks, user]);
+
+  useEffect(() => {
+    if (!hasSeenIntro) {
+      setShowGuide(true);
+    }
+  }, [])
 
   useEffect(() => {
     listenToTasks()
@@ -88,6 +84,16 @@ export function TaskList() {
       toggleTask(draggedTask.id);
     }
   };
+
+  const onFinishGuide = () => {
+    toast({
+      title: "Bravo vous avez terminé le guide 🎉",
+      description: "Vous êtes prêt à utiliser SimplyDone. N'hésitez pas à revenir au guide dans les paramètres si besoin.",
+      variant: "success"
+    })
+    markUserAsSeenIntro(true);
+    setShowGuide(false);
+  }
 
   return (
   <>
@@ -130,7 +136,7 @@ export function TaskList() {
                             </>
                           ) : (
                             <>
-                              Voir plus {onesignalId}
+                              Voir plus
                               <ChevronDown className="w-5 h-5 ml-1" />
                             </>
                           )}
@@ -209,6 +215,7 @@ export function TaskList() {
       </div>
     </DragDropContext>
     <SubscribeToNotificationDialog />
+    <WelcomeGuide open={showGuide} onFinish={onFinishGuide} />
 </>
   );
 }

@@ -6,6 +6,7 @@ export interface User {
     avatarUrl?: string;
     role?: string;
     avatarId?: string;
+    hasSeenIntro?: boolean;
 }
   
 export interface AuthState {
@@ -18,6 +19,7 @@ export interface AuthState {
     logout: () => Promise<void>;
     changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
     updateProfile: (name: string, avatarUrl: string, avatarId: string) => Promise<void>;
+    markUserAsSeenIntro: (val: boolean) => Promise<void>;
     signup: (name: string, email: string, password: string) => Promise<void>;
     listenToAppwrite: () => void;
   }
