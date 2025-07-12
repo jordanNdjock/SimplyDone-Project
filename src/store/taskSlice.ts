@@ -12,6 +12,7 @@ export const useTaskStore = create(
     (set, get) => ({
       tasks: [],
       searchTaskResults: [],
+      searchTaskQuery: [],
       fetchTasks: async (userId: string) => {
         try {
           const result = await db.listDocuments(databaseId, TaskCollectionId, [Query.equal("user_id", userId), Query.orderDesc("$createdAt") ]);
@@ -126,11 +127,19 @@ export const useTaskStore = create(
           });
         }
       },
+      setSearchTaskQuery: (searchValue) => {
+        set({ searchTaskQuery: [...searchValue] });
+      },
       searchTasks: async (searchValue) => {
         try {
             const userId = useAuthStore.getState().user;
             if (!userId) {
               throw new Error("User ID is null. Please ensure the user is authenticated.");
+            }
+
+            if(searchValue?.trim() !== "" && searchValue && !get().searchTaskQuery.some(val => val.toLowerCase() === searchValue.trim().toLowerCase())
+              ) {
+              set({ searchTaskQuery: [...get().searchTaskQuery, searchValue] });
             }
             const result = await db.listDocuments(databaseId, TaskCollectionId, [
               Query.or([
@@ -198,3 +207,4 @@ export const useTaskStore = create(
 
 export const selectTasks = (state: TaskState) => state.tasks;
 export const selectSearchtasks = (state: TaskState) => state.searchTaskResults;
+export const selectSearchTaskQuery = (state: TaskState) => state.searchTaskQuery;

@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Input } from "../ui/input";
 import { Search, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTaskStore, selectSearchtasks } from '../../store/taskSlice';
+import { useTaskStore, selectSearchtasks, selectSearchTaskQuery } from '../../store/taskSlice';
 import Image from "next/image";
 import { useDebounce } from 'use-debounce';
 import { TaskListItems } from '../tasks/TaskListItems';
@@ -22,8 +22,9 @@ export default function SearchComponent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get("search") || "";
-  const {searchTasks} = useTaskStore()
+  const {searchTasks , setSearchTaskQuery} = useTaskStore();
   const Tasks = useTaskStore(selectSearchtasks);
+  const searchTaskQuery = useTaskStore(selectSearchTaskQuery);
 
   const {
     register,
@@ -35,13 +36,13 @@ export default function SearchComponent() {
     defaultValues: { search: initialSearch },
   });
 
-  const searchValue = watch("search");
+  let searchValue = watch("search");
 
   const [debouncedSearch] = useDebounce(searchValue, 300);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (searchValue) {
+    if (searchValue?.trim() !== "" && searchValue) {
       params.set("search", searchValue);
     } else {
       params.delete("search");
@@ -59,6 +60,13 @@ export default function SearchComponent() {
 
   const onSubmit = (data: SearchFormValues) => {
     console.log("Recherche soumise :", data);
+  };
+  const onSelect = (query: string) => setValue("search", query);
+
+  const onRemove = (index: number) => {
+    const newQueries = [...searchTaskQuery];
+    newQueries.splice(index, 1);
+    setSearchTaskQuery(newQueries);
   };
 
   return (
@@ -86,6 +94,30 @@ export default function SearchComponent() {
         )}
       </div>
     </form>
+    {searchTaskQuery.length > 0 && searchValue?.trim() !== "" && (
+          <div className="mt-6 space-y-2 ">
+            <div className="flex flex-wrap gap-2">
+              {searchTaskQuery.map((query, index) => (
+                <div
+                  key={index}
+                  className="flex items-center bg-slate-800 text-white px-3 py-1 rounded-full cursor-pointer text-sm transition"
+                  onClick={() => onSelect(query)}
+                >
+                  <span>{query}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemove(index);
+                    }}
+                    className="ml-2 text-gray-500 hover:text-red-500 text-xs"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
     {(!searchValue || (searchValue && Tasks.length === 0)) && (
 
         <div className="flex flex-col items-center mt-16">
@@ -115,7 +147,6 @@ export default function SearchComponent() {
             )}
         </div>
         )}
-
 
       {Tasks.length > 0 && searchValue && (
         <div className="mt-8 space-y-2">

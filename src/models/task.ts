@@ -21,6 +21,7 @@ export interface Task {
 export interface TaskState {
     tasks: Task[];
     searchTaskResults: Task[];
+    searchTaskQuery: string[];
     fetchTasks: (userId: string) => Promise<void>;
     addTask: (task: Omit<Task, "id">, userId: string) => Promise<void>;
     toggleTask: (taskId: string) => Promise<void>;
@@ -28,4 +29,5 @@ export interface TaskState {
     deleteTask: (taskId: string, imageId?: string) => Promise<void>;
     searchTasks: (searchValue: string) => Promise<void>;
     listenToTasks: () => void;
+    setSearchTaskQuery: (searchValue: string[]) => void;
 }
