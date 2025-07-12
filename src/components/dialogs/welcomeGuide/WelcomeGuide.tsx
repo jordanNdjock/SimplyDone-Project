@@ -118,7 +118,7 @@ export default function WelcomeGuide({
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onFinish()}>
-      <DialogContent className="sm:max-w-md rounded-lg text-center py-6 px-6">
+      <DialogContent className="sm:max-w-md max-w-sm rounded-lg text-center py-6 px-6">
         <Progress value={progress} className="mb-6 h-2 mt-5" />
 
         <AnimatePresence mode="wait">
