@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import OneSignal from "react-onesignal";
-import { useAuthStore } from "../store/authSlice";
+import { selectUser, useAuthStore } from "../store/authSlice";
 import { toast } from "../hooks/use-toast";
 import { Button } from "./ui/button";
 import { usePrefUserStore } from "../store/prefUserSlice";
@@ -10,9 +10,9 @@ import { getInitials } from "../utils/utils";
 
 export default function SubscribeToNotificationsButton() {
   const [isSupported, setIsSupported] = useState(false);
-  const { setNotificationSubscribed, notification_Subscribed } = usePrefUserStore((state) => state);
+  const { setNotificationSubscribed, notification_Subscribed } = usePrefUserStore();
   const [loading, setLoading] = useState(false);
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore(selectUser);
 
   useEffect(() => {
     const checkSupportAndStatus = async () => {
@@ -33,7 +33,10 @@ export default function SubscribeToNotificationsButton() {
         await OneSignal.Notifications.requestPermission();
       }
 
-       await OneSignal.logout();
+      const hasUser = OneSignal.User?.onesignalId;
+      if (hasUser) {
+        await OneSignal.logout();
+      }
 
       const granted = await OneSignal.Notifications.permission;
       if (granted && user) {

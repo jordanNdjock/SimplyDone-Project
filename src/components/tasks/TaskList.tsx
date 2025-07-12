@@ -17,6 +17,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import React from "react";
 import SubscribeToNotificationDialog from "../dialogs/notifs/SubscribeToNotificationDialog";
 import WelcomeGuide from "../dialogs/welcomeGuide/WelcomeGuide";
+import OneSignal from "react-onesignal";
 
 export function TaskList() {
   const { fetchTasks, toggleTask, listenToTasks } = useTaskStore();
@@ -24,7 +25,6 @@ export function TaskList() {
   const tasks = useTaskStore(selectTasks);
   const user = useAuthStore(selectUser);
   const hasSeenIntro = user?.hasSeenIntro ?? false;
-  console.log(hasSeenIntro);
   const { tasklist_DisplayFinishedTasks } = usePrefUserStore();
   const [showGuide, setShowGuide] = useState(false)
 
@@ -32,6 +32,18 @@ export function TaskList() {
   const [showAllCompleted, setShowAllCompleted] = useState(false);
 
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !window.__ONE_SIGNAL_INITIALIZED__) {
+      OneSignal.init({
+        appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
+        allowNative: true,
+        notifyButton: { enable: true },
+        allowLocalhostAsSecureOrigin: true,
+      });
+      window.__ONE_SIGNAL_INITIALIZED__ = true;
+    }
+  }, []);
 
   useEffect(() => {
     try {
