@@ -37,6 +37,7 @@ export function TaskList() {
     if (typeof window !== "undefined" && !window.__ONE_SIGNAL_INITIALIZED__) {
       OneSignal.init({
         appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
+        serviceWorkerPath: "/OneSignalSDKWorker.js",
         allowNative: true,
         notifyButton: { enable: true },
         allowLocalhostAsSecureOrigin: true,
