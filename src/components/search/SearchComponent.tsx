@@ -36,7 +36,7 @@ export default function SearchComponent() {
     defaultValues: { search: initialSearch },
   });
 
-  let searchValue = watch("search");
+  const searchValue = watch("search");
 
   const [debouncedSearch] = useDebounce(searchValue, 300);
 
