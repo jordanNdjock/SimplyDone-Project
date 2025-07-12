@@ -5,8 +5,8 @@ export const metadata : Metadata = {
 }
 export default function Search(){
     return (
-        <>
+        <div className="p-2">
           <SearchComponent />
-        </>
+        </div>
     );
 }
