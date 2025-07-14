@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from 'zustand/middleware';
 import { shuffleArray } from '@/src/lib/utils';
 import { useTimerStore } from "./sessionTimerSlice";
+import { isMobileDevice } from "../utils/utils";
 
 interface AudioState {
   // État
@@ -62,7 +63,8 @@ export const useAudioStore = create<AudioState>()(
         });
 
         if ('mediaSession' in navigator) {
-          setInterval(() => {
+        let mediaSessionInterval: NodeJS.Timeout | null = null;
+        const updateMedia = () => {
             const timerState = useTimerStore.getState();
             const timeLeft = timerState.timeLeft;
             const getMediaTitle = () => {
@@ -72,10 +74,18 @@ export const useAudioStore = create<AudioState>()(
                   ? "⏳ Travail en cours" 
                   : "☕ Pause ";
             };
+            function formatTimeLeft(seconds: number): string {
+              const minutes = isMobileDevice() ? Math.floor(seconds / 60) + 1 : Math.floor(seconds / 60);
+              const min = minutes.toString().padStart(2,'0');
+              const sec = (seconds % 60).toString().padStart(2, "0");
+              return isMobileDevice()
+                ? `${(minutes) < 2 ? min + " min restante" : min + " min restantes"}`
+                : `${min}:${sec}`;
+            }
             const updateMediaMetadata = () => {
               navigator.mediaSession.metadata = new MediaMetadata({
                 title: getMediaTitle(),
-                artist: `${Math.floor(timeLeft / 60).toString().padStart(2, '0')}:${(timeLeft % 60).toString().padStart(2, '0')}`,
+                artist: `${formatTimeLeft(timeLeft)}`,
                 album: "Simplydone",
                 artwork: [
                   { src: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
@@ -99,7 +109,16 @@ export const useAudioStore = create<AudioState>()(
             navigator.mediaSession.setActionHandler("seekforward", null);
             navigator.mediaSession.setActionHandler("seekto", null);
             navigator.mediaSession.setActionHandler("stop", null);
-          }, 1000);
+
+          };
+
+          if (mediaSessionInterval) clearInterval(mediaSessionInterval);
+
+          const intervalDelay = isMobileDevice() ? 60_000 : 1000;
+
+          mediaSessionInterval = setInterval(() => {
+            updateMedia();
+          }, intervalDelay);
         }
 
       
@@ -120,7 +139,8 @@ export const useAudioStore = create<AudioState>()(
           const trackIndex = currentTrackIndex === -1 ? 0 : currentTrackIndex;
           audioElement.src = get().shuffledPlaylist[trackIndex];
           audioElement.currentTime = get().playbackProgress;
-          audioElement.volume = soundVolume;
+          if(soundEnabled) audioElement.volume = soundVolume
+          else audioElement.muted = true;
           audioElement.play()
             .then(() => set({ isPlaying: true, currentTrackIndex: trackIndex }))
             .catch(e => console.error("Erreur lecture audio:", e));
@@ -175,6 +195,7 @@ export const useAudioStore = create<AudioState>()(
           const newState = !state.soundEnabled;
           if (state.audioElement) {
             state.audioElement.muted = !newState;
+            state.audioElement.volume = newState ? state.soundVolume : 0.0;
           }
           return { soundEnabled: newState };
         });
