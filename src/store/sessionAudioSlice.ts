@@ -79,7 +79,7 @@ export const useAudioStore = create<AudioState>()(
               const min = minutes.toString().padStart(2,'0');
               const sec = (seconds % 60).toString().padStart(2, "0");
               return isMobileDevice()
-                ? `${(minutes) < 2 ? min + " min restante" : min + " min restantes"}`
+                ? `${minutes < 2 ? min + " min restante" : min + " min restantes"}`
                 : `${min}:${sec}`;
             }
             const updateMediaMetadata = () => {
