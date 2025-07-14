@@ -60,13 +60,55 @@ export const useAudioStore = create<AudioState>()(
         audio.addEventListener('ended', () => {
           get().playNextTrack();
         });
+
+        if ('mediaSession' in navigator) {
+          setInterval(() => {
+            const timerState = useTimerStore.getState();
+            const timeLeft = timerState.timeLeft;
+            const getMediaTitle = () => {
+              return timerState.isLongBreak 
+                ? "Pause longue 🌴" 
+                : timerState.isWorkSession 
+                  ? "⏳ Travail en cours" 
+                  : "☕ Pause ";
+            };
+            const updateMediaMetadata = () => {
+              navigator.mediaSession.metadata = new MediaMetadata({
+                title: getMediaTitle(),
+                artist: `${Math.floor(timeLeft / 60).toString().padStart(2, '0')}:${(timeLeft % 60).toString().padStart(2, '0')}`,
+                album: "Simplydone",
+                artwork: [
+                  { src: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+                  { src: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" }
+                ]
+              });
+            };
+            updateMediaMetadata();
+            
+            navigator.mediaSession.setActionHandler("play", () => {
+              get().togglePlayback();
+              updateMediaMetadata();
+            });
+
+            navigator.mediaSession.setActionHandler("pause", () => {
+                get().togglePlayback();
+                updateMediaMetadata();
+            });
+
+            navigator.mediaSession.setActionHandler("seekbackward", null);
+            navigator.mediaSession.setActionHandler("seekforward", null);
+            navigator.mediaSession.setActionHandler("seekto", null);
+            navigator.mediaSession.setActionHandler("stop", null);
+          }, 1000);
+        }
+
       
         set({ audioElement: audio });
       },      
 
       // Lecture/Pause
       togglePlayback: () => {
-        const { audioElement, isPlaying, shuffledPlaylist, currentTrackIndex } = get();
+        const { audioElement, isPlaying, shuffledPlaylist, currentTrackIndex, soundVolume, soundEnabled } = get();
         if (!audioElement) return;
 
         if (isPlaying) {
@@ -78,6 +120,7 @@ export const useAudioStore = create<AudioState>()(
           const trackIndex = currentTrackIndex === -1 ? 0 : currentTrackIndex;
           audioElement.src = get().shuffledPlaylist[trackIndex];
           audioElement.currentTime = get().playbackProgress;
+          audioElement.volume = soundVolume;
           audioElement.play()
             .then(() => set({ isPlaying: true, currentTrackIndex: trackIndex }))
             .catch(e => console.error("Erreur lecture audio:", e));
@@ -119,10 +162,10 @@ export const useAudioStore = create<AudioState>()(
       // Son de complétion
       playCompletionSound: () => {
         const completionAudio = new Audio('/assets/sounds/complete.mp3');
-        completionAudio.volume = get().soundVolume;
+        completionAudio.volume = 1.0;
         completionAudio.play().catch(e => console.error("Erreur son de complétion:", e));
         if ("vibrate" in navigator) {
-          navigator.vibrate([100, 50, 100, 50, 100]);
+          navigator.vibrate([500, 300, 800, 300, 1000]);
         }
       },
 
