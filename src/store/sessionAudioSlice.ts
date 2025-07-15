@@ -112,13 +112,13 @@ export const useAudioStore = create<AudioState>()(
 
           };
 
-          if (mediaSessionInterval) clearInterval(mediaSessionInterval);
+          // if (mediaSessionInterval) clearInterval(mediaSessionInterval);
 
-          const intervalDelay = isMobileDevice() ? 60_000 : 1000;
+          // const intervalDelay = isMobileDevice() ? 60_000 : 1000;
 
           mediaSessionInterval = setInterval(() => {
             updateMedia();
-          }, intervalDelay);
+          }, 1000);
         }
 
       
