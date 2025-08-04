@@ -69,13 +69,15 @@ export const useAuthStore = create(
               hasSeenIntro: false,
             });
           }
-          if(user == null){
+          if(user === null){
             toast({
               title: "Erreur lors de la connexion",
               variant: "error",
             });
+            return false;
           }
           set({ user, authenticated: true });
+          return true;
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message === "Invalid credentials. Please check the email and password." ? 
           "Mot de passe ou email incorrect. Veuillez vérifier vos informations !" : error.message : 
@@ -85,6 +87,7 @@ export const useAuthStore = create(
             title: message,
             variant: "error",
           });
+          return false;
         }
       },
 

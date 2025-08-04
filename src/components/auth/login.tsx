@@ -46,12 +46,14 @@ export default function LoginForm() {
     function onSubmit(data: z.infer<typeof FormSchema>) {
         startTransition(async () => {
           try {
-              await login( data.email,data.password);
-              router.push("/dashboard");
-              toast({
-                title: "Connexion réussie",
-                variant: "success",
-              })
+              const result = await login(data.email,data.password);
+              if(result){
+                router.push("/dashboard");
+                toast({
+                  title: "Connexion réussie",
+                  variant: "success",
+                });
+              }
           } catch (error: unknown) {
             const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
             toast({

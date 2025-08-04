@@ -15,7 +15,7 @@ export interface AuthState {
     setTheme: (theme: string) => void;
     authenticated: boolean;
     fetchUser: () => Promise<void>;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<boolean>;
     logout: () => Promise<void>;
     changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
     updateProfile: (name: string, avatarUrl: string, avatarId: string) => Promise<void>;
