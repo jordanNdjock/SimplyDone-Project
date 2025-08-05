@@ -40,7 +40,7 @@ import {
 import { usePrefUserStore } from "@/src/store/prefUserSlice"
 
 const CalendarComponent: React.FC = () => {
-  const tasks = useTaskStore(selectTasks)
+  const tasks = useTaskStore(selectTasks);
   const { calendar_DisplayFinishedTasks, calendar_ViewMode } = usePrefUserStore();
   const { listenToTasks, fetchTasks } = useTaskStore()
   const user = useAuthStore(selectUser)
@@ -88,8 +88,9 @@ const CalendarComponent: React.FC = () => {
     })
   }, [tasks, targetDate])
 
-  const activeTasks = tasksForTargetDate.filter((t) => !t.completed)
-  const completedTasks = tasksForTargetDate.filter((t) => t.completed)
+  const uniqueTasks = Array.from(new Map(tasksForTargetDate.map(task => [task.id, task])).values());
+  const activeTasks = uniqueTasks.filter((t) => !t.completed)
+  const completedTasks = uniqueTasks.filter((t) => t.completed)
 
   const goToPrevious = () => {
     const newDate =
@@ -144,7 +145,7 @@ const CalendarComponent: React.FC = () => {
         locale: fr,
       })} au ${format(end, "dd MMM yyyy", { locale: fr })}`
     }
-    return format(currentDate, "EEEE dd MMM yyyy", { locale: fr })
+    return format(currentDate, "dd MMM yyyy", { locale: fr })
   }
 
   return (
@@ -164,7 +165,7 @@ const CalendarComponent: React.FC = () => {
                 </span>
               </div>
 
-              <div className="mt-2  md:w-48">
+              <div className="mt-2  md:w-48 border border-gray-300 dark:border-none rounded-lg">
                 <Select
                   onValueChange={(val) => {
                     setSelectedDate(new Date(val))
@@ -201,7 +202,7 @@ const CalendarComponent: React.FC = () => {
                   const isSelected = selectedDate && isSameDay(day, selectedDate)
 
                   const baseClass =
-                    "flex flex-col items-center justify-center p-2 sm:p-4 rounded-xl shadow transition cursor-pointer min-w-0 w-full hover:bg-blue-100 dark:hover:bg-blue-800"
+                    "flex flex-col items-center justify-center p-2 sm:p-4 rounded-xl shadow transition cursor-pointer min-w-0 w-full hover:bg-blue-400 hover:text-white dark:hover:bg-blue-800"
                   const colorClass = isCurrent
                     ? "bg-blue-600 text-white font-semibold"
                     : isSelected

@@ -72,9 +72,9 @@ export function TaskList() {
 
   if(isPending) return <div className="mt-4"><SkeletonTask/></div>;
 
-  
-  const activeTasks = tasks.filter((task) => !task.completed);
-  const completedTasks = tasks.filter((task) => task.completed);
+  const uniqueTasks = Array.from(new Map(tasks.map(task => [task.id, task])).values());
+  const activeTasks = uniqueTasks.filter((task) => !task.completed);
+  const completedTasks = uniqueTasks.filter((task) => task.completed);
   const priorityMap: { [key: string]: number } = {
     high: 3,
     medium: 2,

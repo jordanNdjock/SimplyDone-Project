@@ -15,6 +15,8 @@ import {
 
 export default function MatrixLayout() {
   let tasks = useTaskStore(selectTasks);
+  tasks = Array.from(new Map(tasks.map(task => [task.id, task])).values());
+
   const { matrice_DisplayFinishedTasks } = usePrefUserStore();
 
   if (!matrice_DisplayFinishedTasks) {

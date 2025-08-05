@@ -86,7 +86,7 @@ export default function SubscribeToNotificationsButton() {
      {isSupported ? (
         <Button
           onClick={subscribe}
-          className={`px-4 py-2 rounded outline-none text-white ${
+          className={`px-4 py-2 rounded outline-none text-black dark:text-white hover:text-white ${
             notification_Subscribed ? "bg-green-600" : loading ? "bg-gray-400" : "bg-transparent"
         }`}
         >

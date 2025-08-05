@@ -16,7 +16,7 @@ export function NotificationToggle() {
   return (
     <div className="border shadow-sm rounded-lg">
       <div className="flex items-center rounded-md p-3">
-        <Bell className="text-gray-300 mr-3" />
+        <Bell className="text-gray-400 dark:text-gray-300 mr-3" />
         <span className="flex-1">Notifications</span>
         <Switch
           className="mr-2"

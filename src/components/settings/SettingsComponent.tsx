@@ -163,8 +163,8 @@ export default function SettingsComponent() {
             <ChevronRight className="text-gray-400" />
           </div>
         </SheetTrigger>
-        <SheetContent className=" text-white w-full md:w-[400px] justify-items-center items-center" side="bottom">
-          <h3 className="text-lg font-semibold mb-4">Partager sur les réseaux sociaux</h3>
+        <SheetContent className=" text-white w-full md:w-[400px] justify-items-center  items-center" side="bottom">
+          <h3 className="text-lg font-semibold mb-4 text-gray-500 dark:text-white">Partager sur les réseaux sociaux</h3>
           <div className="flex gap-4">
           <Link 
               href={`https://wa.me/?text=${encodeURIComponent("Découvrez SimplyDone : l'appli de productivité ultime ! Organisez vos tâches avec une todolist avancée, priorisez grâce à la matrice d'Eisenhower, et boostez votre concentration avec la méthode Pomodoro. Essayez-la dès maintenant : https://simplydone.vercel.app")}`} target="_blank"
@@ -193,7 +193,7 @@ export default function SettingsComponent() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <FaXTwitter className="mr-2 h-10 w-10 text-gray-200" />
+                <FaXTwitter className="mr-2 h-10 w-10 text-gray-300" />
               </Link>
 
             <Link

@@ -31,7 +31,7 @@ export default function SubscribeToNotificationDialog() {
                 </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="flex gap-4">
-                    <Button onClick={() => setOpen(false)} className="border-none outline-none bg-transparent">
+                    <Button onClick={() => setOpen(false)} className="border-none text-black outline-none hover:text-white dark:text-white bg-transparent">
                         ⏰ Plutard
                     </Button>
                     <SubscribeToNotificationsButton />
