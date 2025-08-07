@@ -15,7 +15,7 @@ export const useTaskStore = create(
       searchTaskQuery: [],
       fetchTasks: async (userId: string) => {
         try {
-          const result = await db.listDocuments(databaseId, TaskCollectionId, [Query.equal("user_id", userId), Query.orderDesc("$createdAt") ]);
+          const result = await db.listDocuments(databaseId, TaskCollectionId, [Query.equal("user_id", userId), Query.orderDesc("$createdAt"), Query.limit(100) ]);
           const tasks = result.documents.map((task) => mapTaskInformation(task));
           set({ tasks });
         } catch (error: unknown) {
@@ -147,6 +147,7 @@ export const useTaskStore = create(
                 Query.search("description", searchValue),
               ]),
               Query.equal("user_id", userId.$id),
+              Query.limit(100)
             ]);
           const searchTaskResults = result.documents.map((task) => mapTaskInformation(task));
           set({ searchTaskResults });
