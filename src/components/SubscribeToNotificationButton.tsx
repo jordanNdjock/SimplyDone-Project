@@ -65,6 +65,13 @@ export default function SubscribeToNotificationsButton() {
             variant: "success",
         });
       } else {
+        try {
+          console.log("test commence");
+          await OneSignal.Notifications.requestPermission();
+          console.log("test fini");
+        } catch (err) {
+            console.error("Erreur lors de la demande de permission :", err);
+        }
         toast({
             title: "⚠️ Permission refusée",
             variant: "warning"
@@ -86,8 +93,9 @@ export default function SubscribeToNotificationsButton() {
      {isSupported ? (
         <Button
           onClick={subscribe}
+          disabled={loading}
           className={`px-4 py-2 rounded outline-none text-black dark:text-white hover:text-white ${
-            notification_Subscribed ? "bg-green-600" : loading ? "bg-gray-400" : "bg-transparent"
+            notification_Subscribed ? "bg-green-600" : loading ? "bg-primary" : "bg-transparent"
         }`}
         >
           {loading
