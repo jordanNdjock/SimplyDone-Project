@@ -66,9 +66,16 @@ export default function SubscribeToNotificationsButton() {
         });
       } else {
         try {
-          console.log("test commence");
           await OneSignal.Notifications.requestPermission();
-          console.log("test fini");
+          if(user) await OneSignal.login(user.$id);
+          setNotificationSubscribed(true);
+
+          toast({
+            title: "✅ Notifications activées !",
+            description:
+                "Vous recevrez désormais des rappels pour vos tâches, échéances et activités importantes. Restez organisé(e) et ne manquez plus rien 🔔💪",
+            variant: "success",
+          });
         } catch (err) {
             console.error("Erreur lors de la demande de permission :", err);
         }
