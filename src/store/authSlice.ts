@@ -171,10 +171,7 @@ export const useAuthStore = create(
           });
         } catch (error) {
           const message = error instanceof Error ? error.message : "Erreur lors de la mise à jour du thème";
-          toast({
-            title: message,
-            variant: "error",
-          });
+          console.error(message);
         }
       },
       listenToAppwrite: () => {
