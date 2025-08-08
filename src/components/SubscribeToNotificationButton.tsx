@@ -78,11 +78,11 @@ export default function SubscribeToNotificationsButton() {
           });
         } catch (err) {
             console.error("Erreur lors de la demande de permission :", err);
+            toast({
+              title: "⚠️ Permission refusée",
+              variant: "warning"
+            });
         }
-        toast({
-            title: "⚠️ Permission refusée",
-            variant: "warning"
-        });
       }
     } catch (e) {
       toast({
