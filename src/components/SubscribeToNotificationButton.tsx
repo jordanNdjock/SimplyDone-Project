@@ -7,6 +7,7 @@ import { toast } from "../hooks/use-toast";
 import { Button } from "./ui/button";
 import { usePrefUserStore } from "../store/prefUserSlice";
 import { getInitials } from "../utils/utils";
+import { User } from "../models/user";
 
 export default function SubscribeToNotificationsButton() {
   const [isSupported, setIsSupported] = useState(false);
@@ -25,6 +26,33 @@ export default function SubscribeToNotificationsButton() {
     checkSupportAndStatus();
   }, []);
 
+    const sendNotifs = async ($user: User) => {
+        if($user) await OneSignal.login($user?.$id);
+        const subscription = OneSignal.User?.PushSubscription;
+        await subscription?.optOut();
+        await subscription?.optIn();
+        setNotificationSubscribed(true);
+
+        await fetch("/api/send-notifs", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            userId: user?.$id,
+            title: `👋 Bienvenue sur SimplyDone ${getInitials(user?.name)}`,
+            message: "Merci d’avoir activé les notifications. Vous serez désormais alerté en temps utile 😎",
+            }),
+        });
+
+        toast({
+            title: "✅ Notifications activées !",
+            description:
+                "Vous recevrez désormais des rappels pour vos tâches, échéances et activités importantes. Restez organisé(e) et ne manquez plus rien 🔔💪",
+            variant: "success",
+        });
+  };
+
   const subscribe = async () => {
     setLoading(true);
     try {
@@ -40,42 +68,11 @@ export default function SubscribeToNotificationsButton() {
 
       const granted = await OneSignal.Notifications.permission;
       if (granted && user) {
-        await OneSignal.login(user.$id);
-        const subscription = OneSignal.User?.PushSubscription;
-        await subscription?.optOut();
-        await subscription?.optIn();
-        setNotificationSubscribed(true);
-
-        await fetch("/api/send-notifs", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-            userId: user.$id,
-            title: `👋 Bienvenue sur SimplyDone ${getInitials(user.name)}`,
-            message: "Merci d’avoir activé les notifications. Vous serez désormais alerté en temps utile 😎",
-            }),
-        });
-
-        toast({
-            title: "✅ Notifications activées !",
-            description:
-                "Vous recevrez désormais des rappels pour vos tâches, échéances et activités importantes. Restez organisé(e) et ne manquez plus rien 🔔💪",
-            variant: "success",
-        });
+       await sendNotifs(user);
       } else {
         try {
           await OneSignal.Notifications.requestPermission();
-          if(user) await OneSignal.login(user.$id);
-          setNotificationSubscribed(true);
-
-          toast({
-            title: "✅ Notifications activées !",
-            description:
-                "Vous recevrez désormais des rappels pour vos tâches, échéances et activités importantes. Restez organisé(e) et ne manquez plus rien 🔔💪",
-            variant: "success",
-          });
+          if(user) await sendNotifs(user);
         } catch (err) {
             console.error("Erreur lors de la demande de permission :", err);
             toast({
