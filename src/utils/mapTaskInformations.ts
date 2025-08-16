@@ -13,7 +13,7 @@ export const mapTaskInformation = (task: any): Task => {
       is_followed: task.is_followed ?? null,
       start_date: task.start_date ?? null,
       end_date: task.end_date ?? null,
-      category: task.category ?? null,
+      taskList: task.taskList?.$id ?? null,
       priority: task.priority ?? null,
       image_id: task.image_id ?? null,
       createdAt: task.$createdAt ?? null,

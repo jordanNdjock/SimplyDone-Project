@@ -1,5 +1,5 @@
 import React from "react";
-import { Circle } from "lucide-react";
+import { Square } from "lucide-react";
 
 interface PriorityCircleProps {
   priority?: "none" | "low" | "medium" | "high";
@@ -25,5 +25,5 @@ export function PriorityCircle({ priority = "none", isMatrix }: PriorityCirclePr
       break;
   }
 
-  return <Circle size={isMatrix ? 14 : 20} className={`${colorClass}`} />;
+  return <Square size={isMatrix ? 14 : 20} className={`${colorClass}`} />;
 }

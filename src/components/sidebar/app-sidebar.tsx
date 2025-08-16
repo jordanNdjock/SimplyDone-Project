@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   ChevronRight,
   Frame,
+  ListPlus,
   Map,
   PieChart,
   Settings2,
@@ -31,6 +32,14 @@ import { NavMain } from "./nav-main"
 // import { NavProjects } from "./nav-projects"
 import { useIsMobile } from "@/src/hooks/use-mobile";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { TaskListDialog } from "../dialogs/taskList/taskListDialog";
+import { TaskList } from "@/src/models/taskList";
+import { NavTaskLists } from "./nav-taskList";
+import { UseTaskListStore } from "@/src/store/taskListSlice";
+import { toast } from "@/src/hooks/use-toast";
+import { DeleteTaskListDialog } from "../dialogs/taskList/deleteTaskListDialog";
+import { useTaskStore } from "@/src/store/taskSlice";
 
 const data = {
   navMain: [
@@ -82,13 +91,50 @@ const data = {
       icon: Map,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { setOpenMobile } = useSidebar();
   const user = useAuthStore(selectUser);
   const isMobile = useIsMobile();
+  const [open, setOpen] = React.useState(false);
+  const [openDelete, setOpenDelete] = React.useState(false);
+  const {removeTaskList, fetchTaskLists} = UseTaskListStore();
+  const {fetchTasks} = useTaskStore();
+  const taskLists = UseTaskListStore((state) => state.taskLists);
+  const [selectedTaskList, setSelectedTaskList] = React.useState<TaskList | null>(null);
+
+  const handleEditTaskList = (taskList: TaskList) => {
+    setOpen(true);
+    setSelectedTaskList(taskList);
+  };
+
+  React.useEffect(() => {
+      const fetchTaskList = async () => {
+      try {
+        if (user) {
+          await fetchTaskLists(user.$id);
+        }
+      } catch (error:unknown) {
+        const message = error instanceof Error ? error.message : "Une erreur inconnue est survenue";
+        toast({
+          title: message,
+          variant: "error",
+        })
+      }
+    };
+    fetchTaskList();
+  }, [fetchTaskLists, user]);
+
+  const handleDeleteTaskList = async (taskList: TaskList) => {
+    if (taskList.id) {
+      await removeTaskList(taskList.id);
+      await fetchTasks(user?.$id ?? "");
+    }
+  };
+
   return (
+<>
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
@@ -122,12 +168,40 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <ChevronRight className="text-gray-400" />
           </Link>
         </div>}
+        {taskLists.length > 0 && <NavTaskLists taskLists={taskLists} onEdit={handleEditTaskList} onDelete={handleDeleteTaskList} setSelectedTaskList={setSelectedTaskList} setOpenDelete={setOpenDelete} />}
       </SidebarContent>
       <SidebarFooter>
-        {/* <Button className="mb-5" variant="secondary"><Plus /> Ajouter une catégorie</Button> */}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <div className="px-4 justify-center flex">
+              <Button className="mb-5" onClick={() => {setOpen(true)}}><ListPlus /> Ajouter une liste</Button>
+            </div>
+          </SidebarMenuItem>
+        </SidebarMenu>
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
+    <TaskListDialog 
+        open={open} 
+        taskList={selectedTaskList}
+        onClose={() => {
+          setOpen(false);
+          setSelectedTaskList(null);
+        }} 
+    />
+    <DeleteTaskListDialog 
+        isOpen={openDelete}
+        onClose={() => setOpenDelete(false)}
+        taskListName={selectedTaskList?.title ?? ""}
+        onConfirm={async () => {
+        if (selectedTaskList) {
+          await handleDeleteTaskList(selectedTaskList);
+          setOpenDelete(false);
+          setSelectedTaskList(null);
+        }
+      }}
+    />
+</>
   )
 }

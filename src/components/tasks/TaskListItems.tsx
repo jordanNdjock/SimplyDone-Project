@@ -2,7 +2,7 @@
 
 import { useTransition, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, MoreVertical, Edit, Image as ImageIcon, AlignJustify } from "lucide-react";
+import { MoreVertical, Edit, Image as ImageIcon, AlignJustify, SquareCheckBig } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -13,7 +13,7 @@ import { DeleteTaskDialog } from "../dialogs/task/DeleteTaskDialog";
 import { PriorityCircle } from "./PriorityCircle";
 import { Task } from "@/src/models/task";
 import { useTaskStore } from "@/src/store/taskSlice";
-import { formatTaskDates } from "@/src/utils/utils";
+import { formatTaskDates, getTaskList } from "@/src/utils/utils";
 import { TaskDialog } from "../dialogs/task/TaskDialog";
 import { useIsMobile } from "@/src/hooks/use-mobile";
 import { hasDatePassed } from "@/src/utils/utils";
@@ -107,9 +107,11 @@ export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
                   : {
                     }
                 )}
-                style={{ backgroundColor: task.color }}
+                 style={{
+                    background: task.color
+                  }}
               >
-              <div className={`flex gap-1.5 ${isMatrix ? "p-2" : "p-3"} items-center ${task.completed ? "opacity-45" : ""}`}>
+              <div className={`flex gap-2 ${isMatrix ? "p-2" : "p-3"} items-center ${task.completed ? "opacity-50" : ""}`}>
                 <button
                   onTouchStart={(e) => {
                     e.stopPropagation();
@@ -123,7 +125,7 @@ export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
                 }}
                 >
                   {task.completed ? (
-                    <CheckCircle size={isMatrix ? 14 : 20} className="text-green-400" />
+                    <SquareCheckBig size={isMatrix ? 14 : 20} className="text-gray-300" />
                   ) : (
                     PriorityCircle({priority: task.priority, isMatrix})
                   )}
@@ -160,6 +162,17 @@ export function TaskListItems({ tasks, isMatrix }: TaskListItemsProps) {
                     />
                 )}
 
+                {task.taskList && (
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-white">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: getTaskList(task.taskList)?.color }}
+                    ></div>
+                    <span className={`${isMatrix ? "hidden md:block" : "text-[10px]"}`}>{getTaskList(task.taskList)?.title}</span>
+                    {task.start_date && task.end_date && <span className={`${isMatrix ? "hidden md:block" : "ml-1"}`}>|</span>}
+                  </div>
+                )}
+                
                 {task.start_date && task.end_date && (
                     <div className={`flex items-center gap-2 ${isMatrix ? "text-[7px]" : "text-[10px]"} ${hasDatePassed(task.end_date) ? "text-red-300" : "text-blue-300" } font-bold`}>
                         {formatTaskDates(task.start_date, task.end_date)}

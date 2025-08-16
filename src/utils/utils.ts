@@ -1,5 +1,7 @@
 import { format, isToday, isTomorrow, parseISO, isYesterday, isSameDay } from "date-fns";
 import { fr } from "date-fns/locale";
+import { UseTaskListStore } from "../store/taskListSlice";
+import { TaskList } from "../models/taskList";
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -112,4 +114,10 @@ export const toBoolean = (str: string) => String(str).trim().toLowerCase() === '
 export function isMobileDevice(): boolean {
   if (typeof navigator === "undefined") return false;
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+export function getTaskList(taskListId: string): TaskList | null {
+  const taskLists = UseTaskListStore.getState().taskLists;
+  const taskList = taskLists.find((list) => list.id === taskListId);
+  return taskList ? taskList : null;
 }

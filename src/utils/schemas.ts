@@ -11,6 +11,7 @@ export const taskSchema = z
     priority: z.enum(["none", "low", "medium", "high"]).default("none"),
     is_followed: z.boolean().default(false),
     is_repeat: z.boolean().default(false),
+    taskList: z.string().optional(),
   })
   .refine(
     (data) => {

@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import { persist } from "zustand/middleware";
 import { ID, db, TaskCollectionId, databaseId, Query, storage, TasksImgBucketId, client} from "@/src/lib/appwrite";
-import { TaskState, Task } from "@/src/models/task";
+import { TaskState } from "@/src/models/task";
 import { mapTaskInformation } from "../utils/mapTaskInformations";
 import { toast } from "../hooks/use-toast";
 import { useAuthStore } from "./authSlice";
@@ -35,14 +35,9 @@ export const useTaskStore = create(
             toast({ title: "Tâche déjà existante", variant: "error" });
           }else{
             const documentId = ID.unique();
-            const newTask: Task = {
-              ...task,
-              user_id: userId,
-              completed: false,
-            };
         
-            await db.createDocument(databaseId, TaskCollectionId, documentId, newTask);
-            const taskWithId = { ...newTask, id: documentId };
+            await db.createDocument(databaseId, TaskCollectionId, documentId, task);
+            const taskWithId = { ...task, id: documentId };
         
             set((state) => ({ tasks: [taskWithId, ...state.tasks] }));
           }
@@ -71,7 +66,10 @@ export const useTaskStore = create(
               databaseId,
               TaskCollectionId,
               taskId,
-              { completed: updatedTask.completed }
+              {
+                completed: updatedTask.completed,
+                taskList: updatedTask.taskList ?? null
+              }
             );
           }
         } catch (error) {

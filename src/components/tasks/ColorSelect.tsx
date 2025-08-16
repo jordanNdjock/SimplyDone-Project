@@ -15,14 +15,18 @@ export function ColorSelect({ form }: ColorSelectProps) {
 
   const themeColors = theme === "dark" 
     ? [
-        { name: "primary", class: "bg-primary" }, 
-        { name: "green-800", class: "bg-green-800" }, 
-        { name: "amber-900", class: "bg-amber-900" }
+        { name: "#C71585", class: "bg-pink-800" },
+        { name: "#B8860B", class: "bg-yellow-700" },
+        { name: "#28A745", class: "bg-green-500" },
+        { name: "#0F5E66", class: "bg-cyan-800" },
+        { name: "#0D47A1", class: "bg-blue-800" }  
       ] 
     : [
-        { name: "accent", class: "bg-accent" },
-        { name: "neutral-600", class: "bg-neutral-600" }, 
-        { name: "teal-800", class: "bg-teal-800" }
+        { name: "#FF1493", class: "bg-pink-600" },  
+        { name: "#FFC300", class: "bg-yellow-400" }, 
+        { name: "#28A745", class: "bg-green-500" },   
+        { name: "#17A2B8", class: "bg-cyan-500" },   
+        { name: "#007BFF", class: "bg-blue-500" },  
       ];
 
   const handleColorSelect = (color: string) => {
@@ -38,7 +42,7 @@ export function ColorSelect({ form }: ColorSelectProps) {
             {themeColors.map((color, index) => (
               <div 
                 key={index} 
-                className={`w-12 h-12 cursor-pointer rounded-full border-2 ${color.class} ${color.name === field.value ? "border-yellow-500 dark:border-white" : "border-transparent"}`} 
+                className={`w-10 h-10 cursor-pointer rounded-full border-2 ${color.class} ${color.name === field.value ? "border-gray-800 dark:border-white" : "border-transparent"}`} 
                 onClick={() => handleColorSelect(color.name)}
               />
             ))}

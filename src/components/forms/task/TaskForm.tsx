@@ -1,7 +1,7 @@
 "use client";
 
 import {  useEffect, useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTaskStore } from "@/src/store/taskSlice";
@@ -25,6 +25,8 @@ import { Task } from "@/src/models/task";
 import { getOriginalImageUrl } from "@/src/utils/utils";
 import ImageWithDialog from "../../dialogs/layout/ImageWithDialog";
 // import { ColorSelect } from '../../tasks/ColorSelect';
+import { UseTaskListStore } from "@/src/store/taskListSlice";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 
 
 
@@ -35,6 +37,7 @@ interface TaskFormProps {
 }
 
 export function TaskForm({ onClose, task, dateCalendar }: TaskFormProps) {
+  const taskLists = UseTaskListStore((state) => state.taskLists);
   const user = useAuthStore(selectUser);
   const { addTask, updateTask } = useTaskStore();
   const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -54,6 +57,7 @@ export function TaskForm({ onClose, task, dateCalendar }: TaskFormProps) {
       priority: task?.priority || "none",
       is_followed: task?.is_followed || false,
       is_repeat: task?.is_repeat || false,
+      taskList: task?.taskList || "",
     },
   });
 
@@ -149,6 +153,39 @@ export function TaskForm({ onClose, task, dateCalendar }: TaskFormProps) {
             </FormItem>
           )}
         />
+
+        {taskLists.length > 0 && (
+            <div className="space-y-2 mb-4">
+              <Label className="mb-4">Liste</Label>
+              <Controller
+                control={form.control}
+                name="taskList"
+                render={({ field }) => (
+                  <Select
+                    value={field.value ?? ""}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Sélectionnez une liste (facultatif)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {taskLists.map((list) => (
+                        <SelectItem key={list.id} value={list.id ?? ""} className="cursor-pointer">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-3 h-3 rounded-full"
+                              style={{ backgroundColor: list.color }}
+                            ></div>
+                            <span>{list.title}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+          )}
 
         <Button
           type="button"

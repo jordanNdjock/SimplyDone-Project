@@ -11,8 +11,7 @@ export interface Task {
     priority?: "none" | "low" | "medium" | "high";
     end_date?: string;
     start_date?: string;
-    category?: Array<string>;
-    taskList?: Array<string>;
+    taskList?: string;
     comments?: Array<string>;
     user_id: string;
     createdAt?: string;
