@@ -168,7 +168,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <ChevronRight className="text-gray-400" />
           </Link>
         </div>}
-        {taskLists.length > 0 && <NavTaskLists taskLists={taskLists} onEdit={handleEditTaskList} onDelete={handleDeleteTaskList} setSelectedTaskList={setSelectedTaskList} setOpenDelete={setOpenDelete} />}
+        {taskLists.length > 0 && <NavTaskLists taskLists={taskLists} onEdit={handleEditTaskList} setSelectedTaskList={setSelectedTaskList} setOpenDelete={setOpenDelete} />}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
