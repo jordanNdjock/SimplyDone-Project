@@ -22,13 +22,11 @@ import { useMediaQuery } from "@/src/hooks/use-media-query";
 interface NavTaskListsProps {
   taskLists: TaskList[];
   onEdit: (taskList: TaskList) => void;
-  onDelete: (taskList: TaskList) => void;
   setSelectedTaskList: (taskList: TaskList) => void;
   setOpenDelete: (open: boolean) => void;
-
 }
 
-export function NavTaskLists({ taskLists, onEdit, onDelete, setSelectedTaskList, setOpenDelete }: NavTaskListsProps) {
+export function NavTaskLists({ taskLists, onEdit, setSelectedTaskList, setOpenDelete }: NavTaskListsProps) {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
