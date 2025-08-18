@@ -22,7 +22,7 @@ import type { TaskList } from "@/src/models/taskList";
 import { UseTaskListStore } from "@/src/store/taskListSlice";
 
 export function TaskList() {
-  const { fetchTasks, toggleTask, listenToTasks } = useTaskStore();
+  const { fetchTasks, toggleTask, listenToTasks, updateTask } = useTaskStore();
   const { markUserAsSeenIntro } = useAuthStore();
   const tasks = useTaskStore(selectTasks);
   const user = useAuthStore(selectUser);
@@ -112,15 +112,39 @@ export function TaskList() {
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
     if (!destination) return;
-    if (source.droppableId === destination.droppableId) return;
 
-    const draggedTask = tasks.find((t) => t.id === draggableId);
+    const draggableParts = draggableId.split("-");
+    const taskId = draggableParts.slice(-1)[0];
+
+    const draggedTask = tasks.find((t) => t.id === taskId);
     if (!draggedTask) return;
 
-    if (draggedTask.id) {
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    const newCompleted = destination.droppableId.startsWith("completed");
+
+    let newTaskList: string | undefined = draggedTask.taskList;
+    const droppableParts = destination.droppableId.split("-");
+    if (droppableParts.length === 2 && droppableParts[1] !== "uncategorized") {
+      newTaskList = droppableParts[1];
+    } else if (destination.droppableId.includes("uncategorized")) {
+      newTaskList = "none";
+    }
+
+    if (draggedTask.completed !== newCompleted && draggedTask.id) {
       toggleTask(draggedTask.id);
     }
+
+    if (draggedTask.taskList !== newTaskList && draggedTask.id && draggedTask.completed === newCompleted) {
+      updateTask(draggedTask.id, { taskList: newTaskList });
+    }
   };
+
 
   const onFinishGuide = () => {
     toast({
@@ -137,11 +161,15 @@ export function TaskList() {
     tasks: typeof activeTasks,
     showAll: boolean,
     setShowAll: (v: boolean) => void,
-    limit: number
+    limit: number,
+    droppableId: string
   ) => (
     <>
       {(showAll ? tasks : tasks.slice(0, limit)).map((task, index) => (
-        <Draggable key={task.id} draggableId={task.id!} index={index}>
+        <Draggable key={`draggable-${droppableId}-${task.id}`} 
+          draggableId={`draggable-${droppableId}-${task.id}`}
+          index={index}
+          >
           {(provided) => (
             <div
               ref={provided.innerRef}
@@ -182,136 +210,179 @@ export function TaskList() {
           {tasks.length > 0 ? (
             <>
               {/* Actives */}
-              <Droppable droppableId="active">
-                {(provided) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps}>
-                    {activeTasks.length > 0 ? (
-                      <>
-                        {/* Catégorisées */}
-                        {categorizedActive.length > 0 &&
-                          taskLists.map((list: TaskList) => {
-                            const listTasks = categorizedActive.filter(
-                              (t) => t.taskList === list.id
-                            );
-                            if (listTasks.length === 0) return null;
-                            return (
-                              <div key={list.id} className="mt-4 mb-2">
-                                <h2 className="font-semibold text-lg flex items-center gap-2">
-                                  <div
-                                    className="w-3 h-3 rounded-full"
-                                    style={{ backgroundColor: list.color }}
-                                  />
-                                  {list.title}
-                                </h2>
-                                {renderTasks(listTasks, showAllActive, setShowAllActive, 3)}
-                              </div>
-                            );
-                          })}
+              {categorizedActive.length > 0 &&
+                taskLists.map((list: TaskList) => {
+                  const listTasks = categorizedActive.filter(
+                    (t) => t.taskList === list.id
+                  );
+                  if (listTasks.length === 0) return null;
 
-                        {/* Autres si mixte */}
-                        {categorizedActive.length > 0 &&
-                          uncategorizedActive.length > 0 && (
-                            <div className="mt-4 mb-2">
-                              <h2 className="font-semibold text-lg text-gray-400">
-                                Autres
-                              </h2>
-                              {renderTasks(
-                                uncategorizedActive,
-                                showAllActive,
-                                setShowAllActive,
-                                5
-                              )}
-                            </div>
-                          )}
-
-                        {/* Sinon juste les non catégorisées */}
-                        {categorizedActive.length === 0 &&
-                          uncategorizedActive.length > 0 &&
-                          renderTasks(
-                            uncategorizedActive,
+                  return (
+                    <Droppable key={list.id} droppableId={`droppable-${list.id}`}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className="mt-4 mb-2"
+                        >
+                          <h2 className="font-semibold text-lg flex items-center gap-2">
+                            <div
+                              className="w-3 h-3 rounded-full"
+                              style={{ backgroundColor: list.color }}
+                            />
+                            {list.title}
+                          </h2>
+                          {renderTasks(
+                            listTasks,
                             showAllActive,
                             setShowAllActive,
-                            5
+                            3,
+                            `droppable-${list.id}`
                           )}
-                      </>
-                    ) : (
-                      <p className="text-gray-500 text-center mt-4">
-                        Aucune tâche active pour le moment.
-                      </p>
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  );
+                })}
+
+                {categorizedActive.length > 0 && uncategorizedActive.length > 0 && (
+                  <Droppable droppableId="droppable-uncategorized">
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="mt-4 mb-2"
+                      >
+                        <h2 className="font-semibold text-lg text-gray-400">Autres</h2>
+                        {renderTasks(
+                          uncategorizedActive,
+                          showAllActive,
+                          setShowAllActive,
+                          5,
+                          "uncategorized"
+                        )}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                )}
+
+                {categorizedActive.length === 0 && uncategorizedActive.length > 0 && (
+                  <Droppable droppableId="droppable-uncategorized">
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="mt-4 mb-2"
+                      >
+                        {renderTasks(
+                          uncategorizedActive,
+                          showAllActive,
+                          setShowAllActive,
+                          5,
+                          "uncategorized"
+                        )}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                )}
+
+              {/* Terminées */}
+             {completedTasks.length > 0 && tasklist_DisplayFinishedTasks && (
+  <div className="mt-6 opacity-60 space-y-2">
+    <h2 className="text-lg md:text-xl font-bold text-gray-500 mb-2">
+      Terminées
+    </h2>
+
+    {/* Catégorisées */}
+    {categorizedCompleted.length > 0 &&
+      taskLists.map((list: TaskList) => {
+        const listTasks = categorizedCompleted.filter(
+          (t) => t.taskList === list.id
+        );
+        if (listTasks.length === 0) return null;
+
+        return (
+              <Droppable
+                key={`completed-${list.id}`}
+                droppableId={`completed-${list.id}`}
+              >
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="mt-2"
+                  >
+                    <h3 className="font-medium flex items-center gap-2">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: list.color }}
+                      />
+                      {list.title}
+                    </h3>
+                    {renderTasks(
+                      listTasks,
+                      showAllCompleted,
+                      setShowAllCompleted,
+                      3,
+                      `completed-${list.id}`
                     )}
                     {provided.placeholder}
                   </div>
                 )}
               </Droppable>
+            );
+          })}
 
-              {/* Terminées */}
-              {completedTasks.length > 0 && tasklist_DisplayFinishedTasks && (
-                <Droppable droppableId="completed">
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="mt-6 opacity-60 space-y-2"
-                    >
-                      <h2 className="text-lg md:text-xl font-bold text-gray-500 mb-2">
-                        Terminées
-                      </h2>
+        {/* Autres si mixte */}
+        {categorizedCompleted.length > 0 && uncategorizedCompleted.length > 0 && (
+          <Droppable droppableId="completed-uncategorized">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="mt-4"
+              >
+                <h3 className="font-medium text-gray-500">Autres</h3>
+                {renderTasks(
+                  uncategorizedCompleted,
+                  showAllCompleted,
+                  setShowAllCompleted,
+                  3,
+                  "completed-uncategorized"
+                )}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        )}
 
-                      {/* Catégorisées */}
-                      {categorizedCompleted.length > 0 &&
-                        taskLists.map((list: TaskList) => {
-                          const listTasks = categorizedCompleted.filter(
-                            (t) => t.taskList === list.id
-                          );
-                          if (listTasks.length === 0) return null;
-                          return (
-                            <div key={list.id} className="mt-2">
-                              <h3 className="font-medium flex items-center gap-2">
-                                <div
-                                  className="w-3 h-3 rounded-full"
-                                  style={{ backgroundColor: list.color }}
-                                />
-                                {list.title}
-                              </h3>
-                              {renderTasks(
-                                listTasks,
-                                showAllCompleted,
-                                setShowAllCompleted,
-                                3
-                              )}
-                            </div>
-                          );
-                        })}
+        {/* Sinon juste non catégorisées */}
+        {categorizedCompleted.length === 0 && uncategorizedCompleted.length > 0 && (
+          <Droppable droppableId="completed-uncategorized">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="mt-4"
+              >
+                {renderTasks(
+                  uncategorizedCompleted,
+                  showAllCompleted,
+                  setShowAllCompleted,
+                  3,
+                  "completed-uncategorized"
+                )}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        )}
+      </div>
+    )}
 
-                      {/* Autres si mixte */}
-                      {categorizedCompleted.length > 0 &&
-                        uncategorizedCompleted.length > 0 && (
-                          <div className="mt-4">
-                            <h3 className="font-medium text-gray-500">Autres</h3>
-                            {renderTasks(
-                              uncategorizedCompleted,
-                              showAllCompleted,
-                              setShowAllCompleted,
-                              3
-                            )}
-                          </div>
-                        )}
-
-                      {/* Sinon juste non catégorisées */}
-                      {categorizedCompleted.length === 0 &&
-                        uncategorizedCompleted.length > 0 &&
-                        renderTasks(
-                          uncategorizedCompleted,
-                          showAllCompleted,
-                          setShowAllCompleted,
-                          3
-                        )}
-
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              )}
             </>
           ) : (
             <p className="text-gray-500 text-center mt-32">

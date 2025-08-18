@@ -228,7 +228,7 @@ export default function SettingsComponent() {
       {/* Version */}
       <div className="flex justify-items-end rounded-md w-full p-3 mt-8 text-gray-400">
         <Info className="text-gray-400 mr-3" />
-        <span className="flex-1">SimplyDone App 1.2.1 - LJN</span>
+        <span className="flex-1">SimplyDone App 1.3.0 - LJN</span>
       </div>
     </div>
 

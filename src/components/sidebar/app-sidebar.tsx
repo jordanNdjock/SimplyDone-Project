@@ -129,6 +129,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const handleDeleteTaskList = async (taskList: TaskList) => {
     if (taskList.id) {
       await removeTaskList(taskList.id);
+      if(isMobile) setOpenMobile(false);
       await fetchTasks(user?.$id ?? "");
     }
   };
